@@ -29,6 +29,8 @@ public:
 	// if you want to treat this thing as a C vector (point to float)
 	float* v();
 
+	float distance(Pnt3f&);
+
 				/***** CREATION */
 	Pnt3f();			/* if we have 1, we need the default */
 	explicit Pnt3f(const float x,const float y,const float z);	/* say where */

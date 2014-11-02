@@ -32,6 +32,8 @@ class World;
 
 // this uses the old ArcBall Code
 #include "Utilities/ArcBallCam.H"
+#include "Draw.h"
+#include <vector>
 
 // note that this mainly takes care of the drawing and other window
 // stuff
@@ -62,10 +64,10 @@ public:
 	void doPick();
 	// simple - just remember which cube is selected
 	int selectedCube;
-
 	// easy access to parent
 	TrainWindow* tw;
 	World* world;
+	
 };
 
 

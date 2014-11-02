@@ -18,6 +18,13 @@ Pnt3f::Pnt3f(const float _x, const float _y, const float _z) : x(_x), y(_y), z(_
 {
 }
 
+float Pnt3f::distance(Pnt3f& p2){
+	float x1 = pow(p2.x - x, 2);
+	float y1 = pow(p2.y - y, 2);
+	float z1 = pow(p2.z - z, 2);
+	return sqrt(x1 + y1 + z1);
+}
+
 void Pnt3f::normalize()
 {
 	float l = x*x + y*y + z*z;

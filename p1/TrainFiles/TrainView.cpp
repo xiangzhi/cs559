@@ -22,7 +22,6 @@
 #include "TrainExample/TrainExample.H"
 #endif
 
-
 TrainView::TrainView(int x, int y, int w, int h, const char* l) : Fl_Gl_Window(x,y,w,h,l)
 {
 	mode( FL_RGB|FL_ALPHA|FL_DOUBLE | FL_STENCIL );
@@ -215,6 +214,22 @@ void TrainView::setProjection()
 		glLoadIdentity();
 		glRotatef(90,1,0,0);
 	} else {
+		//instead of being outside, let's stay in this method
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+
+		gluPerspective(120, aspect, 0.5, 100);
+
+		Draw drawObj;
+		vector<Pnt3f> list = drawObj.getLookingPoints(this);
+		gluLookAt(list[0].x, list[0].y + 1, list[0].z, list[1].x, list[1].y + 1, list[1].z, list[2].x, list[2].y, list[2].z);
+		for (int i = 0; i < 3; i++){
+			std::cout << list[i];
+		}
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+
+
 		// TODO: put code for train view projection here!
 #ifdef EXAMPLE_SOLUTION
 		trainCamView(this,aspect);
@@ -244,18 +259,12 @@ void TrainView::drawStuff(bool doingShadows)
 		}
 	}
 	// draw the track
-	// TODO: call your own track drawing code
-	Draw draw;
-	draw.drawTrack(this, doingShadows);
-#ifdef EXAMPLE_SOLUTION
-	drawTrack(this, doingShadows);
-#endif
-
+	Draw drawObj;
+	drawObj.drawTrack(this, doingShadows);
 	// draw the train
-	// TODO: call your own train drawing code
 	// don't draw the train if you're looking out the front window
 	if (!tw->trainCam->value())
-		draw.drawTrain(this, doingShadows);
+		drawObj.drawTrain(this, doingShadows);
 }
 
 // this tries to see which control point is under the mouse

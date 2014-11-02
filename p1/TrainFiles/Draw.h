@@ -4,11 +4,13 @@
 #include "World.H"
 #include "TrainWindow.H"
 #include <iostream>
+#include <vector>
 
 #include <windows.h>
 #include <GL/gl.h>
 #include <FL/Fl.h>
 #include <GL/glu.h>
+#include <glm.hpp>
 
 class Draw
 {
@@ -17,8 +19,9 @@ public:
 	~Draw();
 	void drawTrack(TrainView *tv, bool doingShadow);
 	void drawTrain(TrainView *tv, bool doingShadow);
+	vector<Pnt3f> getLookingPoints(TrainView *tv);
 private:
 	std::vector<Pnt3f> trackPoints;
-	void drawCardinalQuad(float t, Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4);
+	float drawCardinalQuad(float t, Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4);
 };
 
