@@ -158,12 +158,69 @@ void TrainWindow::damageMe()
 // if the run button is pressed
 void TrainWindow::advanceTrain(float dir)
 {
-	world.speed = dir * ((float)speed->value() * .1f);
-	world.trainU += dir * ((float)speed->value() * .1f);
-	if (world.trainU > 1){
-		world.trainPoint = (world.trainPoint + 1) % world.points.size();
-		world.trainU = 0;
+	vector<float> list = trainView->distanceList;
+	//get the total length
+	float total = 0;
+	for (int i = 0; i < list.size(); i++){
+		total += list[i];
 	}
+
+
+	if (arcLength->value()){
+		
+		//get which is the starting point
+		//make sure its valid 
+		if (list.size() <= world.trainPoint){
+			std::cout << "no list?" << std::endl;
+			return;
+		}
+		world.speed = dir * ((float)speed->value() * 3);
+
+
+		//increase the travelled distance
+		world.trainTravelled += world.speed;
+
+		if (world.trainTravelled > total){
+			world.trainTravelled -= total;
+		}
+
+		//figure out which point it is at
+		float location = world.trainTravelled;
+		int counter = 0;
+		float last = 0;
+		while (location > 0){
+			last = location;
+			location -= list[counter];
+			counter++;
+		}
+
+		counter--;
+
+		world.trainU = last / list[counter];
+		
+		world.trainPoint = counter;
+		
+		//world.trainU += (world.trainU * list[world.trainPoint] + world.speed) / list[world.trainPoint];
+	}
+	else{
+		world.speed = dir * ((float)speed->value() * .1f);
+		world.trainU += dir * ((float)speed->value() * .1f);
+
+		if (world.trainU > 1){
+			world.trainPoint = (world.trainPoint + 1) % world.points.size();
+			world.trainU -= 1;
+		}
+
+		world.trainTravelled = (world.trainPoint + world.trainU)/list.size() * total;
+
+		if (world.trainTravelled > total){
+			world.trainTravelled -= total;
+		}
+	}
+
+	std::cout << "trainU: " << world.trainU << std::endl;
+
+
 	// TODO: make this work for your train
 #ifdef EXAMPLE_SOLUTION
 	// note - we give a little bit more example code here than normal,

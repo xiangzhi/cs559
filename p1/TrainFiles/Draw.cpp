@@ -156,18 +156,17 @@ float Draw::drawCardinalQuad(float t, Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4){
 	for (float i = 0; i < 1; i += length){
 		Pnt3f pt = calCardinalPoints(i, p2, p3, m0, m1);
 		Pnt3f nextPt = calCardinalPoints(i + length, p2, p3, m0, m1);
-		/*
+		
 		glBegin(GL_LINES);
 		drawVertex(pt);
 		drawVertex(nextPt);
 
 		glEnd();
-		*/
-
+		
 		//get a vector for them
 		Pnt3f orPt = nextPt - pt;
 		//normalize the direction vector;
-		drawMonorailTrack(pt,orPt);
+		//drawMonorailTrack(pt,orPt);
 		distance += nextPt.distance(pt);
 	}
 	
@@ -175,7 +174,7 @@ float Draw::drawCardinalQuad(float t, Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4){
 }
 
 
-void Draw::drawTrack(TrainView *tv, bool doingShadow){
+vector<float> Draw::drawTrack(TrainView *tv, bool doingShadow){
 	//just to make sure it works
 	/*
 	for (int i = 0; i < tv->world->points.size(); i++){
@@ -196,7 +195,6 @@ void Draw::drawTrack(TrainView *tv, bool doingShadow){
 	**/
 
 	int size = tv->world->points.size();
-	vector<float> distanceList;
 	for (int i = 0; i < tv->world->points.size(); i++){
 		distanceList.push_back(drawCardinalQuad(0, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
 			tv->world->points[(i + 2) % size].pos));
@@ -209,7 +207,7 @@ void Draw::drawTrack(TrainView *tv, bool doingShadow){
 
 	//drawBezierQuad(tv->world->points[0].pos, tv->world->points[1].pos, tv->world->points[2].pos);
 	//instead of a cardinal, let's make a bezier curve
-
+	return distanceList;
 }
 
 
@@ -346,12 +344,23 @@ void Draw::drawTrain(TrainView *tv, bool doingShadow){
 
 	Pnt3f orPt = (1 - u) * tv->world->points[i].orient + u * tv->world->points[(i + 1) % size].orient;
 
-	//get next point to get a vector
-	u = u + tv->world->speed;
-	if (u > 1){
-		u = 0;
-		i = (i + 1) % size;
+
+	//get a new point
+	u = u + 0.01;
+	/*
+	if (tv->tw->arcLength->value()){
+		u = u + 0.01;
 	}
+	else{
+		//get next point to get a vector
+		u = u + tv->world->speed;
+		if (u > 1){
+			u = 0;
+			i = (i + 1) % size;
+		}
+	}
+	*/
+
 
 	Pnt3f pt2 = getSingleCardinalPoint(0, u, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
 		tv->world->points[(i + 2) % size].pos);
@@ -386,11 +395,13 @@ vector<Pnt3f> Draw::getLookingPoints(TrainView *tv){
 		tv->world->points[(i + 2) % size].pos);
 	//where is up;
 	//get next point to get a vector
+	u = u + 0.01;
+	/*
 	u = u + tv->world->speed;
 	if (u > 1){
 		u = 0;
 		i = (i + 1) % size;
-	}
+	}*/
 	//where to look next
 	Pnt3f pt2 = getSingleCardinalPoint(0, u, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
 		tv->world->points[(i + 2) % size].pos);

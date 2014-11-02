@@ -37,6 +37,9 @@ public:		// we don't make anything private - for no good reason
 	// the state of the train - basically, all I need to remember is where
 	// it is in parameter space, this is per curve
 	float trainU;
+	//how much it has travelled.
+	float trainTravelled;
+
 	//where is the starting of that parameter space
 	int trainPoint;
 	//speed

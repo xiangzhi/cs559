@@ -67,7 +67,8 @@ public:
 	// easy access to parent
 	TrainWindow* tw;
 	World* world;
-	
+	//to store the list
+	std::vector<float> distanceList;
 };
 
 
