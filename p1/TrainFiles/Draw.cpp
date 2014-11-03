@@ -183,7 +183,7 @@ float Draw::drawCardinalQuad(float t, Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4){
 	for (float i = 0; i < 1; i += length){
 		Pnt3f pt = calCardinalPoints(i, p2, p3, m0, m1);
 		Pnt3f nextPt = calCardinalPoints(i + length, p2, p3, m0, m1);
-		
+
 		glBegin(GL_LINES);
 		drawVertex(pt);
 		drawVertex(nextPt);
@@ -219,8 +219,17 @@ vector<float> Draw::drawTrack(TrainView *tv, bool doingShadow){
 	else{
 		//cardinal quad
 		for (int i = 0; i < tv->world->points.size(); i++){
+
+			//interpolate the orientation vector
+			float u = tv->world->trainU;
+
+			Pnt3f orPt = (1 - u) * tv->world->points[i].orient + u * tv->world->points[(i + 1) % size].orient;
+			glPushMatrix();
+			alignOrientation(orPt);
 			distanceList.push_back(drawCardinalQuad(tv->tw->tension->value(), tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
 				tv->world->points[(i + 2) % size].pos));
+
+			glPopMatrix();
 		}
 	}
 	
@@ -438,7 +447,7 @@ void Draw::drawTrain(TrainView *tv, bool doingShadow){
 	//draw the train model
 	drawFrontCar();
 	glPopMatrix();
-
+	/*
 	//draw the middle cars
 	int carNum = tv->tw->carNum->value();
 	
@@ -475,7 +484,7 @@ void Draw::drawTrain(TrainView *tv, bool doingShadow){
 	//draw the train model
 	drawBackCar();
 	glPopMatrix();
-
+	*/
 	glPopMatrix();
 }
 

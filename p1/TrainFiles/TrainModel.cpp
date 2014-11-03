@@ -59,6 +59,9 @@ void drawTrainModel(){
 
 void _drawMiddleCar(){
 
+	//move zero to the center
+	glTranslatef(-1, 0.25, 0);
+
 	//top of the car
 	glBegin(GL_QUADS);
 	glVertex3f(0, 0.5, -1);
@@ -108,6 +111,12 @@ void drawMiddleCar(){
 
 void _drawFrontCar(){
 	//top of the train
+
+	//move the center to the middle
+	glTranslatef(2.5, 0.25, 0);
+
+	//top of the train
+
 	glBegin(GL_QUADS);
 	glVertex3f(-1, 0.5, -1);
 	glVertex3f(-1, 0.5, 1);
@@ -170,7 +179,7 @@ void drawFrontCar(){
 
 void drawBackCar(){
 	glPushMatrix();
-	glTranslatef(-3, 0, 0);
+	glTranslatef(-1.5, 0, 0);
 	glScalef(-1, 1, -1);
 	glScalef(3, 4, 3);
 	_drawFrontCar();
