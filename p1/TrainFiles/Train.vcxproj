@@ -98,6 +98,7 @@
     <ClCompile Include="ControlPoint.cpp" />
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Train.cpp" />
+    <ClCompile Include="TrainModel.cpp" />
     <ClCompile Include="TrainView.cpp" />
     <ClCompile Include="TrainWindow.cpp" />
     <ClCompile Include="World.cpp" />
@@ -110,6 +111,7 @@
     <ClInclude Include="ControlPoint.H" />
     <ClInclude Include="Draw.h" />
     <ClInclude Include="Object.H" />
+    <ClInclude Include="TrainModel.h" />
     <ClInclude Include="TrainView.H" />
     <ClInclude Include="TrainWindow.H" />
     <ClInclude Include="World.H" />

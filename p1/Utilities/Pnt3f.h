@@ -43,6 +43,8 @@ public:
 	Pnt3f operator + (const Pnt3f&) const;	/* create a temp */
 	Pnt3f operator - (const Pnt3f&) const;	/* create a temp */
 
+	float dot(const Pnt3f&);
+
 	// make sure that we're unit length - vertical in the error case (0 length)
 	void normalize();
 

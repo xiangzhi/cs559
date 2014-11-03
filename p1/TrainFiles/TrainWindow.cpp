@@ -87,7 +87,6 @@ TrainWindow::TrainWindow(const int x, const int y) : Fl_Double_Window(x,y,800,60
 		splineBrowser->callback((Fl_Callback*)damageCB,this);
 		splineBrowser->add("Linear");
 		splineBrowser->add("Cardinal Cubic");
-		splineBrowser->add("Cubic B-Spline");
 		splineBrowser->select(2);
 
 		pty += 110;
@@ -119,6 +118,22 @@ TrainWindow::TrainWindow(const int x, const int y) : Fl_Double_Window(x,y,800,60
 		rzp->callback((Fl_Callback*)rmzCB,this);
 
 		pty+=30;
+
+		tension = new Fl_Value_Slider(655, pty, 140, 20, "tension");
+		tension->range(0,1);
+		tension->value(0.5);
+		tension->align(FL_ALIGN_LEFT);
+		tension->type(FL_HORIZONTAL);
+		tension->callback((Fl_Callback*)damageCB, this);
+
+		pty += 20;
+
+		carNum = new Fl_Counter(605, pty, 140, 20, "number of cars");
+		carNum->type(FL_SIMPLE_COUNTER);
+		carNum->step(1);
+		carNum->minimum(0);
+		carNum->callback((Fl_Callback*)damageCB, this);
+
 
 		// TODO: add widgets for all of your fancier features here
 #ifdef EXAMPLE_SOLUTION

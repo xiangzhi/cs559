@@ -26,6 +26,7 @@
 #include <Fl/Fl_Group.H>
 #include <Fl/Fl_Value_Slider.H>
 #include <Fl/Fl_Browser.H>
+#include <FL/Fl_Counter.H>
 #pragma warning(pop)
 
 // we need to know what is in the world to show
@@ -67,6 +68,12 @@ public:
 	Fl_Button* runButton;
 	// if we're animating it, how fast should it go?
 	Fl_Value_Slider* speed;
+
+	//tension slider
+	Fl_Value_Slider* tension;
+	//number of cars
+	Fl_Counter* carNum;
+
 	Fl_Button* arcLength;		// do we use arc length for speed?
 
 	// call this method when things change

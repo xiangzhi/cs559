@@ -13,16 +13,42 @@ void drawVertex(Pnt3f p){
 	glVertex3f(p.x, p.y, p.z);
 }
 
+vector<Pnt3f> buildCoordinateSystemNew(Pnt3f towards, Pnt3f up){
+	//p = p1 + p;
+
+	up.normalize();
+
+
+
+	Pnt3f zAxis = towards * up;
+	zAxis.normalize();
+	Pnt3f yAxis = zAxis * towards;
+	yAxis.normalize();
+
+	std::vector<Pnt3f> list;
+	list.push_back(towards);
+	list.push_back(yAxis);
+	list.push_back(zAxis);
+
+	return list;
+}
+
 vector<Pnt3f> buildCoordinateSystem(Pnt3f p1, Pnt3f p){
 	//p = p1 + p;
+
+	p.normalize();
+
 	Pnt3f temp = p;
-	temp.x += 1;
+	temp.x -= 1;
+	temp.y += 2;
 	//temp cross p
 	Pnt3f zAxis = temp * p;
 	Pnt3f xAxis = p * zAxis;
 
 	xAxis.normalize();
 	zAxis.normalize();
+	Pnt3f yAxis = xAxis * zAxis;
+	yAxis.normalize();
 	p.normalize();
 
 	std::vector<Pnt3f> list;
@@ -33,30 +59,31 @@ vector<Pnt3f> buildCoordinateSystem(Pnt3f p1, Pnt3f p){
 	return list;
 }
 
-void alignOrientation(Pnt3f p1, Pnt3f orPt){
-	//align the cube to the orientation
-	GLfloat mat44[4][4];
-	for (int i = 0; i < 4; i++){
-		for (int j = 0; j < 4; j++){
-			mat44[i][j] = 0;
-		}
-	}
-	mat44[3][3] = 1;
-	vector<Pnt3f> list = buildCoordinateSystem(p1, orPt);
-	for (int i = 0; i < 3; i++){
-		mat44[0][i] = list[i].x;
-		mat44[1][i] = list[i].y;
-		mat44[2][i] = list[i].z;
-	}
-	glMultMatrixf(*mat44);
+
+//align the y-axis to the orientation vector given
+//this is based on a stackoverflow answer
+//http://stackoverflow.com/a/194037
+void alignOrientation(Pnt3f orPt){
+
+	Pnt3f base(0, 1, 0);
+	float angle = -radiansToDegrees(acos(orPt.dot(base)));
+	Pnt3f rotateAxis = orPt * base;
+	glRotatef(angle, rotateAxis.x, rotateAxis.y, rotateAxis.z);
 }
 
 void alignDirection(Pnt3f dirPt){
+
+	Pnt3f base(1, 0, 0);
+	float angle = -radiansToDegrees(acos(dirPt.dot(base)));
+	Pnt3f rotateAxis = dirPt * base;
+	glRotatef(angle, rotateAxis.x, rotateAxis.y, rotateAxis.z);
+	/*
 	//rotate the train so it faces forward
 	float theta1 = 180 - radiansToDegrees(atan2(dirPt.z, dirPt.x));
 	glRotatef(theta1, 0, 1, 0);
 	float theta2 = -radiansToDegrees(acos(dirPt.y));
 	glRotatef(theta2, 0, 1, 0);
+	*/
 }
 
 
@@ -175,38 +202,28 @@ float Draw::drawCardinalQuad(float t, Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4){
 
 
 vector<float> Draw::drawTrack(TrainView *tv, bool doingShadow){
-	//just to make sure it works
-	/*
-	for (int i = 0; i < tv->world->points.size(); i++){
-		std::cout << "point: " << i << std::endl;
-		std::cout << "pos:" << tv->world->points[i].pos;
-		std::cout << "ord:" << tv->world->points[i].orient;
-	}
-	*/
+
 	//draw the line linearly
-	/*
-	
-	for (int i = 0; i < tv->world->points.size(); i++){
-		glBegin(GL_LINES);
-			glVertex3f(tv->world->points[i].pos.x, tv->world->points[i].pos.y, tv->world->points[i].pos.z);
-			glVertex3f(tv->world->points[(i+1) %size].pos.x, tv->world->points[(i+1) %size].pos.y, tv->world->points[(i+1) %size].pos.z);
-		glEnd();
-	}
-	**/
-
 	int size = tv->world->points.size();
-	for (int i = 0; i < tv->world->points.size(); i++){
-		distanceList.push_back(drawCardinalQuad(0, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
-			tv->world->points[(i + 2) % size].pos));
-	}
-	/*
-	for (int i = 0; i < distanceList.size(); i++){
-		std::cout << "i:" << i << " " << distanceList[i] << std::endl;
-	}
-	*/
+	if (tv->tw->splineBrowser->value() == 1){
+		for (int i = 0; i < tv->world->points.size(); i++){
+			glBegin(GL_LINES);
+			glVertex3f(tv->world->points[i].pos.x, tv->world->points[i].pos.y, tv->world->points[i].pos.z);
+			glVertex3f(tv->world->points[(i + 1) % size].pos.x, tv->world->points[(i + 1) % size].pos.y, tv->world->points[(i + 1) % size].pos.z);
+			glEnd();
 
-	//drawBezierQuad(tv->world->points[0].pos, tv->world->points[1].pos, tv->world->points[2].pos);
-	//instead of a cardinal, let's make a bezier curve
+			//get distance
+			distanceList.push_back(tv->world->points[i].pos.distance(tv->world->points[(i + 1) % size].pos));
+		}
+	}
+	else{
+		//cardinal quad
+		for (int i = 0; i < tv->world->points.size(); i++){
+			distanceList.push_back(drawCardinalQuad(tv->tw->tension->value(), tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
+				tv->world->points[(i + 2) % size].pos));
+		}
+	}
+	
 	return distanceList;
 }
 
@@ -237,30 +254,11 @@ void drawCube(Pnt3f p1, Pnt3f dirPt, Pnt3f orPt, float l){
 	glPushMatrix();
 
 	glTranslatef(p1.x, p1.y, p1.z);
-
-	//align the cube to the orientation
-	GLfloat mat44[4][4];
-	for (int i = 0; i < 4; i++){
-		for (int j = 0; j < 4; j++){
-			mat44[i][j] = 0;
-		}
-	}
-	mat44[3][3] = 1;
-	vector<Pnt3f> list = buildCoordinateSystem(p1, orPt);
-	for (int i = 0; i < 3; i++){
-		mat44[0][i] = list[i].x;
-		mat44[1][i] = list[i].y;
-		mat44[2][i] = list[i].z;
-	}
-	glMultMatrixf(*mat44);
+	alignOrientation(orPt);
+	alignDirection(dirPt);
 	
-
-	//rotate the train so it faces forward
-	float theta1 = 180 - radiansToDegrees(atan2(dirPt.z, dirPt.x));
-	glRotatef(theta1, 0, 1, 0);
-	float theta2 = -radiansToDegrees(acos(dirPt.y));
-	glRotatef(theta2, 0, 0, 1);
-
+	drawTrainModel();
+	/*
 	//draw front
 	glBegin(GL_QUADS);
 	glVertex3f(-l, -l, -l);
@@ -278,15 +276,20 @@ void drawCube(Pnt3f p1, Pnt3f dirPt, Pnt3f orPt, float l){
 	glEnd();
 
 	//drawLeftSide
+
 	glBegin(GL_QUADS);
+	
 	glVertex3f(l, -l, -l);
 	glVertex3f(l, -l, l);
 	glVertex3f(l, l, l);
 	glVertex3f(l, l, -l);
 	glEnd();
 	
+
 	//drawTop Side
 	glBegin(GL_QUADS);
+	glColor3f(1.0, 1.0, 1.0);
+	
 	glVertex3f(-l, -l, -l);
 	glVertex3f(-l, -l, l);
 	glVertex3f(l, -l, l);
@@ -295,6 +298,7 @@ void drawCube(Pnt3f p1, Pnt3f dirPt, Pnt3f orPt, float l){
 
 	//draw Bottom
 	glBegin(GL_QUADS);
+	glColor3f(1.0, 0.0, 0.0);
 	glVertex3f(-l, l, -l);
 	glVertex3f(-l, l, l);
 	glVertex3f(l, l, l);
@@ -311,7 +315,7 @@ void drawCube(Pnt3f p1, Pnt3f dirPt, Pnt3f orPt, float l){
 	glVertex3f(-l, l, l);
 	glEnd();
 
-
+	*/
 	glPopMatrix();
 }
 
@@ -334,64 +338,158 @@ void drawCubeAround(Pnt3f pt, float l){
 	glEnd();
 }
 
-void Draw::drawTrain(TrainView *tv, bool doingShadow){
-	float u = tv->world->trainU;
-	int i = tv->world->trainPoint;
-	int size = tv->world->points.size();
-	Pnt3f pt = getSingleCardinalPoint(0,u,tv->world->points[(i - 1 + size)%size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
-		tv->world->points[(i + 2) % size].pos);
+vector<Pnt3f> getInformation(TrainView *tv, float& u, int& i, int& size, Pnt3f& lst, float DISTANCE){ 
+	//get the point where the car should appear on the curve
 
+	//find the next Point with a certain distance from the last point, u on i;
+	Pnt3f pt;
+	Pnt3f last = lst;
+	float distance = 0;
+	do{
+		pt = getSingleCardinalPoint(tv->tw->tension->value(), u, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
+			tv->world->points[(i + 2) % size].pos);
+		u -= 0.009;
+		//make sure it can go to the next segment
+		if (u < 0){
+			u += 1;
+			i = (i - 1 + size) % size;
+		}
 
+		distance += (lst.distance(pt));
+		lst = pt;
+	} while (distance < DISTANCE);
+	std::cout << "pt" << pt << " lst" << lst << "i:" << i;
+	
+	//get the orientation vector
 	Pnt3f orPt = (1 - u) * tv->world->points[i].orient + u * tv->world->points[(i + 1) % size].orient;
 
 
-	//get a new point
+	//get the next point
 	u = u + 0.01;
-	/*
-	if (tv->tw->arcLength->value()){
-		u = u + 0.01;
+	//get the next point
+	Pnt3f pt2 = getSingleCardinalPoint(tv->tw->tension->value(), u, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
+		tv->world->points[(i + 2) % size].pos);
+	//using the second vector to get the direction vector
+	Pnt3f dirPt = pt2 - pt;
+	//normalize the direction vector;
+	dirPt.normalize();
+
+	vector<Pnt3f> list;
+	list.push_back(pt);
+	list.push_back(orPt);
+	list.push_back(dirPt);
+	return list;
+}
+
+
+Pnt3f getNextPoint(TrainView *tv, float u, int i){
+	Pnt3f pt;
+	int size = tv->world->points.size();
+	if (tv->tw->splineBrowser->value() == 1){
+		//linearly
+		pt = (1 - u) * tv->world->points[i].pos + (u)*tv->world->points[(i + 1) % size].pos;
 	}
 	else{
-		//get next point to get a vector
-		u = u + tv->world->speed;
-		if (u > 1){
-			u = 0;
-			i = (i + 1) % size;
-		}
+		//cardinal
+		pt = getSingleCardinalPoint(tv->tw->tension->value(), u, tv->world->points[(i - 1 + size) % size].pos,
+			tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
+			tv->world->points[(i + 2) % size].pos);
 	}
-	*/
+	return pt;
+
+}
+
+void Draw::drawTrain(TrainView *tv, bool doingShadow){
+
+	glPushMatrix();
+	//move up so that it floats in the ear
+	glTranslatef(0, 5, 0);
+
+	//get the u value
+	float u = tv->world->trainU;
+	//get the segment of the curve
+	int i = tv->world->trainPoint;
+	//get the total number of curve
+	int size = tv->world->points.size();
+	//get the point where the car should appear on the curves
+	Pnt3f pt = getNextPoint(tv, u, i);
+	//interpolate the orientation vector
+	Pnt3f orPt = (1 - u) * tv->world->points[i].orient + u * tv->world->points[(i + 1) % size].orient;
+
+	//get the next point
+	float nextU = u + 0.01;
+	int nextI = i;
+	if (nextU > 1){
+		nextU -= 1;
+		nextI = (i + 1) % size;
+	}
+
+	Pnt3f pt2 = getNextPoint(tv, nextU, nextI);
 
 
-	Pnt3f pt2 = getSingleCardinalPoint(0, u, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
-		tv->world->points[(i + 2) % size].pos);
-	//get a vector for them
-	pt2 = pt2 - pt;
+	//get the next point
+	Pnt3f pt2 = getSingleCardinalPoint(tv->tw->tension->value(), nextU, tv->world->points[(nextI - 1 + size) % size].pos, tv->world->points[(nextI) % size].pos, tv->world->points[(nextI + 1) % size].pos,
+		tv->world->points[(nextI + 2) % size].pos);
+	//using the second vector to get the direction vector
+	Pnt3f dirPt = pt2 - pt;
 	//normalize the direction vector;
-	pt2.normalize();
-	/*
-	Pnt3f orPt = getSingleCardinalPoint(0, u, tv->world->points[i].orient, tv->world->points[(i + 1) % size].orient, tv->world->points[(i + 2) % size].orient,
-		tv->world->points[(i + 3) % size].orient);
-	*/
-
-
-
-	pt.y += 10;
+	dirPt.normalize();
 	
+	//draw the front of the car
 	glPushMatrix();
-
-	drawCube(pt, pt2, orPt, 5);
+	//move and rotate in the correct direction
+	glTranslatef(pt.x, pt.y, pt.z);
+	alignOrientation(orPt);
+	alignDirection(dirPt);
+	//draw the train model
+	drawFrontCar();
 	glPopMatrix();
-	glPushMatrix();
-	//drawMonorailTrack(pt, orPt);
+
+	//draw the middle cars
+	int carNum = tv->tw->carNum->value();
+	
+	for (int j = 0; j < carNum; j++){
+		//get a list of parameter for the next car
+		
+		vector<Pnt3f> list; 
+		if (j == 0){
+			list = getInformation(tv, u, i, size, pt, 10);
+		}
+		else{
+			list = getInformation(tv, u, i, size, pt, 7);
+		}
+
+		//draw the end of the train
+		glPushMatrix();
+		//move and rotate in the correct direction
+		glTranslatef(pt.x, pt.y, pt.z);
+		alignOrientation(list[1]);
+		alignDirection(list[2]);
+		//draw the train model
+		drawMiddleCar();
 		glPopMatrix();
-	//drawCubeAround(pt, 10);
+	}
+
+	//get a list of parameter for the last car
+	vector<Pnt3f> list = getInformation(tv, u, i, size, pt,15);
+	//draw the end of the car
+	glPushMatrix();
+	//move and rotate in the correct direction
+	glTranslatef(pt.x, pt.y, pt.z);
+	alignOrientation(list[1]);
+	alignDirection(list[2]);
+	//draw the train model
+	drawBackCar();
+	glPopMatrix();
+
+	glPopMatrix();
 }
 
 vector<Pnt3f> Draw::getLookingPoints(TrainView *tv){
 	float u = tv->world->trainU;
 	int i = tv->world->trainPoint;
 	int size = tv->world->points.size();
-	Pnt3f eyeVector = getSingleCardinalPoint(0, u, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
+	Pnt3f eyeVector = getSingleCardinalPoint(tv->tw->tension->value(), u, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
 		tv->world->points[(i + 2) % size].pos);
 	//where is up;
 	//get next point to get a vector
@@ -403,7 +501,7 @@ vector<Pnt3f> Draw::getLookingPoints(TrainView *tv){
 		i = (i + 1) % size;
 	}*/
 	//where to look next
-	Pnt3f pt2 = getSingleCardinalPoint(0, u, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
+	Pnt3f pt2 = getSingleCardinalPoint(tv->tw->tension->value(), u, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
 		tv->world->points[(i + 2) % size].pos);
 	//where is up
 	Pnt3f upVector = (1 - u) * tv->world->points[i].orient + u * tv->world->points[(i + 1) % size].orient;

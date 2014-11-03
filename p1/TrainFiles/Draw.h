@@ -3,6 +3,7 @@
 #include "TrainFiles\TrainView.H"
 #include "World.H"
 #include "TrainWindow.H"
+#include "TrainModel.h"
 #include <iostream>
 #include <vector>
 
