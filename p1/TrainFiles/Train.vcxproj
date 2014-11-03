@@ -94,9 +94,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BuildingModel.cpp" />
     <ClCompile Include="CallBacks.cpp" />
     <ClCompile Include="ControlPoint.cpp" />
     <ClCompile Include="Draw.cpp" />
+    <ClCompile Include="EnvironmentModel.cpp" />
+    <ClCompile Include="ModelInfo.cpp" />
     <ClCompile Include="Train.cpp" />
     <ClCompile Include="TrainModel.cpp" />
     <ClCompile Include="TrainView.cpp" />
@@ -107,9 +110,12 @@
     <ClCompile Include="..\Utilities\Pnt3f.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BuildingModel.h" />
     <ClInclude Include="CallBacks.H" />
     <ClInclude Include="ControlPoint.H" />
     <ClInclude Include="Draw.h" />
+    <ClInclude Include="EnvironmentModel.h" />
+    <ClInclude Include="ModelInfo.h" />
     <ClInclude Include="Object.H" />
     <ClInclude Include="TrainModel.h" />
     <ClInclude Include="TrainView.H" />

@@ -73,6 +73,8 @@ public:
 	Fl_Value_Slider* tension;
 	//number of cars
 	Fl_Counter* carNum;
+	//reset enviroment
+	Fl_Button* resetEnvButtom;
 
 	Fl_Button* arcLength;		// do we use arc length for speed?
 

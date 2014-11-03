@@ -33,6 +33,7 @@ class World;
 // this uses the old ArcBall Code
 #include "Utilities/ArcBallCam.H"
 #include "Draw.h"
+#include "EnvironmentModel.h"
 #include <vector>
 
 // note that this mainly takes care of the drawing and other window
@@ -69,6 +70,8 @@ public:
 	World* world;
 	//to store the list
 	std::vector<float> distanceList;
+	
+	EnvironmentModel enModel;
 };
 
 

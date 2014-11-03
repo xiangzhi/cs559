@@ -338,6 +338,24 @@ void drawCubeAround(Pnt3f pt, float l){
 	glEnd();
 }
 
+
+Pnt3f getNextPoint(TrainView *tv, float u, int i){
+	Pnt3f pt;
+	int size = tv->world->points.size();
+	if (tv->tw->splineBrowser->value() == 1){
+		//linearly
+		pt = (1 - u) * tv->world->points[i].pos + (u)*tv->world->points[(i + 1) % size].pos;
+	}
+	else{
+		//cardinal
+		pt = getSingleCardinalPoint(tv->tw->tension->value(), u, tv->world->points[(i - 1 + size) % size].pos,
+			tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
+			tv->world->points[(i + 2) % size].pos);
+	}
+	return pt;
+
+}
+
 vector<Pnt3f> getInformation(TrainView *tv, float& u, int& i, int& size, Pnt3f& lst, float DISTANCE){ 
 	//get the point where the car should appear on the curve
 
@@ -346,8 +364,7 @@ vector<Pnt3f> getInformation(TrainView *tv, float& u, int& i, int& size, Pnt3f& 
 	Pnt3f last = lst;
 	float distance = 0;
 	do{
-		pt = getSingleCardinalPoint(tv->tw->tension->value(), u, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
-			tv->world->points[(i + 2) % size].pos);
+		pt = getNextPoint(tv, u, i);
 		u -= 0.009;
 		//make sure it can go to the next segment
 		if (u < 0){
@@ -367,8 +384,7 @@ vector<Pnt3f> getInformation(TrainView *tv, float& u, int& i, int& size, Pnt3f& 
 	//get the next point
 	u = u + 0.01;
 	//get the next point
-	Pnt3f pt2 = getSingleCardinalPoint(tv->tw->tension->value(), u, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
-		tv->world->points[(i + 2) % size].pos);
+	Pnt3f pt2 = getNextPoint(tv, u, i);
 	//using the second vector to get the direction vector
 	Pnt3f dirPt = pt2 - pt;
 	//normalize the direction vector;
@@ -379,24 +395,6 @@ vector<Pnt3f> getInformation(TrainView *tv, float& u, int& i, int& size, Pnt3f& 
 	list.push_back(orPt);
 	list.push_back(dirPt);
 	return list;
-}
-
-
-Pnt3f getNextPoint(TrainView *tv, float u, int i){
-	Pnt3f pt;
-	int size = tv->world->points.size();
-	if (tv->tw->splineBrowser->value() == 1){
-		//linearly
-		pt = (1 - u) * tv->world->points[i].pos + (u)*tv->world->points[(i + 1) % size].pos;
-	}
-	else{
-		//cardinal
-		pt = getSingleCardinalPoint(tv->tw->tension->value(), u, tv->world->points[(i - 1 + size) % size].pos,
-			tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
-			tv->world->points[(i + 2) % size].pos);
-	}
-	return pt;
-
 }
 
 void Draw::drawTrain(TrainView *tv, bool doingShadow){
@@ -424,13 +422,9 @@ void Draw::drawTrain(TrainView *tv, bool doingShadow){
 		nextI = (i + 1) % size;
 	}
 
+	
 	Pnt3f pt2 = getNextPoint(tv, nextU, nextI);
-
-
-	//get the next point
-	Pnt3f pt2 = getSingleCardinalPoint(tv->tw->tension->value(), nextU, tv->world->points[(nextI - 1 + size) % size].pos, tv->world->points[(nextI) % size].pos, tv->world->points[(nextI + 1) % size].pos,
-		tv->world->points[(nextI + 2) % size].pos);
-	//using the second vector to get the direction vector
+	//get a direcitonal vector from the two points;
 	Pnt3f dirPt = pt2 - pt;
 	//normalize the direction vector;
 	dirPt.normalize();
@@ -489,23 +483,18 @@ vector<Pnt3f> Draw::getLookingPoints(TrainView *tv){
 	float u = tv->world->trainU;
 	int i = tv->world->trainPoint;
 	int size = tv->world->points.size();
-	Pnt3f eyeVector = getSingleCardinalPoint(tv->tw->tension->value(), u, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
-		tv->world->points[(i + 2) % size].pos);
+	Pnt3f eyeVector = getNextPoint(tv, u, i);
 	//where is up;
 	//get next point to get a vector
 	u = u + 0.01;
-	/*
-	u = u + tv->world->speed;
 	if (u > 1){
-		u = 0;
+		u -= 1;
 		i = (i + 1) % size;
-	}*/
+	}
 	//where to look next
-	Pnt3f pt2 = getSingleCardinalPoint(tv->tw->tension->value(), u, tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
-		tv->world->points[(i + 2) % size].pos);
+	Pnt3f pt2 = getNextPoint(tv, u, i);
 	//where is up
 	Pnt3f upVector = (1 - u) * tv->world->points[i].orient + u * tv->world->points[(i + 1) % size].orient;
-
 	vector<Pnt3f> list;
 	list.push_back(eyeVector);
 	list.push_back(pt2);

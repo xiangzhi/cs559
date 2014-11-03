@@ -39,6 +39,10 @@ void rmxCB(Fl_Widget*, TrainWindow* tw);
 void rpzCB(Fl_Widget*, TrainWindow* tw);
 void rmzCB(Fl_Widget*, TrainWindow* tw);
 
+//call to reset Environment
+void resetEnv(Fl_Widget*, TrainWindow* tw);
+
+
 // CVS Header - if you don't know what this is, don't worry about it
 // This code tells us where the original came from in CVS
 // Its a good idea to leave it as-is so we know what version of

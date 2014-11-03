@@ -17,6 +17,7 @@
 #include "GL/glu.h"
 
 #include "TrainFiles/Draw.h"
+#include "BuildingModel.h"
 
 #ifdef EXAMPLE_SOLUTION
 #include "TrainExample/TrainExample.H"
@@ -257,6 +258,10 @@ void TrainView::drawStuff(bool doingShadows)
 			world->points[i].draw();
 		}
 	}
+
+	//draw environment
+	enModel.draw();
+
 	// draw the track
 	Draw drawObj;
 	distanceList = drawObj.drawTrack(this, doingShadows);

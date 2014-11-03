@@ -128,11 +128,14 @@ TrainWindow::TrainWindow(const int x, const int y) : Fl_Double_Window(x,y,800,60
 
 		pty += 20;
 
-		carNum = new Fl_Counter(605, pty, 140, 20, "number of cars");
+		carNum = new Fl_Counter(605, pty, 75, 20, "number of cars");
 		carNum->type(FL_SIMPLE_COUNTER);
 		carNum->step(1);
 		carNum->minimum(0);
 		carNum->callback((Fl_Callback*)damageCB, this);
+
+		resetEnvButtom = new Fl_Button(685, pty, 40, 20, "reset Enviroment");
+		resetEnvButtom->callback((Fl_Callback*)resetEnv, this);
 
 
 		// TODO: add widgets for all of your fancier features here
