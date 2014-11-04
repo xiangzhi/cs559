@@ -186,15 +186,24 @@ void TrainWindow::advanceTrain(float dir)
 
 	if (arcLength->value()){
 		
+		vector<vector<float>> arcLengthTable = trainView->arcLengthTable;
+
 		//get which is the starting point
 		//make sure its valid 
 		if (list.size() <= world.trainPoint){
 			std::cout << "no list?" << std::endl;
 			return;
 		}
-		world.speed = dir * ((float)speed->value() * 3);
+
+		
+		world.speed = (-1 * (trainView->dirVector.y) * 3) + ((float)speed->value() * 2);
+		if (world.speed <= 0){
+			world.speed = 2;
+		}
 
 
+		//world.speed = dir * ((float)speed->value() * 3);
+		
 		//increase the travelled distance
 		world.trainTravelled += world.speed;
 
@@ -202,11 +211,29 @@ void TrainWindow::advanceTrain(float dir)
 			world.trainTravelled -= total;
 		}
 
+		bool done = false;
+		float last = 0;
+		for (int i = 0; i < arcLengthTable.size() && !done; i++){
+			vector<float> smallTable = arcLengthTable[i];
+			for (int u = 0; u < smallTable.size() && !done; u++){
+				if (world.trainTravelled < smallTable[u]){
+					float diff = (world.trainTravelled - last) / (smallTable[u] - last);
+					world.trainU = (diff * 0.01) + (u * 0.01);
+					std::cout << "u:" << u << std::endl;
+					std::cout << "diff:" << diff << std::endl;
+					world.trainPoint = i;
+					done = true;
+				}
+				last = smallTable[u];
+			}
+		}
+
+		/*
 		//figure out which point it is at
 		float location = world.trainTravelled;
 		int counter = 0;
 		float last = 0;
-		while (location > 0){
+		while (location >= 0){
 			last = location;
 			location -= list[counter];
 			counter++;
@@ -216,11 +243,14 @@ void TrainWindow::advanceTrain(float dir)
 		if (counter < 0){
 			counter = counter + list.size();
 		}
-
+		//get the currentU in that point
 		world.trainU = last / list[counter];
-		
+
+		std::cout << "U:" << world.trainU << "last: " << last << std::endl;
+
+		//get which curve it is at
 		world.trainPoint = counter;
-		
+		*/
 		//world.trainU += (world.trainU * list[world.trainPoint] + world.speed) / list[world.trainPoint];
 	}
 	else{

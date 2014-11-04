@@ -29,6 +29,12 @@ float Pnt3f::distance(Pnt3f& p2){
 	return sqrt(x1 + y1 + z1);
 }
 
+void Pnt3f::abs(){
+	x = std::abs(x);
+	y = std::abs(y);
+	z = std::abs(z);
+}
+
 void Pnt3f::normalize()
 {
 	float l = x*x + y*y + z*z;

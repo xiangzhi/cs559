@@ -48,6 +48,8 @@ public:
 	// make sure that we're unit length - vertical in the error case (0 length)
 	void normalize();
 
+	void abs();
+
 	// note - the operators above are for Pnt3f*scalar, here we have scalar*Pnt3f
 	friend Pnt3f operator * (const float s, const Pnt3f& p );
 };

@@ -219,7 +219,7 @@ void TrainView::setProjection()
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 
-		gluPerspective(120, aspect, 0.5, 100);
+		gluPerspective(120, aspect, 0.5, 200);
 		Draw drawObj;
 		vector<Pnt3f> list = drawObj.getLookingPoints(this);
 		gluLookAt(list[0].x, list[0].y + 1, list[0].z, list[1].x, list[1].y + 1, list[1].z, list[2].x, list[2].y, list[2].z);
@@ -263,10 +263,11 @@ void TrainView::drawStuff(bool doingShadows)
 	// draw the track
 	Draw drawObj;
 	distanceList = drawObj.drawTrack(this, doingShadows);
+	arcLengthTable = drawObj.arcLengthTable;
 	// draw the train
 	// don't draw the train if you're looking out the front window
 	if (!tw->trainCam->value())
-		drawObj.drawTrain(this, doingShadows);
+		dirVector = drawObj.drawTrain(this, doingShadows);
 }
 
 // this tries to see which control point is under the mouse

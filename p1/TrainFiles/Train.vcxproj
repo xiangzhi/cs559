@@ -99,8 +99,10 @@
     <ClCompile Include="CallBacks.cpp" />
     <ClCompile Include="ControlPoint.cpp" />
     <ClCompile Include="Draw.cpp" />
+    <ClCompile Include="DrawTools.cpp" />
     <ClCompile Include="EnvironmentModel.cpp" />
     <ClCompile Include="ModelInfo.cpp" />
+    <ClCompile Include="TrackModel.cpp" />
     <ClCompile Include="Train.cpp" />
     <ClCompile Include="TrainModel.cpp" />
     <ClCompile Include="TrainView.cpp" />
@@ -116,9 +118,11 @@
     <ClInclude Include="CallBacks.H" />
     <ClInclude Include="ControlPoint.H" />
     <ClInclude Include="Draw.h" />
+    <ClInclude Include="DrawTools.h" />
     <ClInclude Include="EnvironmentModel.h" />
     <ClInclude Include="ModelInfo.h" />
     <ClInclude Include="Object.H" />
+    <ClInclude Include="TrackModel.h" />
     <ClInclude Include="TrainModel.h" />
     <ClInclude Include="TrainView.H" />
     <ClInclude Include="TrainWindow.H" />
