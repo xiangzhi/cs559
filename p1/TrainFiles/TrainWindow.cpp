@@ -185,17 +185,9 @@ void TrainWindow::advanceTrain(float dir)
 
 
 	if (arcLength->value()){
-		
-		vector<vector<float>> arcLengthTable = trainView->arcLengthTable;
 
-		//get which is the starting point
-		//make sure its valid 
-		if (list.size() <= world.trainPoint){
-			std::cout << "no list?" << std::endl;
-			return;
-		}
+		vector<float> arcLengthTable = trainView->arcLengthTable;
 
-		
 		world.speed = (-1 * (trainView->dirVector.y) * 3) + ((float)speed->value() * 2);
 		if (world.speed <= 0){
 			world.speed = 2;
@@ -203,7 +195,7 @@ void TrainWindow::advanceTrain(float dir)
 
 
 		//world.speed = dir * ((float)speed->value() * 3);
-		
+
 		//increase the travelled distance
 		world.trainTravelled += world.speed;
 
@@ -211,6 +203,22 @@ void TrainWindow::advanceTrain(float dir)
 			world.trainTravelled -= total;
 		}
 
+		float last = 0;
+		for (int i = 0; i < arcLengthTable.size(); i++){
+			if (world.trainTravelled < arcLengthTable[i]){
+				float diff = (world.trainTravelled - last) / (arcLengthTable[i] - last);
+				int ptNum = 0;
+				while (i >= 100){
+					i -= 100;
+					ptNum += 1;
+				}
+				world.trainU = (diff * 0.01) + (i * 0.01);
+				world.trainPoint = ptNum;
+				break;
+			}
+			last = arcLengthTable[i];
+		}
+		/*
 		bool done = false;
 		float last = 0;
 		for (int i = 0; i < arcLengthTable.size() && !done; i++){
@@ -227,6 +235,7 @@ void TrainWindow::advanceTrain(float dir)
 				last = smallTable[u];
 			}
 		}
+		*/
 
 		/*
 		//figure out which point it is at

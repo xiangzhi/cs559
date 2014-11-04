@@ -30,7 +30,12 @@ public:
 	vector<vector<float>> arcLengthTable;
 private:
 	std::vector<Pnt3f> trackPoints;
-	
 	float drawCardinalQuad(float t, Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4);
 };
 
+/* get the point on the track with the u and i */
+Pnt3f getPointOnTrack(TrainView *tv, float u, int i);
+/* get the orientation vector at point u with the starting point of i */
+Pnt3f getOrientationVector(TrainView *tv, float u, int i);
+/* get the directional vector from pt to the point with u and i*/
+Pnt3f getDirectionVector(Pnt3f pt, TrainView *tv, float u, int i);

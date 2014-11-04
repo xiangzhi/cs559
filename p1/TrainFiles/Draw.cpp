@@ -77,7 +77,6 @@ Pnt3f getPointOnTrack(TrainView *tv, float u, int i){
 			tv->world->points[(i + 2) % size].pos);
 	}
 	return pt;
-
 }
 
 Pnt3f getOrientationVector(TrainView *tv, float u, int i){
@@ -98,6 +97,75 @@ Pnt3f getDirectionVector(Pnt3f pt, TrainView *tv, float u, int i){
 	//get a direcitonal vector from the two points;
 	return pt2 - pt;
 }
+
+typedef void(*drawCallback)(Pnt3f);
+
+vector<float> buildArcLengthCurveTableI(TrainView *tv){
+	vector<float> arcTable;
+	float totalDistance = 0;
+	Pnt3f lstPt;
+	for (int i = 0; i < tv->distanceList.size(); i++){
+		for (int u = 0; u < 100; u++){
+			float rU = u * 0.01;
+			Pnt3f pt = getPointOnTrack(tv, rU, i);
+			if (u == 0 && i == 0){
+				totalDistance = 0;
+			}
+			else{
+				totalDistance += (pt.distance(lstPt));
+			}
+			lstPt = pt;
+			arcTable.push_back(totalDistance);
+		}
+	}
+	std::cout << "done" << std::endl;
+	std::cout << "size: " << arcTable.size() << std::endl;
+	return arcTable;
+}
+
+void buildObjectAtInterval(TrainView *tv, drawCallback callback, float interval){
+
+	vector<float> arcTable = tv->arcLengthTable;
+
+	float curPoint = 0;
+	float nextPoint = 0;
+	float total = arcTable[arcTable.size() - 1];
+	float index = 0;
+	while (nextPoint < total && index < arcTable.size()){
+		while (nextPoint < arcTable[index]){
+
+			int num = 0;
+			int temp = index;
+
+
+			while (temp >= 100){
+				num += 1;
+				temp -= 100;
+			}
+
+			float u = temp * 0.01;
+
+			Pnt3f pt = getPointOnTrack(tv, u, num);
+			Pnt3f dirPt = getDirectionVector(pt, tv, u, num);
+			Pnt3f orPt = getOrientationVector(tv, u, num);
+
+			glPushMatrix();
+			//move to the correct point
+			glTranslatef(pt.x, pt.y, pt.z);
+
+			alignObjectIn3D(dirPt, orPt);
+
+			glScalef(0.5, 0.5, 2);
+			drawCube(0, 0, 0, 5);
+
+			glPopMatrix();
+
+			nextPoint += interval;
+		}
+		index++;
+	}
+}
+
 
 vector<vector<float>> buildArcLengthCurveTable(TrainView *tv){
 	vector<vector<float>> BigTable;
@@ -234,6 +302,10 @@ vector<float> Draw::drawTrack(TrainView *tv, bool doingShadow){
 
 	tv->distanceList = distanceList;
 
+	tv->arcLengthTable = buildArcLengthCurveTableI(tv);
+	 buildObjectAtInterval(tv, NULL, 10);
+
+	/*
 	vector<vector<float>> bigTable = buildArcLengthCurveTable(tv);
 	arcLengthTable = bigTable;
 	float distance = 10;
@@ -252,12 +324,7 @@ vector<float> Draw::drawTrack(TrainView *tv, bool doingShadow){
 	while (nextPoint < totalDistance && bigIndex < bigTable.size()){
 		while (bigTable[bigIndex][smallIndex] >= nextPoint){
 			float rU = (nextPoint / bigTable[bigIndex][smallIndex]) * smallIndex * 0.01;
-			/*
-			std::cout << "RU" << rU << std::endl;
-			std::cout << "smallIndex:" << smallIndex << std::endl;
-			std::cout << "nextPoint:" << nextPoint << std::endl;
-			std::cout << "total:" << bigTable[bigIndex][smallIndex] << std::endl;
-			*/
+
 			Pnt3f pt = getPointOnTrack(tv, rU, bigIndex);
 			Pnt3f dirPt = getDirectionVector(pt, tv, rU, bigIndex);
 			Pnt3f orPt = getOrientationVector(tv, rU, bigIndex);
@@ -275,18 +342,14 @@ vector<float> Draw::drawTrack(TrainView *tv, bool doingShadow){
 
 			nextPoint += distance;
 		}
-		/*
-		std::cout << "nextPoint: " << nextPoint << std::endl;
-		std::cout << "bigTable: " << bigTable[bigIndex][smallIndex] << std::endl;
-		std::cout << "smallTABLE SIZE: " << bigTable[bigIndex].size();
-		*/
+
 		smallIndex++;
 		if (smallIndex >= bigTable[bigIndex].size()){
 			smallIndex = 0;
 			bigIndex++;
 		}
 	}
-
+	*/
 	return distanceList;
 }
 
@@ -414,7 +477,8 @@ Pnt3f Draw::drawTrain(TrainView *tv, bool doingShadow){
 		glPushMatrix();
 		//move and rotate in the correct direction
 		glTranslatef(pt.x, pt.y, pt.z);
-		alignObjectIn3D(dirPt, orPt);
+
+		alignObjectIn3D(list[2], list[1]);
 		//draw the train model
 		drawMiddleCar();
 		glPopMatrix();
@@ -426,7 +490,8 @@ Pnt3f Draw::drawTrain(TrainView *tv, bool doingShadow){
 	glPushMatrix();
 	//move and rotate in the correct direction
 	glTranslatef(pt.x, pt.y, pt.z);
-	alignObjectIn3D(dirPt, orPt);
+	alignObjectIn3D(list[2], list[1]);
+
 	//draw the train model
 	drawBackCar();
 	glPopMatrix();

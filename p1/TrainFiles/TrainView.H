@@ -70,7 +70,7 @@ public:
 	World* world;
 	//to store the list
 	std::vector<float> distanceList;
-	std::vector<std::vector<float>> arcLengthTable;
+	std::vector<float> arcLengthTable;
 	Pnt3f dirVector;
 	EnvironmentModel enModel;
 };
