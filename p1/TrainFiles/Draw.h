@@ -13,6 +13,9 @@
 #include <GL/glu.h>
 #include <glm.hpp>
 
+
+#include "3DTools.h"
+
 class Draw
 {
 public:

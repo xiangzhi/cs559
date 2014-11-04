@@ -223,9 +223,7 @@ void TrainView::setProjection()
 		Draw drawObj;
 		vector<Pnt3f> list = drawObj.getLookingPoints(this);
 		gluLookAt(list[0].x, list[0].y + 1, list[0].z, list[1].x, list[1].y + 1, list[1].z, list[2].x, list[2].y, list[2].z);
-		for (int i = 0; i < 3; i++){
-			std::cout << list[i];
-		}
+
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 

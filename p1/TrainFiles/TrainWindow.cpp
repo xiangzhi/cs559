@@ -213,6 +213,9 @@ void TrainWindow::advanceTrain(float dir)
 		}
 
 		counter--;
+		if (counter < 0){
+			counter = counter + list.size();
+		}
 
 		world.trainU = last / list[counter];
 		
@@ -236,7 +239,7 @@ void TrainWindow::advanceTrain(float dir)
 		}
 	}
 
-	std::cout << "trainU: " << world.trainU << std::endl;
+	//std::cout << "trainU: " << world.trainU << std::endl;
 
 
 	// TODO: make this work for your train

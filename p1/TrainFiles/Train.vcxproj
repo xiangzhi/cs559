@@ -94,6 +94,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="3DTools.cpp" />
     <ClCompile Include="BuildingModel.cpp" />
     <ClCompile Include="CallBacks.cpp" />
     <ClCompile Include="ControlPoint.cpp" />
@@ -110,6 +111,7 @@
     <ClCompile Include="..\Utilities\Pnt3f.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="3DTools.h" />
     <ClInclude Include="BuildingModel.h" />
     <ClInclude Include="CallBacks.H" />
     <ClInclude Include="ControlPoint.H" />

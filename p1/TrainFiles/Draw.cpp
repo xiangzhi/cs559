@@ -13,139 +13,6 @@ void drawVertex(Pnt3f p){
 	glVertex3f(p.x, p.y, p.z);
 }
 
-vector<Pnt3f> buildCoordinateSystemNew(Pnt3f towards, Pnt3f up){
-	//p = p1 + p;
-
-	up.normalize();
-
-
-
-	Pnt3f zAxis = towards * up;
-	zAxis.normalize();
-	Pnt3f yAxis = zAxis * towards;
-	yAxis.normalize();
-
-	std::vector<Pnt3f> list;
-	list.push_back(towards);
-	list.push_back(yAxis);
-	list.push_back(zAxis);
-
-	return list;
-}
-
-vector<Pnt3f> buildCoordinateSystem(Pnt3f p1, Pnt3f p){
-	//p = p1 + p;
-
-	p.normalize();
-
-	Pnt3f temp = p;
-	temp.x -= 1;
-	temp.y += 2;
-	//temp cross p
-	Pnt3f zAxis = temp * p;
-	Pnt3f xAxis = p * zAxis;
-
-	xAxis.normalize();
-	zAxis.normalize();
-	Pnt3f yAxis = xAxis * zAxis;
-	yAxis.normalize();
-	p.normalize();
-
-	std::vector<Pnt3f> list;
-	list.push_back(xAxis);
-	list.push_back(p);
-	list.push_back(zAxis);
-
-	return list;
-}
-
-
-//align the y-axis to the orientation vector given
-//this is based on a stackoverflow answer
-//http://stackoverflow.com/a/194037
-void alignOrientation(Pnt3f orPt){
-
-	Pnt3f base(0, 1, 0);
-	float angle = -radiansToDegrees(acos(orPt.dot(base)));
-	Pnt3f rotateAxis = orPt * base;
-	glRotatef(angle, rotateAxis.x, rotateAxis.y, rotateAxis.z);
-}
-
-void alignDirection(Pnt3f dirPt){
-
-	Pnt3f base(1, 0, 0);
-	float angle = -radiansToDegrees(acos(dirPt.dot(base)));
-	Pnt3f rotateAxis = dirPt * base;
-	glRotatef(angle, rotateAxis.x, rotateAxis.y, rotateAxis.z);
-	/*
-	//rotate the train so it faces forward
-	float theta1 = 180 - radiansToDegrees(atan2(dirPt.z, dirPt.x));
-	glRotatef(theta1, 0, 1, 0);
-	float theta2 = -radiansToDegrees(acos(dirPt.y));
-	glRotatef(theta2, 0, 1, 0);
-	*/
-}
-
-
-
-void drawMonorailTrack(Pnt3f p, Pnt3f orPt){
-	glPushMatrix();
-	glTranslatef(p.x, p.y, p.z);
-
-	glScalef(2, 2, 2);
-
-	//alignOrientation(p, orPt);
-	alignDirection(orPt);
-
-	glBegin(GL_QUADS);
-	glVertex3f(1.5, 0, 0);
-	glVertex3f(1, -0.1, 0);
-	glVertex3f(-1, -0.1, 0);
-	glVertex3f(-1.5, 0, 0);
-	glEnd();
-	glBegin(GL_QUADS);
-	glVertex3f(2, 0.1, 0);
-	glVertex3f(2.5, 0.1, 0);
-	glVertex3f(2, -0.1, 0);
-	glVertex3f(1, -0.1, 0);
-	glEnd();
-	glBegin(GL_QUADS);
-	glVertex3f(-2, 0.1, 0);
-	glVertex3f(-2.5, 0.1, 0);
-	glVertex3f(-2, -0.1, 0);
-	glVertex3f(-1, -0.1, 0);
-
-	//top
-	glBegin(GL_QUADS);
-	glColor3f(0, 1, 0);
-	glVertex3f(-2, 0.5, 0);
-	glVertex3f(-2.5, 0.5, 0);
-	glVertex3f(-2.5, 0.5, -0.5);
-	glVertex3f(-2, 0.5, -0.5);
-	glEnd();
-	//top
-	
-	glBegin(GL_QUADS);
-	glColor3f(0, 0, 1);
-	glVertex3f(1.5, 0, 0);
-	glVertex3f(1.5, 0, -0.5);
-	glVertex3f(-1.5, 0, -0.5);
-	glVertex3f(-1.5, 0, 0);
-	glEnd();
-
-	glBegin(GL_QUADS);
-	glColor3f(1, 0, 0);
-	glVertex3f(-2, 0.5, 0);
-	glVertex3f(-2, 0.5, -0.5);
-	glVertex3f(-1.5, 0, -0.5);
-	glVertex3f(-1.5, 0, 0);
-	glEnd();
-
-
-	glPopMatrix();
-}
-
-
 Pnt3f calBezierQuadPoints(float u, Pnt3f p1, Pnt3f p2, Pnt3f p3){
 	return ((p1 * ((1 - u) * (1 - u))) + (2 * (1 - u) * u * p2) + ((u * u) * p3));
 }
@@ -193,13 +60,11 @@ float Draw::drawCardinalQuad(float t, Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4){
 		//get a vector for them
 		Pnt3f orPt = nextPt - pt;
 		//normalize the direction vector;
-		//drawMonorailTrack(pt,orPt);
 		distance += nextPt.distance(pt);
 	}
 	
 	return distance;
 }
-
 
 vector<float> Draw::drawTrack(TrainView *tv, bool doingShadow){
 
@@ -225,7 +90,7 @@ vector<float> Draw::drawTrack(TrainView *tv, bool doingShadow){
 
 			Pnt3f orPt = (1 - u) * tv->world->points[i].orient + u * tv->world->points[(i + 1) % size].orient;
 			glPushMatrix();
-			alignOrientation(orPt);
+			//alignOrientation(orPt);
 			distanceList.push_back(drawCardinalQuad(tv->tw->tension->value(), tv->world->points[(i - 1 + size) % size].pos, tv->world->points[(i) % size].pos, tv->world->points[(i + 1) % size].pos,
 				tv->world->points[(i + 2) % size].pos));
 
@@ -234,117 +99,6 @@ vector<float> Draw::drawTrack(TrainView *tv, bool doingShadow){
 	}
 	
 	return distanceList;
-}
-
-
-
-
-
-void drawCubes(Pnt3f p1, Pnt3f p2){
-	//drawFront
-	glBegin(GL_QUADS);
-	glVertex3f(p1.x, p1.y, p1.z);
-	glVertex3f(p2.x, p1.y, p1.z);
-	glVertex3f(p2.x, p2.y, p1.z);
-	glVertex3f(p1.x, p2.y, p1.z);
-	glEnd();
-
-	//drawTop
-	glBegin(GL_QUADS);
-	glVertex3f(p1.x, p1.y, p1.z);
-	glVertex3f(p1.x, p1.y, p2.z);
-	glVertex3f(p2.x, p1.y, p2.z);
-	glVertex3f(p2.x, p1.y, p1.z);
-	glEnd();
-}
-
-
-void drawCube(Pnt3f p1, Pnt3f dirPt, Pnt3f orPt, float l){
-	glPushMatrix();
-
-	glTranslatef(p1.x, p1.y, p1.z);
-	alignOrientation(orPt);
-	alignDirection(dirPt);
-	
-	drawTrainModel();
-	/*
-	//draw front
-	glBegin(GL_QUADS);
-	glVertex3f(-l, -l, -l);
-	glVertex3f(l , -l, -l);
-	glVertex3f(l, l , -l);
-	glVertex3f(-l, l, -l);
-	glEnd();
-	
-	//drawRightSide
-	glBegin(GL_QUADS);
-	glVertex3f(-l, -l, -l);
-	glVertex3f(-l, -l, l);
-	glVertex3f(-l, l, l);
-	glVertex3f(-l, l, -l);
-	glEnd();
-
-	//drawLeftSide
-
-	glBegin(GL_QUADS);
-	
-	glVertex3f(l, -l, -l);
-	glVertex3f(l, -l, l);
-	glVertex3f(l, l, l);
-	glVertex3f(l, l, -l);
-	glEnd();
-	
-
-	//drawTop Side
-	glBegin(GL_QUADS);
-	glColor3f(1.0, 1.0, 1.0);
-	
-	glVertex3f(-l, -l, -l);
-	glVertex3f(-l, -l, l);
-	glVertex3f(l, -l, l);
-	glVertex3f(l, -l, -l);
-	glEnd();
-
-	//draw Bottom
-	glBegin(GL_QUADS);
-	glColor3f(1.0, 0.0, 0.0);
-	glVertex3f(-l, l, -l);
-	glVertex3f(-l, l, l);
-	glVertex3f(l, l, l);
-	glVertex3f(l, l, -l);
-	glEnd();
-
-
-	//draw Back Side
-	glBegin(GL_QUADS);
-	glColor3f(0.0, 1.0, 0.0);
-	glVertex3f(-l, -l, l);
-	glVertex3f(l, -l, l);
-	glVertex3f(l, l, l);
-	glVertex3f(-l, l, l);
-	glEnd();
-
-	*/
-	glPopMatrix();
-}
-
-void drawCubeAround(Pnt3f pt, float l){
-	glBegin(GL_QUADS);
-
-	Pnt3f temp = pt;
-	temp.x += l;
-	temp.y += l;
-	drawVertex(temp);
-	temp.x -= (l * 2);
-	drawVertex(temp);
-	temp.y -= (l * 2);
-	drawVertex(temp);
-	temp.x += (l * 2);
-	drawVertex(temp);
-
-
-
-	glEnd();
 }
 
 
@@ -384,7 +138,6 @@ vector<Pnt3f> getInformation(TrainView *tv, float& u, int& i, int& size, Pnt3f& 
 		distance += (lst.distance(pt));
 		lst = pt;
 	} while (distance < DISTANCE);
-	std::cout << "pt" << pt << " lst" << lst << "i:" << i;
 	
 	//get the orientation vector
 	Pnt3f orPt = (1 - u) * tv->world->points[i].orient + u * tv->world->points[(i + 1) % size].orient;
@@ -408,9 +161,14 @@ vector<Pnt3f> getInformation(TrainView *tv, float& u, int& i, int& size, Pnt3f& 
 
 void Draw::drawTrain(TrainView *tv, bool doingShadow){
 
+
+	drawBuildingModel(0, 0, 10);
+	drawBuildingModel(100, 0, 20);
+	drawBuildingModel(0, 100, 50);
+
 	glPushMatrix();
 	//move up so that it floats in the ear
-	glTranslatef(0, 5, 0);
+	//glTranslatef(0, 5, 0);
 
 	//get the u value
 	float u = tv->world->trainU;
@@ -436,18 +194,17 @@ void Draw::drawTrain(TrainView *tv, bool doingShadow){
 	//get a direcitonal vector from the two points;
 	Pnt3f dirPt = pt2 - pt;
 	//normalize the direction vector;
-	dirPt.normalize();
+	//dirPt.normalize();
 	
 	//draw the front of the car
 	glPushMatrix();
 	//move and rotate in the correct direction
 	glTranslatef(pt.x, pt.y, pt.z);
-	alignOrientation(orPt);
-	alignDirection(dirPt);
-	//draw the train model
+	alignObjectIn3D(dirPt, orPt);
+	//draw the front car
 	drawFrontCar();
 	glPopMatrix();
-	/*
+	
 	//draw the middle cars
 	int carNum = tv->tw->carNum->value();
 	
@@ -456,7 +213,7 @@ void Draw::drawTrain(TrainView *tv, bool doingShadow){
 		
 		vector<Pnt3f> list; 
 		if (j == 0){
-			list = getInformation(tv, u, i, size, pt, 10);
+			list = getInformation(tv, u, i, size, pt, 5);
 		}
 		else{
 			list = getInformation(tv, u, i, size, pt, 7);
@@ -466,25 +223,23 @@ void Draw::drawTrain(TrainView *tv, bool doingShadow){
 		glPushMatrix();
 		//move and rotate in the correct direction
 		glTranslatef(pt.x, pt.y, pt.z);
-		alignOrientation(list[1]);
-		alignDirection(list[2]);
+		alignObjectIn3D(dirPt, orPt);
 		//draw the train model
 		drawMiddleCar();
 		glPopMatrix();
 	}
 
 	//get a list of parameter for the last car
-	vector<Pnt3f> list = getInformation(tv, u, i, size, pt,15);
+	vector<Pnt3f> list = getInformation(tv, u, i, size, pt, 7);
 	//draw the end of the car
 	glPushMatrix();
 	//move and rotate in the correct direction
 	glTranslatef(pt.x, pt.y, pt.z);
-	alignOrientation(list[1]);
-	alignDirection(list[2]);
+	alignObjectIn3D(dirPt, orPt);
 	//draw the train model
 	drawBackCar();
 	glPopMatrix();
-	*/
+
 	glPopMatrix();
 }
 

@@ -15,10 +15,11 @@ void EnvironmentModel::draw(){
 	if (modelList.size() == 0){
 		reset();
 	}
-
+	/**
 	for (int i = 0; i < modelList.size(); i++){
 		drawBuildingModel(modelList[i].pos.x, modelList[i].pos.z, modelList[i].height);
 	}
+	**/
 }
 
 
