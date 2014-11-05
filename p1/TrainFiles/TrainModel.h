@@ -14,10 +14,11 @@
  * Draws the Train Models in OpenGL format
  * does not deal with orientation, exist in its own coordinate system
  */
-void drawTrainModel();
-
-//draw the front car
-void drawFrontCar();
-void drawBackCar();
-void drawMiddleCar();
+class TrainModel{
+	public:
+		//draw the front car
+		static void drawFrontCar(bool);
+		static void drawBackCar(bool);
+		static void drawMiddleCar(bool);
+};
 

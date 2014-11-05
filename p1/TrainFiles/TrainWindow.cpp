@@ -188,10 +188,11 @@ void TrainWindow::advanceTrain(float dir)
 
 		vector<float> arcLengthTable = trainView->arcLengthTable;
 
-		world.speed = (-1 * (trainView->dirVector.y) * 3) + ((float)speed->value() * 2);
+		world.speed =  (-1 * (trainView->dirVector.y) * 3) + ((float)speed->value() * 2);
 		if (world.speed <= 0){
 			world.speed = 2;
 		}
+		world.speed *= dir;
 
 
 		//world.speed = dir * ((float)speed->value() * 3);
@@ -203,6 +204,10 @@ void TrainWindow::advanceTrain(float dir)
 			world.trainTravelled -= total;
 		}
 
+		if (world.trainTravelled < 0){
+			world.trainTravelled += total;
+		}
+
 		float last = 0;
 		for (int i = 0; i < arcLengthTable.size(); i++){
 			if (world.trainTravelled < arcLengthTable[i]){
@@ -212,7 +217,8 @@ void TrainWindow::advanceTrain(float dir)
 					i -= 100;
 					ptNum += 1;
 				}
-				world.trainU = (diff * 0.01) + (i * 0.01);
+				//world.trainU = (diff * 0.01) + (i * 0.01);
+				world.trainU = (diff * 0.01) + (i * 0.01) + ptNum;
 				world.trainPoint = ptNum;
 				break;
 			}
@@ -265,11 +271,12 @@ void TrainWindow::advanceTrain(float dir)
 	else{
 		world.speed = dir * ((float)speed->value() * .1f);
 		world.trainU += dir * ((float)speed->value() * .1f);
-
+		/*
 		if (world.trainU > 1){
 			world.trainPoint = (world.trainPoint + 1) % world.points.size();
 			world.trainU -= 1;
 		}
+		*/
 
 		world.trainTravelled = (world.trainPoint + world.trainU)/list.size() * total;
 

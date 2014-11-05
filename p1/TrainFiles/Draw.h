@@ -23,15 +23,17 @@ class Draw
 public:
 	Draw();
 	~Draw();
-	vector<float> drawTrack(TrainView *tv, bool doingShadow);
+	static void drawTrack(TrainView *tv, bool doingShadow);
 	Pnt3f drawTrain(TrainView *tv, bool doingShadow);
+	static Pnt3f drawTrainN(TrainView *tv, bool doingShadow);
 	vector<Pnt3f> getLookingPoints(TrainView *tv);
 	vector<float> distanceList;
 	vector<vector<float>> arcLengthTable;
 private:
-	std::vector<Pnt3f> trackPoints;
 	float drawCardinalQuad(float t, Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4);
 };
+
+
 
 /* get the point on the track with the u and i */
 Pnt3f getPointOnTrack(TrainView *tv, float u, int i);

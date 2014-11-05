@@ -260,13 +260,11 @@ void TrainView::drawStuff(bool doingShadows)
 	//draw environment
 	enModel.draw();
 
-	// draw the track
-	Draw drawObj;
-	distanceList = drawObj.drawTrack(this, doingShadows);
+	Draw::drawTrack(this, doingShadows);
 	// draw the train
 	// don't draw the train if you're looking out the front window
 	if (!tw->trainCam->value())
-		dirVector = drawObj.drawTrain(this, doingShadows);
+		dirVector = Draw::drawTrainN(this, doingShadows);
 }
 
 // this tries to see which control point is under the mouse
