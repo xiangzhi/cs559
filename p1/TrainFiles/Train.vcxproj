@@ -102,6 +102,7 @@
     <ClCompile Include="DrawTools.cpp" />
     <ClCompile Include="EnvironmentModel.cpp" />
     <ClCompile Include="ModelInfo.cpp" />
+    <ClCompile Include="PhysicModel.cpp" />
     <ClCompile Include="TrackModel.cpp" />
     <ClCompile Include="Train.cpp" />
     <ClCompile Include="TrainModel.cpp" />
@@ -122,6 +123,7 @@
     <ClInclude Include="EnvironmentModel.h" />
     <ClInclude Include="ModelInfo.h" />
     <ClInclude Include="Object.H" />
+    <ClInclude Include="PhysicModel.h" />
     <ClInclude Include="TrackModel.h" />
     <ClInclude Include="TrainModel.h" />
     <ClInclude Include="TrainView.H" />

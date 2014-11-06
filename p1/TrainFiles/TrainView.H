@@ -71,7 +71,13 @@ public:
 	//to store the list
 	std::vector<float> distanceList;
 	std::vector<float> arcLengthTable;
+
+	//the trains directional vector
 	Pnt3f dirVector;
+	//the trains point
+	Pnt3f trainPt;
+	//the environment value;
+	int enValue;
 	EnvironmentModel enModel;
 };
 

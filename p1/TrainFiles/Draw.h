@@ -24,9 +24,8 @@ public:
 	Draw();
 	~Draw();
 	static void drawTrack(TrainView *tv, bool doingShadow);
-	Pnt3f drawTrain(TrainView *tv, bool doingShadow);
-	static Pnt3f drawTrainN(TrainView *tv, bool doingShadow);
-	vector<Pnt3f> getLookingPoints(TrainView *tv);
+	static vector<Pnt3f> drawTrain(TrainView *tv, bool doingShadow);
+	static vector<Pnt3f> getLookingPoints(TrainView *tv);
 	vector<float> distanceList;
 	vector<vector<float>> arcLengthTable;
 private:

@@ -32,6 +32,8 @@
 // we need to know what is in the world to show
 #include "World.H"
 
+#include "PhysicModel.h"
+
 // other things we just deal with as pointers, to avoid circular references
 class TrainView;
 
@@ -75,7 +77,9 @@ public:
 	Fl_Counter* carNum;
 	//reset enviroment
 	Fl_Button* resetEnvButtom;
-
+	//the type of track
+	Fl_Browser* trackBrowser;
+	//whethere arc Length is active
 	Fl_Button* arcLength;		// do we use arc length for speed?
 
 	// call this method when things change

@@ -81,7 +81,6 @@ TrainWindow::TrainWindow(const int x, const int y) : Fl_Double_Window(x,y,800,60
 		pty += 30;
 
 		// browser to select spline types
-		// TODO: make sure these choices are the same as what the code supports
 		splineBrowser = new Fl_Browser(605,pty,120,75,"Spline Type");
 		splineBrowser->type(2);		// select
 		splineBrowser->callback((Fl_Callback*)damageCB,this);
@@ -117,7 +116,7 @@ TrainWindow::TrainWindow(const int x, const int y) : Fl_Double_Window(x,y,800,60
 		Fl_Button* rzp = new Fl_Button(700,pty,30,20,"R-Z");
 		rzp->callback((Fl_Callback*)rmzCB,this);
 
-		pty+=30;
+		pty+= 40;
 
 		tension = new Fl_Value_Slider(655, pty, 140, 20, "tension");
 		tension->range(0,1);
@@ -126,7 +125,7 @@ TrainWindow::TrainWindow(const int x, const int y) : Fl_Double_Window(x,y,800,60
 		tension->type(FL_HORIZONTAL);
 		tension->callback((Fl_Callback*)damageCB, this);
 
-		pty += 20;
+		pty += 30;
 
 		carNum = new Fl_Counter(605, pty, 75, 20, "number of cars");
 		carNum->type(FL_SIMPLE_COUNTER);
@@ -134,8 +133,18 @@ TrainWindow::TrainWindow(const int x, const int y) : Fl_Double_Window(x,y,800,60
 		carNum->minimum(0);
 		carNum->callback((Fl_Callback*)damageCB, this);
 
-		resetEnvButtom = new Fl_Button(685, pty, 40, 20, "reset Enviroment");
+		resetEnvButtom = new Fl_Button(685, pty, 100, 20, "reset ENV");
 		resetEnvButtom->callback((Fl_Callback*)resetEnv, this);
+
+		pty += 50;
+		trackBrowser = new Fl_Browser(605, pty, 120, 55, "Rail Type");
+		trackBrowser->type(2); // select
+		trackBrowser->callback((Fl_Callback*)damageCB, this);
+		trackBrowser->add("Simple");
+		trackBrowser->add("Dual Rail");
+		trackBrowser->select(2);
+			
+
 
 
 		// TODO: add widgets for all of your fancier features here
@@ -176,6 +185,9 @@ void TrainWindow::damageMe()
 // if the run button is pressed
 void TrainWindow::advanceTrain(float dir)
 {
+
+	trainView->enValue = (trainView->enValue + 1) % 200;
+
 	vector<float> list = trainView->distanceList;
 	//get the total length
 	float total = 0;
@@ -187,11 +199,12 @@ void TrainWindow::advanceTrain(float dir)
 	if (arcLength->value()){
 
 		vector<float> arcLengthTable = trainView->arcLengthTable;
-
 		world.speed =  (-1 * (trainView->dirVector.y) * 3) + ((float)speed->value() * 2);
 		if (world.speed <= 0){
 			world.speed = 2;
 		}
+		world.speed = PhysicModel::getVelocity((float)speed->value(),
+			trainView->dirVector,trainView->trainPt);
 		world.speed *= dir;
 
 

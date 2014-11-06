@@ -144,18 +144,22 @@ void TrainView::draw()
 	if (tw->topCam->value()) {
 		glDisable(GL_LIGHT1);
 		glDisable(GL_LIGHT2);
+		glDisable(GL_LIGHT3);
 	} else {
 		glEnable(GL_LIGHT1);
 		glEnable(GL_LIGHT2);
+		glEnable(GL_LIGHT3);
 	}
 	// set the light parameters
 	GLfloat lightPosition1[] = {0,1,1,0}; // {50, 200.0, 50, 1.0};
 	GLfloat lightPosition2[] = {1, 0, 0, 0};
-	GLfloat lightPosition3[] = {0, -1, 0, 0};
+	GLfloat lightPosition3[] = { 0, -1, 0, 0 };
+	GLfloat lightPosition4[] = { 0, 53, 0, 0 };
 	GLfloat yellowLight[] = {0.5f, 0.5f, .1f, 1.0};
 	GLfloat whiteLight[] = {1.0f, 1.0f, 1.0f, 1.0};
 	GLfloat blueLight[] = {.1f,.1f,.3f,1.0};
-	GLfloat grayLight[] = {.3f, .3f, .3f, 1.0};
+	GLfloat grayLight[] = { .3f, .3f, .3f, 1.0 };
+	GLfloat redLight[] = { 1.0f, 0, 0, 1.0f };
 
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteLight);
@@ -167,26 +171,40 @@ void TrainView::draw()
 	glLightfv(GL_LIGHT2, GL_POSITION, lightPosition3);
 	glLightfv(GL_LIGHT2, GL_DIFFUSE, blueLight);
 
+	glLightfv(GL_LIGHT3, GL_POSITION, lightPosition4);
+	glLightfv(GL_LIGHT3, GL_SPECULAR, redLight);
+
 
 
 	// now draw the ground plane
 	setupFloor();
+	/*
 	glDisable(GL_LIGHTING);
 	drawFloor(200,10);
+	glEnable(GL_LIGHTING);
+	*/
+	glDisable(GL_LIGHTING);
+	EnvironmentModel::drawFloor(enValue);
 	glEnable(GL_LIGHTING);
 	setupObjects();
 
 	// we draw everything twice - once for real, and then once for
 	// shadows
 	drawStuff();
+	EnvironmentModel::drawEnvironment();
+
+	glDisable(GL_STENCIL_TEST);
 
 	// this time drawing is for shadows (except for top view)
 	if (!tw->topCam->value()) {
 		setupShadows();
 		drawStuff(true);
+		EnvironmentModel::drawEnvironment(true);
 		unsetupShadows();
 	}
-	
+
+
+
 }
 
 // note: this sets up both the Projection and the ModelView matrices
@@ -257,14 +275,15 @@ void TrainView::drawStuff(bool doingShadows)
 		}
 	}
 
-	//draw environment
-	enModel.draw();
-
 	Draw::drawTrack(this, doingShadows);
 	// draw the train
 	// don't draw the train if you're looking out the front window
-	if (!tw->trainCam->value())
-		dirVector = Draw::drawTrainN(this, doingShadows);
+	if (!tw->trainCam->value()){
+		vector<Pnt3f> pts;
+		pts = Draw::drawTrain(this, doingShadows);
+		trainPt = pts[0];
+		dirVector = pts[1];
+	}
 }
 
 // this tries to see which control point is under the mouse

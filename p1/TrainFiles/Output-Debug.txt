@@ -1,0 +1,48 @@
+﻿'Train.exe' (Win32): Loaded 'C:\Users\Xiang Zhi\Documents\GitHub\cs559\p1\TrainFiles\Debug\Train.exe'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\ntdll.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\kernel32.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\KernelBase.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\opengl32.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\glu32.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\user32.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\gdi32.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\advapi32.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\shell32.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\ole32.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\msvcp120d.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\msvcr120d.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\comctl32.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\msvcrt.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\ddraw.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\sechost.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\rpcrt4.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\combase.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\shlwapi.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\dciman32.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\sspicli.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\cryptbase.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\bcryptprimitives.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\imm32.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\msctf.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\uxtheme.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\dwmapi.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\ig75icd32.dll'. Cannot find or open the PDB file.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\igdusc32.dll'. Cannot find or open the PDB file.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\version.dll'. Symbols loaded.
+'Train.exe' (Win32): Unloaded 'C:\Windows\SysWOW64\version.dll'
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\kernel.appcore.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\cryptsp.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\rsaenh.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\bcrypt.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\clbcatq.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\msimtf.dll'. Symbols loaded.
+'Train.exe' (Win32): Loaded 'C:\Windows\SysWOW64\powrprof.dll'. Symbols loaded.
+The thread 0xd00 has exited with code 0 (0x0).
+The thread 0xf78 has exited with code 0 (0x0).
+The thread 0xd7c has exited with code 0 (0x0).
+The thread 0x23c has exited with code 0 (0x0).
+'Train.exe' (Win32): Unloaded 'C:\Windows\SysWOW64\msimtf.dll'
+The thread 0x730 has exited with code 0 (0x0).
+The thread 0xc98 has exited with code 0 (0x0).
+The thread 0x9e4 has exited with code 0 (0x0).
+The program '[1820] Train.exe' has exited with code 0 (0x0).

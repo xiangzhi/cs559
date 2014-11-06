@@ -61,11 +61,7 @@ void _drawSquare(){
 void drawBuildingModel(int x, int z, float height){
 	
 	glPushMatrix();
-	glTranslatef(x, 0, z);
-
-
-
-
+	
 	//draw windows;
 	for (int i = 0; i < height/5; i++){
 		glPushMatrix();

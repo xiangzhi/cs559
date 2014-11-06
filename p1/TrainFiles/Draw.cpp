@@ -169,8 +169,6 @@ vector<float> buildArcLengthCurveTableI(TrainView *tv){
 			arcTable.push_back(totalDistance);
 		}
 	}
-	std::cout << "done" << std::endl;
-	std::cout << "size: " << arcTable.size() << std::endl;
 	return arcTable;
 }
 
@@ -262,7 +260,7 @@ float getDistanceFromArcLength(TrainView *tv, float u){
 	float d1 = arcLengthTable[upper];
 	float d2 = arcLengthTable[lower];
 
-	return d1 * (1 - diff) + (diff)* d2;
+	return d2 * (1 - diff) + (diff)* d1;
 }
 
 
@@ -291,19 +289,33 @@ vector<vector<float>> buildArcLengthCurveTable(TrainView *tv){
 
 
 void Draw::drawTrack(TrainView *tv, bool doingShadow){
-
 	std::vector<float> distanceList;
 	int size = tv->world->points.size();
 	//check which track to draw
 	if (tv->tw->splineBrowser->value() == 1){
 		for (int i = 0; i < tv->world->points.size(); i++){
-			glBegin(GL_LINES);
-			glVertex3f(tv->world->points[i].pos.x, tv->world->points[i].pos.y, tv->world->points[i].pos.z);
-			glVertex3f(tv->world->points[(i + 1) % size].pos.x, tv->world->points[(i + 1) % size].pos.y, tv->world->points[(i + 1) % size].pos.z);
-			glEnd();
+
+			Pnt3f orPt(0, 1, 0);
+			Pnt3f pt = tv->world->points[(i) % size].pos;
+			//push matrix
+			glPushMatrix();
+			//move to the correct point
+			glTranslatef(pt.x, pt.y, pt.z);
+
+
+			if (tv->tw->trackBrowser->value() == 1){
+				TrackModel::drawSimple(tv->world->points[(i) % size].pos, 
+					tv->world->points[(i + 1) % size].pos, orPt, doingShadow);
+			}
+			else if (tv->tw->trackBrowser->value() == 2){
+				TrackModel::drawDual(tv->world->points[(i) % size].pos,
+					tv->world->points[(i + 1) % size].pos, orPt, doingShadow);
+			}
 
 			//get distance
 			distanceList.push_back(tv->world->points[i].pos.distance(tv->world->points[(i + 1) % size].pos));
+
+			glPopMatrix();
 		}
 	}
 	else{
@@ -313,7 +325,7 @@ void Draw::drawTrack(TrainView *tv, bool doingShadow){
 		for (int i = 0; i < tv->world->points.size(); i++){
 			//get a point of the track
 			float distance = 0;
-			for (float j = 0; j < 1; j += increment){
+			for (float j = 0; j < 1; j += increment	){
 				Pnt3f pt = getPointOnTrack(tv, j, i);
 				Pnt3f dirPt = getDirectionVector(pt, tv, j, i);
 				Pnt3f orPt = getOrientationVector(tv,j,i);
@@ -330,7 +342,13 @@ void Draw::drawTrack(TrainView *tv, bool doingShadow){
 				//move to the correct point
 				glTranslatef(pt.x, pt.y, pt.z);
 				
-				TrackModel::drawDual(pt, nextPt, orPt, doingShadow);
+				//select which type of track to draw
+				if(tv->tw->trackBrowser->value() == 1){
+					TrackModel::drawSimple(pt, nextPt, orPt, doingShadow);
+				}
+				else if (tv->tw->trackBrowser->value() == 2){
+					TrackModel::drawDual(pt, nextPt, orPt, doingShadow);
+				}
 				
 				glPopMatrix();				
 			}
@@ -394,16 +412,21 @@ Pnt3f getNextPoint(TrainView *tv, float u, int i){
 }
 
 vector<Pnt3f> getNextCarLocation(TrainView *tv, float& u, float distance){
-	float oldD = getDistanceFromArcLength(tv,u);
-	oldD -= distance;
 
-	if (oldD < 0){
-		oldD += tv->arcLengthTable[tv->arcLengthTable.size() - 1];
+
+
+	if (tv->tw->arcLength->value()){
+		float oldD = getDistanceFromArcLength(tv, u);
+		oldD -= distance;
+
+		if (oldD < 0){
+			oldD += tv->arcLengthTable[tv->arcLengthTable.size() - 1];
+		}
+		u = getPointFromArcLength(tv->arcLengthTable, oldD);
 	}
-	std::cout << "oldU:" << u << std::endl;
-	std::cout << "oldD:" << oldD << std::endl;
-	u = getPointFromArcLength(tv->arcLengthTable, oldD);
-	std::cout << "newU:" << u << std::endl;
+	else{
+		u -= distance * 0.01;
+	}
 
 	Pnt3f pt = getNextPoint(tv, u);
 	Pnt3f dirPt = getDirectionVector(pt, tv, u);
@@ -418,7 +441,6 @@ vector<Pnt3f> getNextCarLocation(TrainView *tv, float& u, float distance){
 
 vector<Pnt3f> getInformation(TrainView *tv, float& u, int& i, int& size, Pnt3f& lst, float DISTANCE){ 
 	//get the point where the car should appear on the curve
-
 
 	//find the next Point with a certain distance from the last point, u on i;
 	Pnt3f pt;
@@ -457,11 +479,11 @@ vector<Pnt3f> getInformation(TrainView *tv, float& u, int& i, int& size, Pnt3f& 
 	return list;
 }
 
-Pnt3f Draw::drawTrainN(TrainView *tv, bool doingShadow){
+vector<Pnt3f> Draw::drawTrain(TrainView *tv, bool doingShadow){
 
-	drawBuildingModel(0, 0, 10);
-	drawBuildingModel(100, 0, 20);
-	drawBuildingModel(0, 100, 50);
+	//drawBuildingModel(0, 0, 10);
+	//drawBuildingModel(100, 0, 20);
+	//drawBuildingModel(0, 100, 50);
 
 	glPushMatrix();
 	//get the u value
@@ -471,8 +493,6 @@ Pnt3f Draw::drawTrainN(TrainView *tv, bool doingShadow){
 	//get the total number of curve
 	int size = tv->world->points.size();
 	//get the point where the car should appear on the curves
-	//uValidation(tv, u, i);
-	std::cout << "u: " << u << std::endl;
 	Pnt3f pt = getNextPoint(tv, u);
 	//interpolate the orientation vector
 	Pnt3f orPt = getOrientationVector(tv, u);
@@ -514,6 +534,7 @@ Pnt3f Draw::drawTrainN(TrainView *tv, bool doingShadow){
 	glPushMatrix();
 	//move and rotate in the correct direction
 	glTranslatef(list[0].x, list[0].y, list[0].z);
+	std::cout << list[0] << pt;
 	alignObjectIn3D(list[2], list[1]);
 
 	//draw the train model
@@ -522,110 +543,20 @@ Pnt3f Draw::drawTrainN(TrainView *tv, bool doingShadow){
 
 	glPopMatrix();
 
-	return dirPt;
-}
-
-Pnt3f Draw::drawTrain(TrainView *tv, bool doingShadow){
-
-
-	drawBuildingModel(0, 0, 10);
-	drawBuildingModel(100, 0, 20);
-	drawBuildingModel(0, 100, 50);
-
-	glPushMatrix();
-	//move up so that it floats in the ear
-	//glTranslatef(0, 5, 0);
-
-	//get the u value
-	float u = tv->world->trainU;
-	//get the segment of the curve
-	int i = tv->world->trainPoint;
-	//get the total number of curve
-	int size = tv->world->points.size();
-	//get the point where the car should appear on the curves
-	Pnt3f pt = getNextPoint(tv, u, i);
-	//interpolate the orientation vector
-	Pnt3f orPt = (1 - u) * tv->world->points[i].orient + u * tv->world->points[(i + 1) % size].orient;
-
-	//get the next point
-	float nextU = u + 0.01;
-	int nextI = i;
-	if (nextU > 1){
-		nextU -= 1;
-		nextI = (i + 1) % size;
-	}
-
-	
-	Pnt3f pt2 = getNextPoint(tv, nextU, nextI);
-	//get a direcitonal vector from the two points;
-	Pnt3f dirPt = pt2 - pt;
-	//normalize the direction vector;
-	//dirPt.normalize();
-	
-	//draw the front of the car
-	glPushMatrix();
-	//move and rotate in the correct direction
-	glTranslatef(pt.x, pt.y, pt.z);
-	alignObjectIn3D(dirPt, orPt);
-	//draw the front car
-	TrainModel::drawFrontCar(doingShadow);
-	glPopMatrix();
-	
-	//draw the middle cars
-	int carNum = tv->tw->carNum->value();
-
-	u = i + u;
-	
-	for (int j = 0; j < carNum; j++){
-		//get a list of parameter for the next car
-		
-		vector<Pnt3f> list; 
-		list = getNextCarLocation(tv, u, 8);
-		//draw the end of the train
-		glPushMatrix();
-		//move and rotate in the correct direction
-		glTranslatef(list[0].x, list[0].y, list[0].z);
-		alignObjectIn3D(list[2], list[1]);
-		//draw the train model
-		TrainModel::drawMiddleCar(doingShadow);
-		glPopMatrix();
-	}
-
-	//get a list of parameter for the last car
-	
-	//vector<Pnt3f> list = getInformation(tv, u, i, size, pt, 7);
-	vector<Pnt3f> list = getNextCarLocation(tv, u, 7);
-	//draw the end of the car
-	glPushMatrix();
-	//move and rotate in the correct direction
-	glTranslatef(list[0].x, list[0].y, list[0].z);
-	alignObjectIn3D(list[2],list[1]);
-
-	//draw the train model
-	TrainModel::drawBackCar(doingShadow);
-	glPopMatrix();
-
-	glPopMatrix();
-
-	return dirPt;
+	list.clear();
+	list.push_back(pt);
+	list.push_back(dirPt);
+	return list;
 }
 
 vector<Pnt3f> Draw::getLookingPoints(TrainView *tv){
 	float u = tv->world->trainU;
-	int i = tv->world->trainPoint;
 	int size = tv->world->points.size();
-	Pnt3f eyeVector = getNextPoint(tv, u, i);
-	//where is up;
-	//get next point to get a vector
-	u = u + 0.01;
-	if (u > 1){
-		u -= 1;
-		i = (i + 1) % size;
-	}
+	Pnt3f eyeVector = getNextPoint(tv, u);
 	//where to look next
-	Pnt3f pt2 = getNextPoint(tv, u, i);
+	Pnt3f pt2 = getNextPoint(tv, u + 0.01);
 	//where is up
-	Pnt3f upVector = (1 - u) * tv->world->points[i].orient + u * tv->world->points[(i + 1) % size].orient;
+	Pnt3f upVector = getOrientationVector(tv, u);
 	vector<Pnt3f> list;
 	list.push_back(eyeVector);
 	list.push_back(pt2);

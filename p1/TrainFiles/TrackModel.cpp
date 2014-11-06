@@ -10,7 +10,12 @@ TrackModel::~TrackModel()
 {
 }
 
-void drawSimpleTrack(Pnt3f p1, Pnt3f p2, bool shadow){
+void TrackModel::drawSimple(Pnt3f p1, Pnt3f p2, Pnt3f orPt, bool shadow){
+
+	if (!shadow){
+		glColor3ub(142, 142, 142);
+	}
+
 	//get difference between p2 and p1;
 	Pnt3f diff = p2 - p1;
 	glBegin(GL_LINES);
@@ -90,7 +95,7 @@ void TrackModel::draw(Pnt3f p1, Pnt3f p2, bool shadow){
 
 	//get difference between p2 and p1;
 	Pnt3f diff = p2 - p1;
-	glBegin(GL_LINES);
+	glBegin(GL_LINE_STRIP);
 	glVertex3f(0, 0, 0);
 	drawVertex(diff);
 	glEnd();
