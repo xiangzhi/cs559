@@ -1,5 +1,7 @@
 #include "TrackModel.h"
 
+std::vector<Pnt3f> TrackModel::pointList1;
+std::vector<Pnt3f> TrackModel::pointList2;
 
 TrackModel::TrackModel()
 {
@@ -15,13 +17,9 @@ void TrackModel::drawSimple(Pnt3f p1, Pnt3f p2, Pnt3f orPt, bool shadow){
 	if (!shadow){
 		glColor3ub(142, 142, 142);
 	}
-
-	//get difference between p2 and p1;
-	Pnt3f diff = p2 - p1;
-	glBegin(GL_LINES);
-	glVertex3f(0, 0, 0);
-	drawVertex(diff);
-	glEnd();
+	
+	pointList2.push_back(p1);
+	pointList2.push_back(p2);
 }
 
 void TrackModel::drawTrackBottom(Pnt3f p1, Pnt3f p2, Pnt3f orPt, bool shadow){
@@ -55,6 +53,11 @@ void TrackModel::drawTrackBottom(Pnt3f p1, Pnt3f p2, Pnt3f orPt, bool shadow){
 
 }
 
+void TrackModel::clearIt(){
+	pointList1.clear();
+	pointList2.clear();
+}
+
 void TrackModel::drawDual(Pnt3f p1, Pnt3f 
 	p2, Pnt3f orPt, bool shadow){
 
@@ -76,8 +79,10 @@ void TrackModel::drawDual(Pnt3f p1, Pnt3f
 
 	pVec = pVec * 2;
 
-	glTranslatef(pVec.x, pVec.y, pVec.z);
-	draw(p1, p2, shadow);
+	//glTranslatef(pVec.x, pVec.y, pVec.z);
+	pointList1.push_back(p1 + pVec);
+	pointList1.push_back(p2 + pVec);
+	//draw(p1, p2, shadow);
 	glPopMatrix();
 
 	glPushMatrix();
@@ -85,19 +90,37 @@ void TrackModel::drawDual(Pnt3f p1, Pnt3f
 	//reset the perpendicular vector
 	pVec.normalize();
 	pVec = pVec * -2;
-	glTranslatef(pVec.x, pVec.y, pVec.z);
-	draw(p1, p2, shadow);
+	//glTranslatef(pVec.x, pVec.y, pVec.z);
+	pointList2.push_back(p1 + pVec);
+	pointList2.push_back(p2 + pVec);
+	//draw(p1, p2, shadow);
 	glPopMatrix();
+}
 
+void TrackModel::drawIt(){
+
+	glLineWidth(4);
+
+	glBegin(GL_LINE_STRIP);
+	for (int i = 0; i < pointList1.size(); i++){
+		drawVertex(pointList1[i]);
+	}
+	glEnd();
+
+	glBegin(GL_LINE_STRIP);
+		for (int i = 0; i < pointList2.size(); i++){
+			drawVertex(pointList2[i]);
+		}
+	glEnd();
 }
 
 void TrackModel::draw(Pnt3f p1, Pnt3f p2, bool shadow){
 
 	//get difference between p2 and p1;
 	Pnt3f diff = p2 - p1;
-	glBegin(GL_LINE_STRIP);
-	glVertex3f(0, 0, 0);
-	drawVertex(diff);
+	
+	drawVertex(p1);
+	drawVertex(p2);
 	glEnd();
 
 	/*

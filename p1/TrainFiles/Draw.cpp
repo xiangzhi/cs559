@@ -289,6 +289,7 @@ vector<vector<float>> buildArcLengthCurveTable(TrainView *tv){
 
 
 void Draw::drawTrack(TrainView *tv, bool doingShadow){
+	TrackModel::clearIt();
 	std::vector<float> distanceList;
 	int size = tv->world->points.size();
 	//check which track to draw
@@ -321,7 +322,7 @@ void Draw::drawTrack(TrainView *tv, bool doingShadow){
 	else{
 		//cardinal quad
 		float increment = 0.01;
-		
+
 		for (int i = 0; i < tv->world->points.size(); i++){
 			//get a point of the track
 			float distance = 0;
@@ -340,7 +341,7 @@ void Draw::drawTrack(TrainView *tv, bool doingShadow){
 				//push matrix
 				glPushMatrix();
 				//move to the correct point
-				glTranslatef(pt.x, pt.y, pt.z);
+				//glTranslatef(pt.x, pt.y, pt.z);
 				
 				//select which type of track to draw
 				if(tv->tw->trackBrowser->value() == 1){
@@ -355,6 +356,7 @@ void Draw::drawTrack(TrainView *tv, bool doingShadow){
 
 			distanceList.push_back(distance);
 		}
+		TrackModel::drawIt();
 	}
 	
 	//set distanceList
@@ -557,10 +559,12 @@ vector<Pnt3f> Draw::getLookingPoints(TrainView *tv){
 	Pnt3f pt2 = getNextPoint(tv, u + 0.01);
 	//where is up
 	Pnt3f upVector = getOrientationVector(tv, u);
+	Pnt3f dirPt = getDirectionVector(eyeVector, tv, u);
 	vector<Pnt3f> list;
 	list.push_back(eyeVector);
 	list.push_back(pt2);
 	list.push_back(upVector);
+	list.push_back(dirPt);
 	return list;
 }
 

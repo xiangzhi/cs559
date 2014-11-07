@@ -3,13 +3,13 @@
 
 float PhysicModel::pEnergy = 0;
 float PhysicModel::kEnergy = 0;
-float PhysicModel::friction = 2;
-float PhysicModel::gravity = 9.8;
+float PhysicModel::friction = 1;
+float PhysicModel::gravity = 5;
 float PhysicModel::speed = 0;
 
 
-float PhysicModel::getVelocity(float speed, Pnt3f dirVec, Pnt3f pt){
-
+float PhysicModel::getVelocity(float speedN, Pnt3f dirVec, Pnt3f pt){
+	/*
 	float changeInP = pt.y - pEnergy;
 	pEnergy = pt.y;
 	
@@ -28,9 +28,17 @@ float PhysicModel::getVelocity(float speed, Pnt3f dirVec, Pnt3f pt){
 	if (changeInP > 0){
 		speed -= changeInP;
 	}
+	*/
 
+	speed += (-1 * dirVec.y * gravity);
 
-	speed -= friction;
+	if (speed - friction > speedN){
+		speed -= friction;
+	}
+	
+	if (speedN > speed){
+		speed = speedN;
+	}
 
 	if (speed <= 0.5){
 		speed = 0.5;

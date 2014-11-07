@@ -144,7 +144,9 @@ TrainWindow::TrainWindow(const int x, const int y) : Fl_Double_Window(x,y,800,60
 		trackBrowser->add("Dual Rail");
 		trackBrowser->select(2);
 			
-
+		pty += 70;
+		speedDisplay = new Fl_Output(605, pty, 100, 30, "Real Speed:");
+		physic = new Fl_Button(705, pty, 50, 30, "Physic");
 
 
 		// TODO: add widgets for all of your fancier features here

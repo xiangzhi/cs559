@@ -27,6 +27,7 @@
 #include <Fl/Fl_Value_Slider.H>
 #include <Fl/Fl_Browser.H>
 #include <FL/Fl_Counter.H>
+#include <FL/Fl_Output.H>
 #pragma warning(pop)
 
 // we need to know what is in the world to show
@@ -80,8 +81,11 @@ public:
 	//the type of track
 	Fl_Browser* trackBrowser;
 	//whethere arc Length is active
-	Fl_Button* arcLength;		// do we use arc length for speed?
-
+	Fl_Button* arcLength;		
+	//use to show the real speed
+	Fl_Output* speedDisplay;
+	//set physics
+	Fl_Button* physic;
 	// call this method when things change
 	void damageMe();
 
