@@ -1,9 +1,15 @@
 #include "TrainModel.h"
 
+/*
+* trainModel.cpp
+* draw the train model
+* see .h file for what each method do
+* Xiang Zhi Tan - CS559 Fall 2014 - P1
+*/
+
 void _drawMiddleCar(bool shadow){
 
 	//move zero to the center
-	
 	glScalef(1, 3, 1);
 	glTranslatef(1, 0.25, 0);
 	if (!shadow){

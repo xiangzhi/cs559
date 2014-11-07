@@ -2,6 +2,7 @@
 #include <vector>
 #include "Utilities\Pnt3f.h"
 
+/* used to store information about something to draw*/
 
 #pragma once
 class ModelInfo

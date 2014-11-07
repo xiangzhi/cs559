@@ -1,3 +1,10 @@
+/*
+* BuildingModel.cpp
+* Contains the drawing methods to draw a building
+* see .h file for what each method do
+* Xiang Zhi Tan - CS559 Fall 2014 - P1
+*/
+
 
 #include "BuildingModel.h"
 

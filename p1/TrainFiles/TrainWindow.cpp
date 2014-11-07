@@ -127,15 +127,18 @@ TrainWindow::TrainWindow(const int x, const int y) : Fl_Double_Window(x,y,800,60
 
 		pty += 30;
 
+		//add number of cards
 		carNum = new Fl_Counter(605, pty, 75, 20, "number of cars");
 		carNum->type(FL_SIMPLE_COUNTER);
 		carNum->step(1);
 		carNum->minimum(0);
 		carNum->callback((Fl_Callback*)damageCB, this);
 
+		//regenerate randowm background
 		resetEnvButtom = new Fl_Button(685, pty, 100, 20, "reset ENV");
 		resetEnvButtom->callback((Fl_Callback*)resetEnv, this);
 
+		//change the type of rail
 		pty += 50;
 		trackBrowser = new Fl_Browser(605, pty, 120, 55, "Rail Type");
 		trackBrowser->type(2); // select
@@ -143,16 +146,35 @@ TrainWindow::TrainWindow(const int x, const int y) : Fl_Double_Window(x,y,800,60
 		trackBrowser->add("Simple");
 		trackBrowser->add("Dual Rail");
 		trackBrowser->select(2);
+		//Ties
+		ties = new Fl_Button(730, pty, 40, 20, "Ties");
+		togglify(ties, 1);
+
 			
 		pty += 70;
-		speedDisplay = new Fl_Output(605, pty, 100, 30, "Real Speed:");
-		physic = new Fl_Button(705, pty, 50, 30, "Physic");
+		//the real speed
+		speedDisplay = new Fl_Output(680, pty, 60, 20, "Real Speed:");
+		speedDisplay->align(FL_ALIGN_LEFT);
+		speedDisplay->value("2");
 
+		//whether physic is active
+		physic = new Fl_Button(745, pty, 50, 20, "Physic");
+		togglify(physic, 1);
 
-		// TODO: add widgets for all of your fancier features here
-#ifdef EXAMPLE_SOLUTION
-		makeExampleWidgets(this,pty);
-#endif
+		pty += 40;
+
+		wave = new Fl_Button(605, pty, 50, 20, "Waves");
+		togglify(wave, 1);
+		waveHeight = new Fl_Value_Slider(655, pty, 80, 20, "WaveHeight");
+		waveHeight->range(0, 10);
+		waveHeight->value(5);
+		waveHeight->type(FL_HORIZONTAL);
+		waveHeight->callback((Fl_Callback*)damageCB, this);
+
+		buildings = new Fl_Button(740, pty, 60, 20, "Buildings");
+		togglify(buildings, 1);
+		//how high is the wave
+
 
 		// we need to make a little phantom widget to have things resize correctly
 		Fl_Box* resizebox = new Fl_Box(600,595,200,5);
@@ -187,7 +209,7 @@ void TrainWindow::damageMe()
 // if the run button is pressed
 void TrainWindow::advanceTrain(float dir)
 {
-
+	//move the environment forward
 	trainView->enValue = (trainView->enValue + 1) % 200;
 
 	vector<float> list = trainView->distanceList;
@@ -199,18 +221,19 @@ void TrainWindow::advanceTrain(float dir)
 
 
 	if (arcLength->value()){
-
+		//get the arch Length table
 		vector<float> arcLengthTable = trainView->arcLengthTable;
-		world.speed =  (-1 * (trainView->dirVector.y) * 3) + ((float)speed->value() * 2);
-		if (world.speed <= 0){
-			world.speed = 2;
+
+		//if there is physic, use the physic model
+		if (physic->value() == 1){
+			world.speed = PhysicModel::getVelocity((float)speed->value(),
+				trainView->dirVector, trainView->trainPt);
+			world.speed *= dir;
 		}
-		world.speed = PhysicModel::getVelocity((float)speed->value(),
-			trainView->dirVector,trainView->trainPt);
-		world.speed *= dir;
+		else{
+			world.speed = dir * (float)speed->value();
+		}
 
-
-		//world.speed = dir * ((float)speed->value() * 3);
 
 		//increase the travelled distance
 		world.trainTravelled += world.speed;
@@ -232,66 +255,16 @@ void TrainWindow::advanceTrain(float dir)
 					i -= 100;
 					ptNum += 1;
 				}
-				//world.trainU = (diff * 0.01) + (i * 0.01);
 				world.trainU = (diff * 0.01) + (i * 0.01) + ptNum;
 				world.trainPoint = ptNum;
 				break;
 			}
 			last = arcLengthTable[i];
 		}
-		/*
-		bool done = false;
-		float last = 0;
-		for (int i = 0; i < arcLengthTable.size() && !done; i++){
-			vector<float> smallTable = arcLengthTable[i];
-			for (int u = 0; u < smallTable.size() && !done; u++){
-				if (world.trainTravelled < smallTable[u]){
-					float diff = (world.trainTravelled - last) / (smallTable[u] - last);
-					world.trainU = (diff * 0.01) + (u * 0.01);
-					std::cout << "u:" << u << std::endl;
-					std::cout << "diff:" << diff << std::endl;
-					world.trainPoint = i;
-					done = true;
-				}
-				last = smallTable[u];
-			}
-		}
-		*/
-
-		/*
-		//figure out which point it is at
-		float location = world.trainTravelled;
-		int counter = 0;
-		float last = 0;
-		while (location >= 0){
-			last = location;
-			location -= list[counter];
-			counter++;
-		}
-
-		counter--;
-		if (counter < 0){
-			counter = counter + list.size();
-		}
-		//get the currentU in that point
-		world.trainU = last / list[counter];
-
-		std::cout << "U:" << world.trainU << "last: " << last << std::endl;
-
-		//get which curve it is at
-		world.trainPoint = counter;
-		*/
-		//world.trainU += (world.trainU * list[world.trainPoint] + world.speed) / list[world.trainPoint];
 	}
 	else{
-		world.speed = dir * ((float)speed->value() * .1f);
-		world.trainU += dir * ((float)speed->value() * .1f);
-		/*
-		if (world.trainU > 1){
-			world.trainPoint = (world.trainPoint + 1) % world.points.size();
-			world.trainU -= 1;
-		}
-		*/
+		world.speed = dir * (float)speed->value();
+		world.trainU += dir * ((float)speed->value() * .05f);
 
 		world.trainTravelled = (world.trainPoint + world.trainU)/list.size() * total;
 
@@ -300,23 +273,9 @@ void TrainWindow::advanceTrain(float dir)
 		}
 	}
 
-	//std::cout << "trainU: " << world.trainU << std::endl;
-
-
-	// TODO: make this work for your train
-#ifdef EXAMPLE_SOLUTION
-	// note - we give a little bit more example code here than normal,
-	// so you can see how this works
-
-	if (arcLength->value()) {
-		float vel = ew.physics->value() ? physicsSpeed(this) * (float)speed->value() : dir * (float)speed->value();
-		world.trainU += arclenVtoV(world.trainU, vel, this);
-	} else {
-		world.trainU +=  dir * ((float)speed->value() * .1f);
-	}
-
-	float nct = static_cast<float>(world.points.size());
-	if (world.trainU > nct) world.trainU -= nct;
-	if (world.trainU < 0) world.trainU += nct;
-#endif
+	//get the speed and display its value
+	std::ostringstream ss;
+	ss << world.speed;
+	std::string s(ss.str());
+	speedDisplay->value(s.c_str());
 }

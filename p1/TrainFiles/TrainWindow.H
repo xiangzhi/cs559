@@ -28,6 +28,8 @@
 #include <Fl/Fl_Browser.H>
 #include <FL/Fl_Counter.H>
 #include <FL/Fl_Output.H>
+#include <string>
+#include <sstream>
 #pragma warning(pop)
 
 // we need to know what is in the world to show
@@ -86,6 +88,13 @@ public:
 	Fl_Output* speedDisplay;
 	//set physics
 	Fl_Button* physic;
+	//set whether they want ties
+	Fl_Button* ties;
+	//select the background
+	Fl_Button* wave;
+	Fl_Button* buildings;
+	//how high is the wave
+	Fl_Value_Slider* waveHeight;
 	// call this method when things change
 	void damageMe();
 

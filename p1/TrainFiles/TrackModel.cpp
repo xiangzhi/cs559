@@ -1,16 +1,14 @@
+/*
+ * TrackModel.cpp
+ * Contains the drawing methods to draw the track
+ * see .h file for what each method do
+ * Xiang Zhi Tan - CS559 Fall 2014 - P1
+ */
+
 #include "TrackModel.h"
 
 std::vector<Pnt3f> TrackModel::pointList1;
 std::vector<Pnt3f> TrackModel::pointList2;
-
-TrackModel::TrackModel()
-{
-}
-
-
-TrackModel::~TrackModel()
-{
-}
 
 void TrackModel::drawSimple(Pnt3f p1, Pnt3f p2, Pnt3f orPt, bool shadow){
 
@@ -20,37 +18,6 @@ void TrackModel::drawSimple(Pnt3f p1, Pnt3f p2, Pnt3f orPt, bool shadow){
 	
 	pointList2.push_back(p1);
 	pointList2.push_back(p2);
-}
-
-void TrackModel::drawTrackBottom(Pnt3f p1, Pnt3f p2, Pnt3f orPt, bool shadow){
-
-	if (!shadow){
-		glColor3ub(117, 65, 52);
-	}
-
-	//get a directional vector
-	Pnt3f dirPt = p2 - p1;
-
-	Pnt3f pVec = ((dirPt * orPt) * 5) + dirPt;
-	Pnt3f npVec = ((dirPt * orPt) * -5) + dirPt;
-
-	//glTranslatef(pVec.x, pVec.y, pVec.z);
-	glPushMatrix();
-	glTranslatef(0, -3, 0);
-	glBegin(GL_POLYGON);
-	//std::cout << pVec << std::endl;
-	//std::cout << npVec << std::endl;
-
-	Pnt3f diff = p2 - p1;
-	glVertex3d(-5, 0, 0);
-	glVertex3d(npVec.x, 0, npVec.z);
-	glVertex3d(5, 0, 0);
-	glVertex3d(pVec.x,0,pVec.z);
-	glVertex3d(-5, 0, 0);
-	glEnd();
-
-	glPopMatrix();
-
 }
 
 void TrackModel::clearIt(){
@@ -114,25 +81,15 @@ void TrackModel::drawIt(){
 	glEnd();
 }
 
-void TrackModel::draw(Pnt3f p1, Pnt3f p2, bool shadow){
+void TrackModel::drawRailTrails(Pnt3f pt, Pnt3f dirPt, Pnt3f orPt){
+	glPushMatrix();
+	//move to the correct point
+	glTranslatef(pt.x, pt.y, pt.z);
 
-	//get difference between p2 and p1;
-	Pnt3f diff = p2 - p1;
-	
-	drawVertex(p1);
-	drawVertex(p2);
-	glEnd();
+	alignObjectIn3D(dirPt, orPt);
 
-	/*
+	glScalef(0.5, 0.5, 2);
+	drawCube(0, 0, 0, 5);
 
-	if (!shadow){
-		glColor3b(0, 0, 0);
-	}
-	//drawCube(3, 0, 0, 1);
-
-	if (!shadow){
-		glColor3ub(0, 225, 225);
-	}
-	drawCube(15, 0, 0, 0.5);
-	*/
+	glPopMatrix();
 }

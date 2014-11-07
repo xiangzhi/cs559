@@ -12,7 +12,7 @@ public:
 	~EnvironmentModel();
 	static void draw();
 	static void reset();
-	static void drawFloor(int x);
+	static void drawFloor(int x,float h);
 	static void drawEnvironment(bool shadow = false);
 	//variables
 	static std::vector<ModelInfo> modelList;

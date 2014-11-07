@@ -39,8 +39,11 @@ void rmxCB(Fl_Widget*, TrainWindow* tw);
 void rpzCB(Fl_Widget*, TrainWindow* tw);
 void rmzCB(Fl_Widget*, TrainWindow* tw);
 
+
+
 //call to reset Environment
 void resetEnv(Fl_Widget*, TrainWindow* tw);
+//call to change physics
 
 
 // CVS Header - if you don't know what this is, don't worry about it

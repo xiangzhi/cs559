@@ -131,9 +131,6 @@ void TrainView::draw()
 	glLoadIdentity();
 	setProjection();		// put the code to set up matrices here
 
-	// TODO: you might want to set the lighting up differently
-	// if you do, 
-	// we need to set up the lights AFTER setting up the projection
 
 	// enable the lighting
 	glEnable(GL_COLOR_MATERIAL);
@@ -144,10 +141,12 @@ void TrainView::draw()
 	if (tw->topCam->value()) {
 		glDisable(GL_LIGHT1);
 		glDisable(GL_LIGHT2);
+		//new light
 		glDisable(GL_LIGHT3);
 	} else {
 		glEnable(GL_LIGHT1);
 		glEnable(GL_LIGHT2);
+		//new light
 		glEnable(GL_LIGHT3);
 	}
 	// set the light parameters
@@ -171,6 +170,7 @@ void TrainView::draw()
 	glLightfv(GL_LIGHT2, GL_POSITION, lightPosition3);
 	glLightfv(GL_LIGHT2, GL_DIFFUSE, blueLight);
 
+	//light at the center of the tower
 	glLightfv(GL_LIGHT3, GL_POSITION, lightPosition4);
 	glLightfv(GL_LIGHT3, GL_SPECULAR, redLight);
 
@@ -178,20 +178,26 @@ void TrainView::draw()
 
 	// now draw the ground plane
 	setupFloor();
-	/*
+	//depend on use input
 	glDisable(GL_LIGHTING);
-	drawFloor(200,10);
+	if (tw->wave->value() == 1){
+		EnvironmentModel::drawFloor(enValue,tw->waveHeight->value());
+	}
+	else{
+		drawFloor(200, 10);
+
+	}
 	glEnable(GL_LIGHTING);
-	*/
-	glDisable(GL_LIGHTING);
-	EnvironmentModel::drawFloor(enValue);
-	glEnable(GL_LIGHTING);
+
 	setupObjects();
 
 	// we draw everything twice - once for real, and then once for
 	// shadows
 	drawStuff();
-	EnvironmentModel::drawEnvironment();
+	//draw environment if use say yes
+	if (tw->buildings->value() == 1){
+		EnvironmentModel::drawEnvironment();
+	}
 
 	glDisable(GL_STENCIL_TEST);
 
@@ -199,7 +205,9 @@ void TrainView::draw()
 	if (!tw->topCam->value()) {
 		setupShadows();
 		drawStuff(true);
-		EnvironmentModel::drawEnvironment(true);
+		if (tw->buildings->value() == 1){
+			EnvironmentModel::drawEnvironment(true);
+		}
 		unsetupShadows();
 	}
 
@@ -233,7 +241,7 @@ void TrainView::setProjection()
 		glLoadIdentity();
 		glRotatef(90,1,0,0);
 	} else {
-		//instead of being outside, let's stay in this method
+		//method of projecting infront of the train
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 
@@ -246,11 +254,6 @@ void TrainView::setProjection()
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-
-		// TODO: put code for train view projection here!
-#ifdef EXAMPLE_SOLUTION
-		trainCamView(this,aspect);
-#endif
 	}
 }
 

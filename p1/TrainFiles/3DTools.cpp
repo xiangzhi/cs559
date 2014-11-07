@@ -1,5 +1,11 @@
 #pragma once
 
+/*
+* 3DTools.cpp
+* helpful functions for 3D manipulations
+* Xiang Zhi Tan - CS559 Fall 2014 - P1
+*/
+
 #include "3DTools.h"
 
 void alignObjectIn3D(Pnt3f dirPt, Pnt3f orPt){

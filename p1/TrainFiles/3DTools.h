@@ -1,5 +1,11 @@
 #pragma once
 
+/*
+* 3DTools.h
+* helpful functions for 3D manipulations
+* Xiang Zhi Tan - CS559 Fall 2014 - P1
+*/
+
 #include <windows.h>
 #include <GL/gl.h>
 #include <GL/glu.h>

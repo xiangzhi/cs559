@@ -45,14 +45,18 @@ std::vector<Pnt3f> addWave(){
 	return list;
 }
 
-std::vector<Pnt3f> createWave(int start){
+std::vector<Pnt3f> createWave(int start, float h){
 	float distance = 0;
-	float height = (rand() % 6) + 1;
+	float height = h;
 	std::vector<Pnt3f> list;
 	for (int i = 0; distance < 300;i++){
 		int y = 0;
 		if (i % 2 == 1){
 			y = height;
+			if (h > 3){
+				height = (h - 3) + (static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 3)));
+			}
+			height = (static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / h)));
 		}
 		if (i % 4 == 0){
 			y = -1 * y;
@@ -60,7 +64,7 @@ std::vector<Pnt3f> createWave(int start){
 		list.push_back(Pnt3f(distance, y, -100));
 		distance += (10) + (rand()%5);
 	}	
-	list.push_back(Pnt3f(300 + 1, 0, -100));
+	list.push_back(Pnt3f(300 + 20, 0, -100));
 	list.push_back(Pnt3f(start, 0, 0));
 	return list;
 }
@@ -118,7 +122,7 @@ void EnvironmentModel::drawEnvironment(bool shadow){
 }
 
 
-void EnvironmentModel::drawFloor(int x){
+void EnvironmentModel::drawFloor(int x,float h){
 	
 
 	GLdouble arr0[] = { 0, 40000, 0, 0 };
@@ -142,18 +146,16 @@ void EnvironmentModel::drawFloor(int x){
 	GLdouble arr[] = { -20000, 0, 0, 2000000 };
 	GLdouble arr2[] = { -20000, 0, 0, -2000000 };
 	glClipPlane(GL_CLIP_PLANE0, arr);
-	glClipPlane(GL_CLIP_PLANE1, arr);
 	glEnable(GL_CLIP_PLANE0);
-	glEnable(GL_CLIP_PLANE1);
 
 	int add = 5;
 	//glTranslatef(x + 0, 0, 0);
 
 	glColor3ub(0, 0, 255);
 	if (waveList.size() == 0){
-		waveList.push_back(createWave(-400));
-		waveList.push_back(createWave(-200));
-		waveList.push_back(createWave(100));
+		waveList.push_back(createWave(-300,h));
+		waveList.push_back(createWave(-100,h));
+		waveList.push_back(createWave(100,h));
 	}
 
 	for (int k = 0; k < waveList.size(); k++){
@@ -173,9 +175,10 @@ void EnvironmentModel::drawFloor(int x){
 
 			waveList[k] = waveList[(k - 1 + waveList.size()) % waveList.size()];
 			waveList[(k - 2 + waveList.size()) % waveList.size()] = waveList[(k - 2 + waveList.size()) % waveList.size()];
-			waveList[(k - 3 + waveList.size()) % waveList.size()] = createWave(-400);
+			waveList[(k - 3 + waveList.size()) % waveList.size()] = createWave(-300,h);
 		}
 
+		//draw all the waves
 		glTranslatef(t.x, 3, 0);
 		for (int j = 0; j < (wave.size() - 3); j += 2){
 			Pnt3f p1 = wave[j];;
@@ -195,81 +198,9 @@ void EnvironmentModel::drawFloor(int x){
 			}
 		}
 		glPopMatrix();
-
-
 	}
-	/*
-	glPushMatrix();
-
-	Pnt3f t = wave[wave.size() -1];
-
-	if (x != wave[wave.size() - 1].y){
-		waveListGraph[wave.size() - 1].y = x;
-		waveListGraph[wave.size() - 1].x++;
-	}
-
-	glTranslatef(t.x, 3, 0);
-	for (int j = 0; j < (wave.size() - 3);  j += 2){
-		Pnt3f p1 = wave[j];;
-		Pnt3f p2 = wave[j + 1];
-		Pnt3f p3 = wave[j + 2];
-		for (float i = 0; i <= 1; i += 0.05){
-			glBegin(GL_QUADS);
-			Pnt3f pt = (calBezierQuadPointsN(i, p1, p2, p3));
-			glVertex3f(pt.x, pt.y, pt.z);
-			pt = (calBezierQuadPointsN(i + 0.05, p1, p2, p3));
-			glVertex3f(pt.x, pt.y, pt.z);
-			pt = (calBezierQuadPointsN(i + 0.05, p1, p2, p3));
-			glVertex3f(pt.x, pt.y, pt.z * -1);
-			pt = (calBezierQuadPointsN(i, p1, p2, p3));
-			glVertex3f(pt.x, pt.y, pt.z * -1);
-			glEnd();
-		}
-	}
-	glPopMatrix();
-	/*
-	if (x % 35 == 0){
-		waveList.push_back(addWave());
-	}
-
-	if (waveList.size() == 0){
-		waveList.push_back(addWave());
-	}
-
-	for (int j = 0; j < waveList.size(); j++){
-		Pnt3f p1 = waveList[j][0];
-		Pnt3f p2 = waveList[j][1];
-		Pnt3f p3 = waveList[j][2];
-		Pnt3f t = waveList[j][3];
-		if (t.x > 200){
-			waveList.erase(waveList.begin() + j);
-		}
-
-		glPushMatrix();
-		glTranslatef(t.x, 0, 0);
-		if (x != waveList[j][3].y){
-			waveList[j][3].y = x;
-			waveList[j][3].x++;
-		}
-		for (float i = 0; i <= 1; i += 0.05){
-			glBegin(GL_QUADS);
-			Pnt3f pt = (calBezierQuadPointsN(i, p1, p2, p3));
-			glVertex3f(pt.x, pt.y, pt.z);
-			pt = (calBezierQuadPointsN(i + 0.05, p1, p2, p3));
-			glVertex3f(pt.x, pt.y, pt.z);
-			pt = (calBezierQuadPointsN(i + 0.05, p1, p2, p3));
-			glVertex3f(pt.x, pt.y, pt.z * -1);
-			pt = (calBezierQuadPointsN(i, p1, p2, p3));
-			glVertex3f(pt.x, pt.y, pt.z * -1);
-			glEnd();
-		}
-
-		glPopMatrix();
-	}
-	*/
 
 	glDisable(GL_CLIP_PLANE0);
-	glDisable(GL_CLIP_PLANE1);
 	glDisable(GL_CLIP_PLANE3);
 	glPopMatrix();
 }

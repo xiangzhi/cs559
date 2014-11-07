@@ -1,5 +1,13 @@
 #pragma once
 
+/*
+ * draw.h
+ * main drawing file for the assignment
+ * draws everything from tracks to train
+ * does all the calcuations
+ * Xiang Zhi Tan - CS 559 - Fall 2014
+ */
+
 #include "TrainFiles\TrainView.H"
 #include "World.H"
 #include "TrainWindow.H"
@@ -18,25 +26,22 @@
 #include "TrackModel.h"
 #include "DrawTools.h"
 
+//call back for interval drawing
+typedef void(*drawCallback)(Pnt3f pt, Pnt3f dirPt, Pnt3f orPt);
+
 class Draw
 {
 public:
-	Draw();
-	~Draw();
+	//draw track
 	static void drawTrack(TrainView *tv, bool doingShadow);
+	//draw the train
 	static vector<Pnt3f> drawTrain(TrainView *tv, bool doingShadow);
+	//get where to look at
 	static vector<Pnt3f> getLookingPoints(TrainView *tv);
+	// list of the curves
 	vector<float> distanceList;
+	// arc Length Table
 	vector<vector<float>> arcLengthTable;
-private:
 	float drawCardinalQuad(float t, Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4);
 };
 
-
-
-/* get the point on the track with the u and i */
-Pnt3f getPointOnTrack(TrainView *tv, float u, int i);
-/* get the orientation vector at point u with the starting point of i */
-Pnt3f getOrientationVector(TrainView *tv, float u, int i);
-/* get the directional vector from pt to the point with u and i*/
-Pnt3f getDirectionVector(Pnt3f pt, TrainView *tv, float u, int i);
