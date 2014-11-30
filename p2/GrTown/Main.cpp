@@ -9,6 +9,7 @@
 #include "FlyCamera.H"
 #include "GrWorld.H"
 #include "DrawUtils.H"
+
 #include "Examples/Objects.H"
 #include "Examples/SimpleBehaviors.H"
 #include "Examples/Cars.H"
@@ -33,7 +34,7 @@ const int nGrids = 5;
 
 int main(int /*argc*/, char** /*argv*/)
 { 
-
+	
   // put in some texture paths - look all over the place
 	texturePaths.push_back(".");
 	texturePaths.push_back("..");
@@ -46,7 +47,8 @@ int main(int /*argc*/, char** /*argv*/)
 
 	shaderPaths.push_back("Shaders");
 	shaderPaths.push_back("../Shaders");
-
+	
+	
   // add some more stuff
   GrObject* o1 = new Church;
   o1->interesting = true;
@@ -85,8 +87,48 @@ int main(int /*argc*/, char** /*argv*/)
   new Spin(cube3,.001f);
   GrObject* cube4 = new Cube(0,7.5,0, 5, 1,0,1);
   cube3->add(cube4);
+  /*
+
+  glewInit();
+  
+  //testing modern openGL
+  float points[] = {
+	  0.0f, 0.5f, 0.0f,
+	  0.5f, -0.5f, 0.0f,
+	  -0.5f, -0.5f, 0.0f
+  };
+
+  glewExperimental = GL_TRUE;
+
+  GLuint vbo = 0;
+  glGenBuffers(1, &vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glBufferData(GL_ARRAY_BUFFER, 9 * sizeof (float), points, GL_STATIC_DRAW);
+
+  GLuint vao = 0;
+  glGenVertexArrays(1, &vao);
+  glBindVertexArray(vao);
+  glEnableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+  
+  const char* vertex_shader =
+	  "#version 400\n"
+	  "in vec3 vp;"
+	  "void main () {"
+	  "  gl_Position = vec4 (vp, 1.0);"
+	  "}";
+
+  const char* fragment_shader =
+	  "#version 400\n"
+	  "out vec4 frag_colour;"
+	  "void main () {"
+	  "  frag_colour = vec4 (0.5, 0.0, 0.5, 1.0);"
+	  "}";
 
 
+  /*
   ////////////////////////////////////////////////////////////////////////
   // now to make a real town!
   int r,c;
@@ -162,8 +204,8 @@ int main(int /*argc*/, char** /*argv*/)
 	add(h);
 	Drive* d = new SimpleDrive(h,t,0,1);
 	d->speed *= 2;
-
-
+	*/
+  
   // *****************************************************************
   // now make a UI
   FlyCamera* fc = new FlyCamera;
@@ -171,12 +213,12 @@ int main(int /*argc*/, char** /*argv*/)
 
   add(fc);
   add(m);
-
+  
   GraphicsTownUI grTown;
   grTown.make_window();
   grTown.townView->defaultCamera = fc;
   grTown.window->show();
-
+  
   Fl::run();
   return 1;
 }
