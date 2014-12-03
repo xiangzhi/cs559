@@ -82,11 +82,13 @@
   <ItemGroup>
     <ClCompile Include="GrTown.cpp" />
     <ClCompile Include="loadShader.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="ViewWindow.cpp" />
     <ClCompile Include="windowUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderTools.h" />
+    <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="ViewWindow.h" />
     <ClInclude Include="windowUI.h" />
   </ItemGroup>
