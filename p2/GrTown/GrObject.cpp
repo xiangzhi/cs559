@@ -54,6 +54,17 @@ void GrObject::getCamera(Matrix camera)
   camera[3][1] -= rideAbove;
 }
 
+//similar construct as the one before
+glm::mat4 GrObject::getCamera(){
+  glm::mat4 m = toGLMMat4(transform);
+  m = glm::inverse(m);
+  m[3][1] -= rideAbove;
+  return m;
+}
+
+
+
+
 // the user interface for the object may or may not do anything
 bool GrObject::uiStep()
 {

@@ -65,11 +65,23 @@
 	$Header: /p/course/cs559-gleicher/private/CVS/Utilities/Texture.H,v 1.3 2009/11/11 13:38:33 gleicher Exp $
 *************************************************************************/
 
+
+
+#include <windows.h>
+#include <GL\glew.h>
+#include <GL\GL.h>
+#include <GL\GLU.h>
+
+
 #include <Fl/Fl.h>
 #include <Fl/Gl.h>
-#include <Gl/Glu.h>
 #include <stdio.h>
 #include <vector>
+
+
+
+GLuint loadBMP(const char * imagepath);
+
 
 class Texture {
 	public:

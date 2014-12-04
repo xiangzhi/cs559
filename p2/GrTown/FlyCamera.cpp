@@ -9,6 +9,9 @@
 #include <time.h>
 #include <iostream>
 
+#include <gtx\transform.hpp>
+#include <gtx\rotate_vector.hpp>
+
 int flyCamCount = 0;
 
 FlyCamera::FlyCamera() : GrObject("FlyCamera",flyCamCount), 
@@ -33,6 +36,40 @@ void FlyCamera::getCamera(Matrix camera)
 	multMatrix(tmp1, tmp2, tmp3);
 	rotMatrix(tmp1,'X',-pitch);
 	multMatrix(tmp3,tmp1,camera);
+}
+
+glm::mat4 FlyCamera::getCamera(){
+  //TODO:spend time thinking how to make it lookat
+  /*
+  glm::mat4 m(1.0f);
+  glm::mat4 m2(1.0f);
+ 
+  m = glm::translate(m, glm::vec3(-posX, -posY, -posZ));
+  m2 = glm::rotate(glm::mat4(1.0f), -direction, glm::vec3(0, 1, 0));
+  m = m * m2;
+  m2 = glm::rotate(glm::mat4(1.0f), -pitch, glm::vec3(1, 0, 0));
+  m = m2 * m;
+  return m;
+  
+  */
+  glm::vec4 dVec(1,0,0,0);
+  
+  glm::mat4 dirX = glm::rotate(glm::mat4(1.0f), -direction, glm::vec3(0, 1, 0));
+  dVec = dVec * dirX;
+  glm::mat4 dirY = glm::rotate(glm::mat4(1.0f), -pitch, glm::vec3(1, 0, 0));
+  dVec = dVec * dirY;
+
+
+
+  glm::mat4 m = glm::lookAt(
+    glm::vec3(posX, posY, posZ),
+    glm::vec3(dVec),
+    glm::vec3(0, 1, 0)
+  );
+
+
+  return m;
+  
 }
 
 

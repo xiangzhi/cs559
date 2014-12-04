@@ -11,9 +11,12 @@
 #include "GrObject.H"
 #include "DrawUtils.H"
 #include "Utilities/Texture.H"
+#include "Utilities/ShaderTools.H"
 #include <time.h>
 #include "FlyCamera.H"
 
+#include <glm.hpp>
+#include <gtx\transform.hpp>
 #include <iostream>
 
 using std::vector;
@@ -67,13 +70,23 @@ unsigned long lastDrawDone = 0;
 void TownViewWidget::draw()
 {
   // figure out how to draw
+  static GLuint VertexArrayID;
+  //some openGL settings for the first time
+  static bool firstTime = false;
+  if (!firstTime){
+    //enable using new VBOs
+		glewInit();
+		firstTime = true;
 
-
-
+    glGenVertexArrays(1, &VertexArrayID);
+    glBindVertexArray(VertexArrayID);
+	}
+  
   DrawingState drst;
   getStateFromUI(&drst);
+  
   glEnable(GL_TEXTURE_2D);
-
+  /*
   if (drst.backCull) {
 	  glEnable(GL_CULL_FACE);
 	  glCullFace(GL_BACK);
@@ -81,23 +94,48 @@ void TownViewWidget::draw()
 	  glDisable(GL_CULL_FACE);
 
   glFrontFace(GL_CCW);
-
+  */
   // set up the camera for drawing!
   glEnable( GL_DEPTH_TEST );
-
+  /*
   // we use blending for everything nowadays - there's little cost to having it on
   // NOTE: we avoid Z-writes if alpha is small, so transparent really is transparent
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
   glAlphaFunc(GL_GREATER,0.05f);
   glEnable(GL_ALPHA_TEST);
+ */
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+  Matrix camera;
+  drst.camera->getCamera(camera);
+  glm::mat4 cam = drst.camera->getCamera();
+  // compute the aspect ratio so we don't distort things
+  double aspect = ((double)w()) / ((double)h());
+  // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+  glm::mat4 Projection = glm::perspective(drst.fieldOfView, (float)aspect, 0.1f, 6000.0f);
+  // Camera matrix
+  glm::mat4 View = toGLMMat4(camera);
+
+  // Model matrix : an identity matrix (model will be at the origin)
+  glm::mat4 Model = glm::mat4(1.0f);//glm::translate(glm::mat4(1.0f),glm::vec3(10,5,0));  // Changes for each model !
+  // Our ModelViewProjection : multiplication of our 3 matrices
+  glm::mat4 MVP = Projection * View * Model; // Remember, matrix multiplication is the other way around
+
+
+
+ 
+
+  
+
 
   glMatrixMode(GL_PROJECTION);
   glViewport(0,0,w(),h());
   glLoadIdentity();
 
-  // compute the aspect ratio so we don't distort things
-  double aspect = ((double) w()) / ((double) h());
+  
   gluPerspective(drst.fieldOfView, aspect, 1, 60000);
 
   // put the camera where we want it to be
@@ -105,16 +143,60 @@ void TownViewWidget::draw()
   glLoadIdentity();
   setupLights(&drst);
 
-  Matrix camera;
-  drst.camera->getCamera(camera);
+
   glMultMatrixf(&camera[0][0]);
 
   glClearStencil(0);
 
+
   // the actual clearing goes on in the sky routine since its the only
   // thing that knows what color to make the sky
   drawSky(&drst);
-  drawEarth(&drst);
+  //drawEarth(&drst);
+  drawEarthNew(&drst,MVP);
+
+  // draw something
+  /*
+  float points[] = {
+    20.0f, 0.0f, -100.0f,
+    -20.0f, 0.0f, -100.0f,
+    0.0f, 20.0f, -100.0f,
+  };
+
+  GLuint vbo = 0;
+  glGenBuffers(1, &vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glBufferData(GL_ARRAY_BUFFER, 9 * sizeof (float), points, GL_STATIC_DRAW);
+
+
+  glEnableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+  char* err;
+  GLuint shaderId = loadShader("simpleVertex.glsl", "simpleFragment.glsl", err);
+
+
+
+
+  // wipe the drawing surface clear
+
+  glUseProgram(shaderId);
+
+  // Get a handle for our "MVP" uniform.
+  // Only at initialisation time.
+  GLuint MatrixID = glGetUniformLocation(shaderId, "MVP");
+  // Send our transformation to the currently bound shader,
+  // in the "MVP" uniform
+  // For each model you render, since the MVP will be different (at least the M part)
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+  // draw points 0-3 from the currently bound VAO with current in-use shader
+
+  glDrawArrays(GL_TRIANGLES, 0, 3);
+
+  glUseProgram(0);
+  glDisableVertexAttribArray(0);
+  
+  */
 
   //  GrObject* g;
   drawObList(theObjects,&drst);
@@ -125,6 +207,9 @@ void TownViewWidget::draw()
 	  ui->rate->value(ifr);
   }
   lastDrawDone = clock();
+  
+ 
+
 }
 
 void TownViewWidget::getStateFromUI(DrawingState* st)

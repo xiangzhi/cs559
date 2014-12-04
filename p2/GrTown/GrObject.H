@@ -23,6 +23,7 @@
 
 
 #include "MMatrix.H"
+#include "glm.hpp"
 #include <vector>
 
 // other classes referred to:
@@ -71,6 +72,9 @@ class GrObject {
   // 1) it must set up the camera transformation (not the projection)
   // 2) it must provide the user interface
   virtual void getCamera(Matrix);	// provide a camera matrix
+  //support for GLM
+  virtual glm::mat4 getCamera();
+
 
   virtual bool uiStep();		// called if you're the camera before
 								// drawing - lets you do key polling

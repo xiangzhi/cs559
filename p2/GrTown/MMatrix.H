@@ -1,6 +1,9 @@
 #ifndef MMATRIX_H
 #define MMATRIX_H
 
+
+#include <glm.hpp>
+
 /// GraphicsTown2006 - CS559 Sample Code
 // written by Michael Gleicher - originally written Fall, 2000
 // updated Fall, 2005
@@ -66,6 +69,11 @@ void normalize(float* v);
 void scale(float*, float);
 // a hack...
 void orthogonalize(Matrix);
+
+//copy stuff to glm
+glm::mat4 toGLMMat4(Matrix);
+
+
 
 // $Header: /p/course/cs559-gleicher/private/CVS/GrTown/MMatrix.H,v 1.3 2008/11/11 03:48:23 gleicher Exp $
 

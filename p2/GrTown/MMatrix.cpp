@@ -36,6 +36,17 @@ void idMatrix(Matrix m)
       m[x][y] = ((x==y) ? 1.0f : 0.0f);
 }
 
+
+glm::mat4 toGLMMat4(Matrix m){
+  glm::mat4 rtnM(0);
+  for (auto x = 0; x < 4; x++){
+    for (auto y = 0; y < 4; y++)
+      rtnM[x][y] = m[x][y];
+  }
+  return rtnM;
+}
+
+
 void copyMatrix(Matrix m1,Matrix m2)
 {
   int x;

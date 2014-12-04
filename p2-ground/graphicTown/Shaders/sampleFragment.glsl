@@ -8,6 +8,6 @@ in vec2 UV;
 uniform sampler2D textureSample;
 
 void main (void) {
-  frag_color = fragmentColor;
-  //frag_color = texture(textureSample, UV).rgb;
+  //frag_color = fragmentColor;
+  frag_color = texture(textureSample, UV).rgb;
 };

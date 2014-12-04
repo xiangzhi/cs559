@@ -19,7 +19,10 @@ public:
   virtual bool uiStep();
 
   // computes the transform from the angles
-  void getCamera(Matrix); 
+  void getCamera(Matrix);
+  //similar but uses GLM
+  glm::mat4 getCamera();
+
 
   // store the direction - use it to build a matrix
   float direction;

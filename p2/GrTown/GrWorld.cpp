@@ -7,6 +7,8 @@
 #include "GrWorld.H"
 #include "DrawingState.H"
 #include "DrawUtils.H"
+#include "Utilities\ShaderTools.H"
+#include "Utilities\Texture.H"
 
 using std::vector;
 
@@ -52,6 +54,115 @@ void drawEarth(DrawingState* st)
   glDisable(GL_POLYGON_OFFSET_FILL);
 
   }
+
+
+void drawEarthNew(DrawingState* st, glm::mat4 MVP)
+{
+
+  static GLuint vertexBuffer;
+  static GLuint shaderId;
+  static GLuint textureId;
+  static GLuint textureBuffer;
+  static Texture* t;
+  static bool firstTime = false;
+
+  if (!firstTime){
+    firstTime = true;
+
+    //all the vertexs
+    float points[] = {
+      -25000.0f, -1.0f, -25000.0f,
+      25000.0f, -1.0f, -25000.0f,
+      25000.0f, -1.0f, 25000.0f,
+      -25000.0f, -1.0f, -25000.0f,
+      -25000.0f, -1.0f, 25000.0f,
+      25000.0f, -1.0f, 25000.0f
+    };
+
+    float UVpoints[] = {
+      0.0f, 0.0f,
+      1000.0f, 0.0f,
+      1000.0f, 1000.0f,
+      0.0f, 0.0f,
+      0.0f, 1000.0f,
+      1000.0f, 1000.0f
+    };
+
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof (points), points, GL_STATIC_DRAW);
+
+    char* err;
+    shaderId = loadShader("EarthVertex.glsl", "EarthFragment.glsl", err);
+
+    glGenBuffers(1, &textureBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof (UVpoints), UVpoints, GL_STATIC_DRAW);
+
+    t = fetchTexture("grass2.jpg", true, true);
+    textureId = t->texName;
+    
+  }
+
+  t->bind();
+  
+
+
+
+  glEnableVertexAttribArray(0);
+  glEnableVertexAttribArray(1);
+
+  glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+  glVertexAttribPointer(
+    0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+    3,                  // size
+    GL_FLOAT,           // type
+    GL_FALSE,           // normalized?
+    0,                  // stride
+    (void*)0            // array buffer offset
+    );
+
+
+  glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
+  glVertexAttribPointer(
+    1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+    2,                                // size
+    GL_FLOAT,                         // type
+    GL_FALSE,                         // normalized?
+    0,                                // stride
+    (void*)0                          // array buffer offset
+    );
+
+  //get
+
+
+
+  GLuint sampleLoc = glGetUniformLocation(shaderId, "textureInput");
+  glUniform1i(sampleLoc, textureId);
+
+  glUseProgram(shaderId);
+
+
+
+
+  // Get a handle for our "MVP" uniform.
+  // Only at initialisation time.
+  GLuint MatrixID = glGetUniformLocation(shaderId, "MVP");
+  // Send our transformation to the currently bound shader,
+  // in the "MVP" uniform
+  // For each model you render, since the MVP will be different (at least the M part)
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+  // draw points 0-3 from the currently bound VAO with current in-use shader
+
+  glDrawArrays(GL_TRIANGLES, 0, 6);
+
+  glUseProgram(0);
+  glDisableVertexAttribArray(0);
+  glDisableVertexAttribArray(1);
+
+}
+
+
 
 // 
 // setup lighting

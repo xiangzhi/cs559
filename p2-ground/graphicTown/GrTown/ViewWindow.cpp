@@ -653,7 +653,7 @@ void ViewWindow::draw()
 
 		firstTime = false;
 		//initializeObject();
-		//drawCube();
+		drawCubeT();
 		drawGround();
 	}
 	
@@ -663,8 +663,6 @@ void ViewWindow::draw()
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
-
-	
 
 	for (int i = 0; i < objectsToDraw.size(); i++){
 

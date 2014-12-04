@@ -6,7 +6,7 @@
 // updated Fall, 2005
 // updated Fall, 2008 - convert from linked lists to vectors
 #include <vector>
-
+#include <glm.hpp>
 //
 // "the world" - framework for stuff to go into
 //
@@ -20,6 +20,7 @@ class GrObject;
 // 
 void drawSky(DrawingState*);
 void drawEarth(DrawingState*);
+void drawEarthNew(DrawingState*, glm::mat4 MVP);
 
 // basic lighting...
 void setupLights(DrawingState*);
