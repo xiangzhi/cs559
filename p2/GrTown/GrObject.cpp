@@ -62,9 +62,6 @@ glm::mat4 GrObject::getCamera(){
   return m;
 }
 
-
-
-
 // the user interface for the object may or may not do anything
 bool GrObject::uiStep()
 {

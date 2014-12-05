@@ -12,6 +12,7 @@
 //
 class DrawingState;
 class GrObject;
+class GrObjectVBO;
 
 // the sky and "earth" are special objects, so we draw them
 // differently - they are not GrObjects. 

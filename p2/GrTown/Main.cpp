@@ -18,6 +18,8 @@
 #include "Utilities/Texture.H"
 
 
+#include "Building.h"
+
 // Example code (objects and behaviors)
 #include "Examples/Suburbs.H"
 
@@ -66,7 +68,8 @@ int main(int /*argc*/, char** /*argv*/)
   GrObject* cube1 = new ShadedCube(-50,5,-50,10,   .7f, .6f, .3f);
 
 
-  
+  GrObjectVBO* b = new Building();
+  add(b);
 
 
   // *****************************************************************

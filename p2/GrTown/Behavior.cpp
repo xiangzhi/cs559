@@ -12,6 +12,7 @@
 
 #include "Behavior.H"
 #include "GrObject.H"
+#include "GrObjectVBO.h"
 
 ////////////////////////////////////////////////////////////////////////
 Behavior::Behavior(GrObject* o) :

@@ -12,6 +12,7 @@
 // as possible so they can do things like cull themselves, do fake
 // lighting if they want to, ...
 class GrObject;
+class GrObjectVBO;
 
 #include "DrawUtils.H"
 

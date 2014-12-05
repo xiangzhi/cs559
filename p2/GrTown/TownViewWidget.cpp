@@ -9,6 +9,8 @@
 #include "GrWorld.H"
 #include "GraphicsTownUI.H"
 #include "GrObject.H"
+#include "GrObjectVBO.h"
+
 #include "DrawUtils.H"
 #include "Utilities/Texture.H"
 #include "Utilities/ShaderTools.H"
@@ -42,9 +44,17 @@ void tvIdler(void* v)
 
   tv->time +=  ti;
 
-  if (ti>0)
-	  for(vector<GrObject*>::iterator g = theObjects.begin(); g != theObjects.end(); ++g)
-		(*g)->simulateUntil(tv->time);
+ 
+ 
+  if (ti > 0){
+	  for (vector<GrObject*>::iterator g = theObjects.begin(); g != theObjects.end(); ++g)
+		  (*g)->simulateUntil(tv->time);
+
+	  
+	  for (vector<GrObjectVBO*>::iterator g = theVBOobjects.begin(); g != theVBOobjects.end(); ++g)
+		  (*g)->simulateUntil(tv->time);
+	 
+  }
   tv->damage(1);
 }
 
@@ -97,14 +107,13 @@ void TownViewWidget::draw()
   */
   // set up the camera for drawing!
   glEnable( GL_DEPTH_TEST );
-  /*
+  
   // we use blending for everything nowadays - there's little cost to having it on
   // NOTE: we avoid Z-writes if alpha is small, so transparent really is transparent
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
   glAlphaFunc(GL_GREATER,0.05f);
   glEnable(GL_ALPHA_TEST);
- */
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -115,14 +124,14 @@ void TownViewWidget::draw()
   // compute the aspect ratio so we don't distort things
   double aspect = ((double)w()) / ((double)h());
   // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-  glm::mat4 Projection = glm::perspective(drst.fieldOfView, (float)aspect, 0.1f, 6000.0f);
+  glm::mat4 proj = glm::perspective(drst.fieldOfView, (float)aspect, 0.1f, 6000.0f);
   // Camera matrix
-  glm::mat4 View = toGLMMat4(camera);
+  glm::mat4 view = toGLMMat4(camera);
 
   // Model matrix : an identity matrix (model will be at the origin)
-  glm::mat4 Model = glm::mat4(1.0f);//glm::translate(glm::mat4(1.0f),glm::vec3(10,5,0));  // Changes for each model !
+  glm::mat4 model = glm::mat4(1.0f);//glm::translate(glm::mat4(1.0f),glm::vec3(10,5,0));  // Changes for each model !
   // Our ModelViewProjection : multiplication of our 3 matrices
-  glm::mat4 MVP = Projection * View * Model; // Remember, matrix multiplication is the other way around
+  glm::mat4 MVP = proj * view * model; // Remember, matrix multiplication is the other way around
 
 
 
@@ -198,9 +207,16 @@ void TownViewWidget::draw()
   
   */
 
+  //Draw VBO based objects
+  drawObList(theVBOobjects, &drst, proj, view, model);
+  drawAfterObList(theVBOobjects, &drst, proj, view, model);
+
+ 
   //  GrObject* g;
   drawObList(theObjects,&drst);
   drawAfterObList(theObjects, &drst);
+
+
 
   if (lastDrawDone) {
 	  double ifr = ((double)CLOCKS_PER_SEC) / (double) (clock()-lastDrawDone+1);

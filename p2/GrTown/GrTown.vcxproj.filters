@@ -102,6 +102,12 @@
     <ClInclude Include="..\Utilities\Texture.H">
       <Filter>Utilities\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="GrObjectVBO.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Building.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Examples\Cars.cpp">
@@ -159,6 +165,12 @@
       <Filter>Utilities\Source</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
+      <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GrObjectVBO.cpp">
+      <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Building.cpp">
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

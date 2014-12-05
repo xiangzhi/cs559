@@ -28,6 +28,7 @@
 // some simple examples are given in the "SimpleBehaviors.H" file
 //
 class GrObject;
+class GrObjectVBO;
 
 // an attempt to decouple how we decide where something is with what
 // the thing is

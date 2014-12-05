@@ -9,11 +9,13 @@
 #include "DrawUtils.H"
 #include "Utilities\ShaderTools.H"
 #include "Utilities\Texture.H"
+#include "GrObjectVBO.h"
 
 using std::vector;
 
 // stuff in the world
 vector<GrObject*> theObjects;
+vector<GrObjectVBO*> theVBOobjects;
 
 // things for drawing the world
 
@@ -111,6 +113,7 @@ void drawEarthNew(DrawingState* st, glm::mat4 MVP)
 
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
+  glEnableVertexAttribArray(2);
 
   glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
   glVertexAttribPointer(
@@ -133,6 +136,16 @@ void drawEarthNew(DrawingState* st, glm::mat4 MVP)
     (void*)0                          // array buffer offset
     );
 
+  //bind color buffer
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glVertexAttribPointer(
+	  2,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+	  3,                                // size
+	  GL_FLOAT,                         // type
+	  GL_FALSE,                         // normalized?
+	  0,                                // stride
+	  (void*)0                          // array buffer offset
+	  );
   //get
 
 
@@ -159,6 +172,7 @@ void drawEarthNew(DrawingState* st, glm::mat4 MVP)
   glUseProgram(0);
   glDisableVertexAttribArray(0);
   glDisableVertexAttribArray(1);
+  glDisableVertexAttribArray(2);
 
 }
 

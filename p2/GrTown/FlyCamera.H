@@ -4,6 +4,7 @@
 // written by Michael Gleicher - originally written Fall, 2000
 // updated Fall, 2005
 //
+
 #include "GrObject.H"
 
 // the main kind of camera that flies around under user control

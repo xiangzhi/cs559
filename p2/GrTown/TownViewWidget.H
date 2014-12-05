@@ -14,6 +14,7 @@
 class GraphicsTownUI;
 class DrawingState;
 class GrObject;
+class GrObjectVBO;
 class FollowCam;
 class FlyCamera;
 class InterestingCam;
