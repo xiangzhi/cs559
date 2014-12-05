@@ -9,9 +9,6 @@
 #include "FlyCamera.H"
 #include "GrWorld.H"
 #include "DrawUtils.H"
-#include "Examples/Objects.H"
-#include "Examples/SimpleBehaviors.H"
-#include "Examples/Cars.H"
 
 // for setting up shader paths and textures
 #include "Utilities/ShaderTools.H"
@@ -19,12 +16,11 @@
 
 
 #include "Building.h"
+#include "Sphere.h"
+#include "Model.h"
+#include "Billboards.h"
 
-// Example code (objects and behaviors)
-#include "Examples/Suburbs.H"
 
-#include "Roads/Roads.H"
-#include "Roads/Drive.H"
 
 
 // define this to get 2 cars that always turn
@@ -48,14 +44,6 @@ int main(int /*argc*/, char** /*argv*/)
 
 	shaderPaths.push_back("Shaders");
 	shaderPaths.push_back("../Shaders");
-  
-  // add some more stuff
-  GrObject* o1 = new Church;
-  o1->interesting = true;
-  o1->laX = 0; o1->laY = 0; o1->laZ = 0;
-  o1->lfX = -50; o1->lfY = 100; o1->lfZ = 300;
-  add(o1,-100,0,100,pi/2.f);
-  
 
   // *****************************************************************
   //  Make your town here
@@ -65,11 +53,16 @@ int main(int /*argc*/, char** /*argv*/)
   // cubes are particularly easy since they set their own position
   // we need to raise the cube since we're giving the position of the
   // center 
-  GrObject* cube1 = new ShadedCube(-50,5,-50,10,   .7f, .6f, .3f);
 
 
   GrObjectVBO* b = new Building();
   add(b);
+  GrObjectVBO* super = new Model();
+  add(super);
+  GrObjectVBO* billboard = new Billboards();
+  add(billboard);
+  //GrObjectVBO* s = new Sphere();
+  //add(s);
 
 
   // *****************************************************************

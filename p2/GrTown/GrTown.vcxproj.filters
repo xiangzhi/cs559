@@ -5,24 +5,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
     </Filter>
-    <Filter Include="Examples Objects and Behaviors">
-      <UniqueIdentifier>{fc101800-8a2e-4c12-ae02-76fd64cc2471}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Examples Objects and Behaviors\Headers">
-      <UniqueIdentifier>{a28ae7f4-f82b-4536-879e-8035171e21a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Examples Objects and Behaviors\Source">
-      <UniqueIdentifier>{aa353a9d-ccb5-47c5-afba-13eb6e25c824}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Roads">
-      <UniqueIdentifier>{d1ba2177-1fad-4e53-99f8-93cf3f1a1dc2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Roads\Source">
-      <UniqueIdentifier>{d3fbe479-af27-4d05-bf50-2d669cf52004}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Roads\Headers">
-      <UniqueIdentifier>{a014c21a-290d-4ca2-84ea-cd875d7c63fe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine Core">
       <UniqueIdentifier>{916b80a5-22d3-4f76-989e-1558d4cef593}</UniqueIdentifier>
     </Filter>
@@ -43,26 +25,11 @@
     <Filter Include="Utilities\Source">
       <UniqueIdentifier>{9b6a38e2-795c-4654-ab32-9639d4cf6ae9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Models">
+      <UniqueIdentifier>{79f5f8e2-10b6-493b-a1e2-cc1563886b22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Examples\Cars.H">
-      <Filter>Examples Objects and Behaviors\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Examples\Objects.H">
-      <Filter>Examples Objects and Behaviors\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Examples\SimpleBehaviors.H">
-      <Filter>Examples Objects and Behaviors\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Examples\Suburbs.H">
-      <Filter>Examples Objects and Behaviors\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Roads\Drive.H">
-      <Filter>Roads\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Roads\Roads.H">
-      <Filter>Roads\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Behavior.H">
       <Filter>Engine Core\Header Files</Filter>
     </ClInclude>
@@ -108,26 +75,20 @@
     <ClInclude Include="Building.h">
       <Filter>Engine Core\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectLoader.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Billboards.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Examples\Cars.cpp">
-      <Filter>Examples Objects and Behaviors\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Examples\Objects.cpp">
-      <Filter>Examples Objects and Behaviors\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Examples\SimpleBehaviors.cpp">
-      <Filter>Examples Objects and Behaviors\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Examples\Suburbs.cpp">
-      <Filter>Examples Objects and Behaviors\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Roads\Drive.cpp">
-      <Filter>Roads\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Roads\Roads.cpp">
-      <Filter>Roads\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Behavior.cpp">
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
@@ -171,6 +132,18 @@
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Building.cpp">
+      <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectLoader.cpp">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Billboards.cpp">
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

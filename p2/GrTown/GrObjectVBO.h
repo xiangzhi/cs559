@@ -9,8 +9,10 @@
 
 #include "glm.hpp"
 #include <gtx\transform.hpp>
+#include <gtx\rotate_vector.hpp>
 #include <vector>
 #include "Utilities\Texture.H"
+#include "Utilities\ShaderTools.H"
 
 //GrOBjectVBO
 //the aim of the class is to run VBO code with a similar structure as as the old GrObject
@@ -63,10 +65,14 @@ public:
 	GLuint textureBuffer;
 	GLuint normalBuffer;
 	GLuint colorBuffer;
+  GLuint indexBuffer;
+  int indexNum;
+  GLuint type = GL_TRIANGLES;
 	Texture * t = NULL;
 	int vertexNum;
 	bool redraw = true;
 	bool useTexture = false;
+  bool useIndex = false;
 
 
 	// most objects have some way to position themselves

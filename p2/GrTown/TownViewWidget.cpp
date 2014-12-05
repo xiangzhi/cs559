@@ -107,13 +107,16 @@ void TownViewWidget::draw()
   */
   // set up the camera for drawing!
   glEnable( GL_DEPTH_TEST );
+  glDepthFunc(GL_LESS);
   
+  /*
   // we use blending for everything nowadays - there's little cost to having it on
   // NOTE: we avoid Z-writes if alpha is small, so transparent really is transparent
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
   glAlphaFunc(GL_GREATER,0.05f);
   glEnable(GL_ALPHA_TEST);
+  */
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

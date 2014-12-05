@@ -130,7 +130,8 @@ void GrObjectVBO::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, g
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
+  glEnableVertexAttribArray(3);
+  glEnableVertexAttribArray(4);
 
 	//bind vertex buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -188,18 +189,45 @@ void GrObjectVBO::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, g
 	GLuint MatrixID = glGetUniformLocation(shaderID, "MVP");
 	//pass our MVP to shader
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+  //lighting calculations
+  float light = 0;
+  //day time
+  glm::vec3 sun(0, 0, 0);
+  if (drst->timeOfDay > 6 && drst->timeOfDay < 18){
+    light = 6 - abs(12 - drst->timeOfDay);
+    float angle = (drst->timeOfDay - 6) / 3 * 45;
+    sun = glm::rotateZ(glm::vec3(1, 0, 0), angle);
+  }
+
+
+
 	//get location of sun
 	GLuint sunID = glGetUniformLocation(shaderID, "sunDirection");
 	//glUniform3fv(sunID,3 * sizeof(float), (float*)glm::vec3(0, 1, 0));
-	glUniform3f(sunID, 1, 1, 0);
-	glDrawArrays(GL_TRIANGLES, 0, vertexNum);
+	glUniform3f(sunID, sun.x, sun.y, sun.z);
+
+  if (useIndex){
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+
+    glDrawElements(
+      type,
+      indexNum,
+      GL_UNSIGNED_INT,
+      (void*)0
+    );
+  }
+  else{
+    glDrawArrays(type, 0, vertexNum);
+  }
 
 	//disable everything
 	glUseProgram(0);
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(3);
+  glDisableVertexAttribArray(3);
+  glDisableVertexAttribArray(4);
 }
 
 // draw a list of objects

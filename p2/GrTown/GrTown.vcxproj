@@ -123,13 +123,10 @@
     <ClInclude Include="..\Utilities\ShaderTools.H" />
     <ClInclude Include="..\Utilities\Texture.H" />
     <ClInclude Include="Behavior.H" />
+    <ClInclude Include="Billboards.h" />
     <ClInclude Include="Building.h" />
     <ClInclude Include="DrawingState.H" />
     <ClInclude Include="DrawUtils.H" />
-    <ClInclude Include="Examples\Cars.H" />
-    <ClInclude Include="Examples\Objects.H" />
-    <ClInclude Include="Examples\SimpleBehaviors.H" />
-    <ClInclude Include="Examples\Suburbs.H" />
     <ClInclude Include="FlyCamera.H" />
     <ClInclude Include="GraphicsTownUI.H" />
     <ClInclude Include="GrObject.H" />
@@ -137,8 +134,9 @@
     <ClInclude Include="GrTown_PCH.H" />
     <ClInclude Include="GrWorld.H" />
     <ClInclude Include="MMatrix.H" />
-    <ClInclude Include="Roads\Drive.H" />
-    <ClInclude Include="Roads\Roads.H" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="ObjectLoader.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="TownViewWidget.H" />
   </ItemGroup>
   <ItemGroup>
@@ -146,13 +144,10 @@
     <ClCompile Include="..\Utilities\ShaderTools.cpp" />
     <ClCompile Include="..\Utilities\Texture.cpp" />
     <ClCompile Include="Behavior.cpp" />
+    <ClCompile Include="Billboards.cpp" />
     <ClCompile Include="Building.cpp" />
     <ClCompile Include="DrawingState.cpp" />
     <ClCompile Include="DrawUtils.cpp" />
-    <ClCompile Include="Examples\Cars.cpp" />
-    <ClCompile Include="Examples\Objects.cpp" />
-    <ClCompile Include="Examples\SimpleBehaviors.cpp" />
-    <ClCompile Include="Examples\Suburbs.cpp" />
     <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="GraphicsTownUI.cxx" />
     <ClCompile Include="GrObject.cpp" />
@@ -160,8 +155,9 @@
     <ClCompile Include="GrWorld.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MMatrix.cpp" />
-    <ClCompile Include="Roads\Drive.cpp" />
-    <ClCompile Include="Roads\Roads.cpp" />
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ObjectLoader.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="TownViewWidget.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
