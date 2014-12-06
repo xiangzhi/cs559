@@ -11,6 +11,8 @@
 #include "GrObject.H"
 #include "GrObjectVBO.h"
 
+#include "World.h"
+#include "Loop.h"
 #include "DrawUtils.H"
 #include "Utilities/Texture.H"
 #include "Utilities/ShaderTools.H"
@@ -20,6 +22,7 @@
 #include <glm.hpp>
 #include <gtx\transform.hpp>
 #include <iostream>
+#include <vector>
 
 using std::vector;
 
@@ -92,6 +95,7 @@ void TownViewWidget::draw()
     glBindVertexArray(VertexArrayID);
 	}
   
+
   DrawingState drst;
   getStateFromUI(&drst);
   
@@ -127,7 +131,7 @@ void TownViewWidget::draw()
   // compute the aspect ratio so we don't distort things
   double aspect = ((double)w()) / ((double)h());
   // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-  glm::mat4 proj = glm::perspective(drst.fieldOfView, (float)aspect, 0.1f, 6000.0f);
+  glm::mat4 proj = glm::perspective(drst.fieldOfView, (float)aspect, 0.1f, 10000.0f);
   // Camera matrix
   glm::mat4 view = toGLMMat4(camera);
 
@@ -148,7 +152,7 @@ void TownViewWidget::draw()
   glLoadIdentity();
 
   
-  gluPerspective(drst.fieldOfView, aspect, 1, 60000);
+  gluPerspective(drst.fieldOfView, aspect, 1, 600000);
 
   // put the camera where we want it to be
   glMatrixMode(GL_MODELVIEW);
@@ -166,6 +170,20 @@ void TownViewWidget::draw()
   drawSky(&drst);
   //drawEarth(&drst);
   drawEarthNew(&drst,MVP);
+  
+  //lighting calculations
+  float light = 0;
+  //day time
+  glm::vec3 sun(0, 0, 0);
+  if (drst.timeOfDay > 6 && drst.timeOfDay < 18){
+    light = 6 - abs(12 - drst.timeOfDay);
+    float angle = (drst.timeOfDay - 6) / 3 * 45;
+    sun = glm::rotateZ(glm::vec3(1, 0, 0), angle);
+  }
+  drawSkyBox(sun, light, MVP);
+
+  //draw test
+  loopTest(5,proj,view,model);
 
   // draw something
   /*

@@ -87,6 +87,18 @@
     <ClInclude Include="Billboards.h">
       <Filter>Engine Core\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawingTools.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Loop.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Behavior.cpp">
@@ -144,6 +156,18 @@
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Billboards.cpp">
+      <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawingTools.cpp">
+      <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Loop.cpp">
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

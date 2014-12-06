@@ -173,7 +173,8 @@ void drawEarthNew(DrawingState* st, glm::mat4 MVP)
   glDisableVertexAttribArray(0);
   glDisableVertexAttribArray(1);
   glDisableVertexAttribArray(2);
-
+  //unbind texture
+  glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 

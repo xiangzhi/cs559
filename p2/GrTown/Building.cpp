@@ -12,6 +12,9 @@ Building::~Building()
 {
 }
 
+#include "DrawingTools.h"
+
+
 void Building::initialize(){
 	//all the vertexs
 	//height
@@ -129,14 +132,16 @@ void Building::initialize(){
 		0, 0,
 	};
 
+  bindToArrayBuffer(vertexBuffer, sizeof(points), points);
+  //original code, for reference if failed.
+	//glGenBuffers(1, &vertexBuffer);
+	//glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof (points), points, GL_STATIC_DRAW);
 
-	glGenBuffers(1, &vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof (points), points, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &textureBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof (texturePoints), texturePoints, GL_STATIC_DRAW);
+  bindToArrayBuffer(textureBuffer, sizeof (texturePoints), texturePoints);
+	//glGenBuffers(1, &textureBuffer);
+	//glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof (texturePoints), texturePoints, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &normalBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
@@ -155,4 +160,6 @@ void Building::initialize(){
 
 	transform = op;
 }
+
+
 

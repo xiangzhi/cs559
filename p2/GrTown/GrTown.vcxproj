@@ -126,6 +126,7 @@
     <ClInclude Include="Billboards.h" />
     <ClInclude Include="Building.h" />
     <ClInclude Include="DrawingState.H" />
+    <ClInclude Include="DrawingTools.h" />
     <ClInclude Include="DrawUtils.H" />
     <ClInclude Include="FlyCamera.H" />
     <ClInclude Include="GraphicsTownUI.H" />
@@ -133,11 +134,14 @@
     <ClInclude Include="GrObjectVBO.h" />
     <ClInclude Include="GrTown_PCH.H" />
     <ClInclude Include="GrWorld.H" />
+    <ClInclude Include="Loop.h" />
     <ClInclude Include="MMatrix.H" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ObjectLoader.h" />
+    <ClInclude Include="SkyBox.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="TownViewWidget.H" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Utilities\libtarga.c" />
@@ -147,18 +151,22 @@
     <ClCompile Include="Billboards.cpp" />
     <ClCompile Include="Building.cpp" />
     <ClCompile Include="DrawingState.cpp" />
+    <ClCompile Include="DrawingTools.cpp" />
     <ClCompile Include="DrawUtils.cpp" />
     <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="GraphicsTownUI.cxx" />
     <ClCompile Include="GrObject.cpp" />
     <ClCompile Include="GrObjectVBO.cpp" />
     <ClCompile Include="GrWorld.cpp" />
+    <ClCompile Include="Loop.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MMatrix.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ObjectLoader.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="TownViewWidget.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

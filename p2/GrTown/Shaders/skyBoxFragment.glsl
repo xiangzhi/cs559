@@ -11,7 +11,7 @@ void main (void) {
   //frag_colour = fragmentColor;
  //color = vec3(0,1,0);
   float  ambient = 0.3;
-  vec2 nUV = UV * 10;
+  vec2 nUV = UV;
 
   float theta = clamp(dot(normal,sun),0,1);
   float light = theta * 2 + ambient;
