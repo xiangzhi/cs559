@@ -15,21 +15,79 @@ Billboards::~Billboards()
 void sendVec3ToShader(GLuint shaderID, std::string name, glm::vec3 v){
   GLuint location = glGetUniformLocation(shaderID, name.c_str());
   //pass our MVP to shader
-  glUniform3fv(location,1,glm::value_ptr(v));
+  glUniform3fv(location, 1, glm::value_ptr(v));
 }
 
 void Billboards::initialize(){
-  // fill "indices" as needed
-  float points[] = {
-    -20, 0, -500,
-    0, 20, -500,
-    20, 0, -500
-  };
+
+  std::vector<glm::vec3> vList;
+  vList.push_back(glm::vec3(-10, 0, -100));
+  vList.push_back(glm::vec3(10, 0, -100));
+  vList.push_back(glm::vec3(10, 10, -100));
+
+  vList.push_back(glm::vec3(-10, 0, -100));
+  vList.push_back(glm::vec3(-10, 10, -100));
+  vList.push_back(glm::vec3(10, 10, -100));
+
+
+  int size = 8;
+  int xDecrease = 5;
+  int yIncrease = 10;
+  for (int i = 0; i < size; i++){
+    float y = (i * yIncrease) + 10;
+    float x = (size * xDecrease) - i * xDecrease;
+
+    vList.push_back(glm::vec3(-x, y, -100));
+    vList.push_back(glm::vec3(x, y, -100));
+    vList.push_back(glm::vec3(x, y + 10, -100));
+
+    vList.push_back(glm::vec3(-x, y, -100));
+    vList.push_back(glm::vec3(-x, y + yIncrease, -100));
+    vList.push_back(glm::vec3(x, y + yIncrease, -100));
+  }
+
+
+  std::vector<glm::vec3> nList;
+  for (int i = 0; i < vList.size(); i++){
+    nList.push_back(glm::vec3(0, 0, 1));
+  }
+
+  std::vector<glm::vec2> uList;
+
+  uList.push_back(glm::vec2(0.5, 0));
+  uList.push_back(glm::vec2(1, 0));
+  uList.push_back(glm::vec2(1, 0.5));
+
+  uList.push_back(glm::vec2(0.5, 0));
+  uList.push_back(glm::vec2(0.5, 0.5));
+  uList.push_back(glm::vec2(1.0, 0.5));
+
+  for (int i = 0; i < vList.size() - 6 ; i += 6){
+    uList.push_back(glm::vec2(0, 0.5));
+    uList.push_back(glm::vec2(0.5, 0.5));
+    uList.push_back(glm::vec2(0.5, 1));
+    uList.push_back(glm::vec2(0, 0.5));
+    uList.push_back(glm::vec2(0.5, 1));
+    uList.push_back(glm::vec2(0.5, 1));
+  }
 
   float normals[] = {
     0, 0, 1,
     0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
     0, 0, 1
+  };
+
+  float texturePoints[] = {
+    //bottom
+    0.5, 0,
+    1, 0,
+    1, 0.5,
+    0.5,0,
+    0.5,0.5,
+    1,0.5
   };
 
 
@@ -42,22 +100,23 @@ void Billboards::initialize(){
   indexNum = index.size();
   */
 
-  glGenBuffers(1, &vertexBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof (points), points, GL_STATIC_DRAW);
-
-  glGenBuffers(1, &normalBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof (normals), normals, GL_STATIC_DRAW);
-
+  bindToArrayBuffer(vertexBuffer, vList);
+  bindToArrayBuffer(textureBuffer, uList);
+  bindToArrayBuffer(normalBuffer,nList);
 
   char* err;
   shaderID = loadShader("billboardVertex.glsl", "billboardFragment.glsl", err);
-  vertexNum = 3;
+  vertexNum = vList.size();
 
   transform = glm::mat4(1.0f);
 
+
+  t = fetchTexture("testTree.png", true, true);
+  useTexture = true;
+
 }
+
+
 void Billboards::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model){
 
   //if for some reason, something change
@@ -128,6 +187,7 @@ void Billboards::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, gl
     0,                  // stride
     (void*)0            // array buffer offset
     );
+
   glUseProgram(shaderID);
   //get the location of MVP in shader
   GLuint MatrixID = glGetUniformLocation(shaderID, "MVP");

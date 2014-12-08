@@ -7,5 +7,4 @@ uniform mat4 MVP;
 void main (void) {
 	pos = vec4(vp, 1.0);
 	gl_Position = MVP * vec4(vp, 1.0);
-	
 };

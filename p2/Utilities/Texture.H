@@ -97,6 +97,8 @@ class Texture {
 		int   width;
 		int   height;
 
+    GLenum textureUnit = 0;
+
 		GLuint texName;				// GL texture name
 };
 
@@ -112,7 +114,7 @@ extern std::vector<Texture*> theTextures;
 // This returns NULL (0) if it has a problem and can't give you a valid
 // texture. If you store the pointer to a texture, you don't need to search
 // for it 
-Texture* fetchTexture(char* name, bool wrapS=false, bool wrapT=false);
+Texture* fetchTexture(char* name, bool wrapS = false, bool wrapT = false, GLenum textureUnit = GL_TEXTURE0);
 
 // keep the list of directories to search
 // add a new directory to the list

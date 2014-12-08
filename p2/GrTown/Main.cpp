@@ -19,7 +19,7 @@
 #include "Sphere.h"
 #include "Model.h"
 #include "Billboards.h"
-
+#include "Dino.h"
 
 
 
@@ -58,9 +58,12 @@ int main(int /*argc*/, char** /*argv*/)
   GrObjectVBO* b = new Building();
   add(b);
   GrObjectVBO* super = new Model();
-  add(super);
+  //add(super);
   GrObjectVBO* billboard = new Billboards();
   add(billboard);
+  GrObjectVBO* dino = new Dino();
+  add(dino);
+
   //GrObjectVBO* s = new Sphere();
   //add(s);
 
@@ -81,5 +84,4 @@ int main(int /*argc*/, char** /*argv*/)
   Fl::run();
   return 1;
 }
-
 // $Header: /p/course/cs559-gleicher/private/CVS/GrTown/Main.cpp,v 1.8 2009/11/10 22:40:03 gleicher Exp $

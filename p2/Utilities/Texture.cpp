@@ -375,7 +375,7 @@ void* read_image(char* filename, int type, int *width, int *height)
 //
 // * The core guts of the thing...
 //=====================================================================================
-Texture* fetchTexture(char* name, bool wrapS, bool wrapT)
+Texture* fetchTexture(char* name, bool wrapS, bool wrapT, GLenum textureUnit)
 //=====================================================================================
 {
   char buf[200]; // String buffer for all possible filenames
@@ -388,7 +388,9 @@ Texture* fetchTexture(char* name, bool wrapS, bool wrapT)
   //************************************************************
   for(vector<Texture*>::iterator t=theTextures.begin(); t != theTextures.end(); ++t) {
 	  if (!(*t)->name.compare(name)) {
+      glActiveTexture((*t)->textureUnit);
 			(*t)->bind();
+      glActiveTexture(GL_TEXTURE0);
 			return *t;
 		}	  
   }
@@ -424,8 +426,12 @@ Texture* fetchTexture(char* name, bool wrapS, bool wrapT)
 		t->bits     = b;
 		t->width    = w;
 		t->height   = h;
+    t->textureUnit = textureUnit;
 		theTextures.push_back(t);
 	
+    //make sure its in the correct texture unit
+    glActiveTexture(t->textureUnit);
+
 		// Generate a unique ID inside opengl
 		glGenTextures(1,&t->texName);
 		
@@ -433,7 +439,9 @@ Texture* fetchTexture(char* name, bool wrapS, bool wrapT)
 		printf("Created texture %u for %s\n",t->texName,t->name.c_str());
 
 		// Why bind twice, this need to be corrected
+    
 		glBindTexture(GL_TEXTURE_2D, t->texName);
+   
 	
 		// Set up the texture clamping information in s direction
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, 
@@ -447,6 +455,9 @@ Texture* fetchTexture(char* name, bool wrapS, bool wrapT)
 		// Generate the mip maps
 		int e = gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_UNSIGNED_BYTE,b);
 
+    //go back to the default map
+    glActiveTexture(GL_TEXTURE0);
+
 		printf("Build MipMap(%d %d) returns %d = %s (%d)\n", w, h, e, gluErrorString(e), e);
 		return t;
   } else {
@@ -454,6 +465,9 @@ Texture* fetchTexture(char* name, bool wrapS, bool wrapT)
 		return 0;
   }
 }
+
+
+
 
 void Texture::bind()
 {

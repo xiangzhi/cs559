@@ -31,7 +31,7 @@ void Model::initialize(){
 
   //shader
   char* err;
-  transform = glm::translate(glm::vec3(0, 20, 0)) * glm::scale(glm::vec3(10,10,10));
+  transform = glm::translate(glm::vec3(0, 30, 0)) * glm::scale(glm::vec3(5,5,5));
   type = GL_TRIANGLES;
 
   vertexNum = vertices.size() / 3;

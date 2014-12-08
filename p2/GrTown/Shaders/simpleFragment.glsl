@@ -10,7 +10,7 @@ void main (void) {
 
   float ambient = 0.3;
   float theta = clamp(dot(normal,sun),0,1);
-  float light = theta * 2 + ambient;
+  float light = theta + ambient;
 
   color = light * vec3(1,0,0);
 };

@@ -9,18 +9,37 @@ using std::vector;
 
 class Point{
 public:
-  //the location of the Point
-  glm::vec3 loc;
+
   //who is connected to this Point
-  std::vector<void *> neighbors;
-  //make sure we don't make the same edge with the partners again
-  std::vector<void *> partners;
+  std::vector<void *> neighbors;;
   //whether they are new or old
   bool isNew = true;
-  //who to form triangle, envision to use if output to openGL
-  std::vector<void *> triangleMates;
+
+  /* properties of the point */
+  //location
+  glm::vec3 loc;
   //normal
   glm::vec3 normal;
+  //color
+  glm::vec3 color;
+  //texture
+  glm::vec2 texture;
+
+  //copy it
+  Point(Point * p){
+    loc = p->loc;
+    normal = p->normal;
+    color = p->color;
+    texture = p->texture;
+  }
+
+  ~Point(){
+    //neighbors.clear();
+    //parents.clear();
+    //farParents.clear();
+    //farChild.clear();
+    //child.clear();
+  }
 
   //who create the end
   std::vector<void *> parents;
@@ -30,17 +49,31 @@ public:
   //the other end of the triangle;
   std::vector<void *> farParents;
   bool updated = false;
+
+
   glm::vec3 oldLoc;
+  glm::vec3 oldNormal;
+  glm::vec2 oldTexture;
 
   //methods
   Point(glm::vec3 _loc){
     loc = _loc;
   }
+  void addNormal(float x, float y, float z){
+    normal = glm::vec3(x, y, z);
+  }
+  void addUV(float u, float v){
+    texture = glm::vec2(u, v);
+  }
   void merge(Point* p){
     for (int i = 0; i < p->farParents.size(); i++){
       farParents.push_back(p->farParents[i]);
     }
-    //nothing yet but soon yeah.
+
+    //merge the average of both values for property
+    normal = (p->normal + normal) / 2.0f;
+    texture = (p->texture + texture) / 2.0f;
+    color = (p->color + color) / 2.0f;
   }
 };
 
@@ -58,27 +91,10 @@ public:
 };
 
 double getB(int size){
-  return 3.0 /((size + 2.0) * size);
+  return 3.0 / ((size + 2.0) * size);
 }
 
-void loopValueForOld(Point * p){
-  double b = getB(p->neighbors.size());
-  glm::vec3 neighborSum(0);
 
-  for (int i = 0; i < p->neighbors.size(); i++){
-    neighborSum += ((Point*)p->neighbors[i])->loc;
-  }
-  
-  //multiple neighbor by B
-  neighborSum *= b;
-
-
-  glm::vec3 local = p->loc;
-  local *= (1 - (p->neighbors.size() * b));
-  local += neighborSum;
-  //update local
-  p->loc = local;
-}
 
 void update(Point * old, Point* nPtr){
   for (int i = 0; i < old->child.size(); i++){
@@ -95,33 +111,86 @@ void update(Point * old, Point* nPtr){
   }
 }
 
+void loopValueForOld(Point * p){
+
+  double b = getB(p->neighbors.size());
+  glm::vec3 neighborSum(0);
+
+  //update location
+  for (int i = 0; i < p->neighbors.size(); i++){
+    neighborSum += ((Point*)p->neighbors[i])->loc;
+  }
+  //multiple neighbor by B
+  neighborSum *= b;
+  glm::vec3 local = p->loc;
+  local *= (1 - (p->neighbors.size() * b));
+  local += neighborSum;
+  //update local
+  p->loc = local;
+
+  neighborSum = glm::vec3(0);
+  for (int i = 0; i < p->neighbors.size(); i++){
+    neighborSum += ((Point*)p->neighbors[i])->normal;
+  }
+  //multiple neighbor by B
+  neighborSum *= b;
+  local = p->normal;
+  local *= (1 - (p->neighbors.size() * b));
+  local += neighborSum;
+  //update local
+  p->normal = glm::normalize(local);
+
+  //do the texture
+  glm::vec2 textureSum(0);
+  for (int i = 0; i < p->neighbors.size(); i++){
+    textureSum += ((Point*)p->neighbors[i])->texture;
+  }
+  //multiple neighbor by B
+  textureSum *= b;
+  glm::vec2 textureLocal = p->texture;
+  textureLocal *= (1 - (p->neighbors.size() * b));
+  textureLocal += textureSum;
+  //update local
+  p->texture = textureLocal;
+}
+
+
+glm::vec3 calculateNewValue(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4){
+  return (3 / 8.0f) * p1 + (3 / 8.0f) * p2 + (1 / 8.0f) * p3 + (1 / 8.0f) * p4;
+}
+
+glm::vec2 calculateNewValue(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, glm::vec2 p4){
+  return (3 / 8.0f) * p1 + (3 / 8.0f) * p2 + (1 / 8.0f) * p3 + (1 / 8.0f) * p4;
+}
+
 void loopValueForNew(Point * p){
   ((Point*)p->parents[0])->loc;
-  Point p1(((Point*)p->parents[0])->loc);
-  Point p2(((Point*)p->parents[1])->loc);
-  Point p3(((Point*)p->farParents[0])->loc);
+  Point p1(((Point*)p->parents[0]));
+  Point p2(((Point*)p->parents[1]));
+  Point p3(((Point*)p->farParents[0]));
   glm::vec3 p4Value(0);
   if (p->farParents.size() >= 2){
-    Point p4(((Point*)p->farParents[1])->loc);
-    p4Value = p4.loc;
+    Point p4(((Point*)p->farParents[1]));
 
-    glm::vec3 newLoc = (3 / 8.0f) * p1.loc + (3 / 8.0f) * p2.loc +
-      (1 / 8.0f) * p3.loc + (1 / 8.0f) * p4Value;
-    p->loc = newLoc;
+    p->loc = calculateNewValue(p1.loc, p2.loc, p3.loc, p4.loc);
+    p->normal = glm::normalize(calculateNewValue(p1.normal, p2.normal, p3.normal, p4.normal));
+    p->texture = calculateNewValue(p1.texture, p2.texture, p3.texture, p4.texture);
 
   }
   else{
 
     if (!p->updated){
       p->oldLoc = p->loc;
+      p->oldTexture = p->texture;
+      p->oldNormal = p->normal;
       p->updated = true;
     }
-    glm::vec3 newLoc = (3 / 8.0f) * p1.loc + (3 / 8.0f) * p2.loc +
-      (1 / 8.0f) * p3.loc + (1 / 8.0f) * p->oldLoc;
-    p->loc = newLoc;
+    p->loc = calculateNewValue(p1.loc, p2.loc, p3.loc, p->oldLoc);
+    p->normal = glm::normalize(calculateNewValue(p1.normal, p2.normal, p3.normal, p->oldNormal));
+    p->texture = calculateNewValue(p1.texture, p2.texture, p3.texture, p->oldTexture);
   }
 
- // return p;
+  // return p;
 }
 
 bool isSamePoint(Point* p1, Point* p2){
@@ -140,37 +209,36 @@ bool searchList(std::vector<void*> addrList, void* ptr){
   return false;
 }
 
+Point* getAveragePoint(Point* p1, Point* p2){
+  glm::vec3 newLoc = (p1->loc + p2->loc) / 2.0f;
+  Point* p = new Point(newLoc);
+  //get average of color/texture/uv
+  p->normal = glm::normalize((p1->normal + p2->normal) / 2.0f);
+  p->texture = (p1->texture + p2->texture) / 2.0f;
+  return p;
+}
+
 
 void calculate(std::vector<triangle> &triangles){
-  
+
   std::vector<triangle> newList;
-  /*
-  Point* _p1 = new Point(glm::vec3(1, 0, 0));
-  Point* _p2 = new Point(glm::vec3(0, 1, 0));
-  Point* _p3 = new Point(glm::vec3(-1, 0, 0));
-  triangles.push_back(triangle(_p1, _p2, _p3));
-  Point* _p4 = new Point(glm::vec3(1, 0, 0));
-  Point* _p5 = new Point(glm::vec3(-1, 0, 0));
-  Point* _p6 = new Point(glm::vec3(0, -1, 0));
-  triangles.push_back(triangle(_p4, _p5, _p6));
-  */
 
   //first generate all new points along the edge;
   for (int i = 0; i < triangles.size(); i++){
     //p12
-    glm::vec3 newLoc = (triangles[i].p[0]->loc + triangles[i].p[1]->loc) / 2.0f;
-    Point* p = new Point(newLoc);
+    Point* p = getAveragePoint(triangles[i].p[0], triangles[i].p[1]);
     p->parents.push_back(triangles[i].p[0]);
     triangles[i].p[0]->child.push_back(p);
     p->parents.push_back(triangles[i].p[1]);
     triangles[i].p[1]->child.push_back(p);
+    //updat the far parents(the vertex on the triangle that is not the parents)
     p->farParents.push_back(triangles[i].p[2]);
     triangles[i].p[2]->farChild.push_back(p);
 
     triangles[i].np[0] = p;
+
     //p13
-    newLoc = (triangles[i].p[0]->loc + triangles[i].p[2]->loc) / 2.0f;
-    p = new Point(newLoc);
+    p = getAveragePoint(triangles[i].p[0], triangles[i].p[2]);
     p->parents.push_back(triangles[i].p[0]);
     triangles[i].p[0]->child.push_back(p);
     p->parents.push_back(triangles[i].p[2]);
@@ -180,8 +248,7 @@ void calculate(std::vector<triangle> &triangles){
 
     triangles[i].np[1] = p;
     //p23
-    newLoc = (triangles[i].p[1]->loc + triangles[i].p[2]->loc) / 2.0f;
-    p = new Point(newLoc);
+    p = getAveragePoint(triangles[i].p[1], triangles[i].p[2]);
     p->parents.push_back(triangles[i].p[1]);
     triangles[i].p[1]->child.push_back(p);
     p->parents.push_back(triangles[i].p[2]);
@@ -220,7 +287,8 @@ void calculate(std::vector<triangle> &triangles){
     }
     triangles[i] = currTri;
   }
-
+  //to fix the weird delete problem
+  std::vector<void*> deleteList;
   //update new points neighbors table, if there is overlap, make it only one point
   for (int i = 0; i < triangles.size(); i++){
     triangle currTri = triangles[i];
@@ -236,12 +304,9 @@ void calculate(std::vector<triangle> &triangles){
             //replace that point with the same reference pointer;
             currTri.np[pp]->merge(searchTri.np[spp]);
             Point* temp = searchTri.np[spp];
-            delete temp;
-
-            //also use this oppertunity to calculate the new value;
-            //loopValueForNew(currTri.np[pp]);
-            //link the two points together
             searchTri.np[spp] = currTri.np[pp];
+            
+            deleteList.push_back(temp);        
           }
         }
       }
@@ -249,6 +314,13 @@ void calculate(std::vector<triangle> &triangles){
     }
     triangles[i] = currTri;
   }
+
+  //delete the points
+  for (int j = 0; j < deleteList.size(); j++){
+    delete deleteList[j];
+  }
+
+
 
   //update all the new value, we can do it again and again for the same point, since it doesn't depend on the old value
   for (int i = 0; i < triangles.size(); i++){
@@ -263,7 +335,7 @@ void calculate(std::vector<triangle> &triangles){
 
 
 
-  
+
   //now we go and tell every original point they have the child and populate their neighbor field.
   for (int i = 0; i < triangles.size(); i++){
     triangle currTri = triangles[i];
@@ -285,31 +357,31 @@ void calculate(std::vector<triangle> &triangles){
       loopValueForOld(currPoint);
     }
   }
-  
+
 
   //now throw them all into new triangles.
   for (int i = 0; i < triangles.size(); i++){
     triangle currTri = triangles[i];
 
     //first New Triangle;
-    Point* p1 = new Point(currTri.p[0]->loc);
-    Point* p2 = new Point(currTri.np[0]->loc);
-    Point* p3 = new Point(currTri.np[1]->loc);
+    Point* p1 = new Point(currTri.p[0]);
+    Point* p2 = new Point(currTri.np[0]);
+    Point* p3 = new Point(currTri.np[1]);
     newList.push_back(triangle(p1, p2, p3));
 
-    p1 = new Point(currTri.p[2]->loc);
-    p2 = new Point(currTri.np[1]->loc);
-    p3 = new Point(currTri.np[2]->loc);
+    p1 = new Point(currTri.p[2]);
+    p2 = new Point(currTri.np[1]);
+    p3 = new Point(currTri.np[2]);
     newList.push_back(triangle(p1, p2, p3));
 
-    p1 = new Point(currTri.p[1]->loc);
-    p2 = new Point(currTri.np[0]->loc);
-    p3 = new Point(currTri.np[2]->loc);
+    p1 = new Point(currTri.p[1]);
+    p2 = new Point(currTri.np[0]);
+    p3 = new Point(currTri.np[2]);
     newList.push_back(triangle(p1, p2, p3));
 
-    p1 = new Point(currTri.np[0]->loc);
-    p2 = new Point(currTri.np[1]->loc);
-    p3 = new Point(currTri.np[2]->loc);
+    p1 = new Point(currTri.np[0]);
+    p2 = new Point(currTri.np[1]);
+    p3 = new Point(currTri.np[2]);
     newList.push_back(triangle(p1, p2, p3));
     //don't delete points here, don't forget they share multiple points.
   }
@@ -337,37 +409,77 @@ void calculate(std::vector<triangle> &triangles){
 
 }
 
-std::vector<float> deconstruct(std::vector<triangle> triangleList){
+std::vector<float> deconstruct(std::vector<triangle> triangleList, std::vector<float>& vertexList, std::vector<float>& normalList, std::vector<float>& uvList){
   std::vector<float> list;
   for (int i = 0; i < triangleList.size(); i++){
     triangle t = triangleList[i];
     for (int j = 0; j < 3; j++){
-      list.push_back(t.p[j]->loc.x);
-      list.push_back(t.p[j]->loc.y);
-      list.push_back(t.p[j]->loc.z);
+      vertexList.push_back(t.p[j]->loc.x);
+      vertexList.push_back(t.p[j]->loc.y);
+      vertexList.push_back(t.p[j]->loc.z);
+
+      normalList.push_back(t.p[j]->normal.x);
+      normalList.push_back(t.p[j]->normal.y);
+      normalList.push_back(t.p[j]->normal.z);
+
+      uvList.push_back(t.p[j]->texture.x);
+      uvList.push_back(t.p[j]->texture.y);
+
     }
   }
   return list;
 }
 
-std::vector<triangle> construct(std::vector<float> floatList){
+std::vector<triangle> construct(std::vector<float>& vertexList, std::vector<float>& normallist, std::vector<float>& uvlist){
   std::vector<triangle> list;
-  for (int i = 0; i < floatList.size() - 8; i += 9){
-    int index = 0;
+  int uvIndex = 0;
+  for (int i = 0; i < vertexList.size() - 8; i += 9){
 
-    Point* p1 = new Point(glm::vec3(floatList[i], floatList[i + 1], floatList[i + 2]));
-    Point* p2 = new Point(glm::vec3(floatList[i + 3], floatList[i + 4], floatList[i + 5]));
-    Point* p3 = new Point(glm::vec3(floatList[i + 6], floatList[i + 7], floatList[i + 8]));
-    list.push_back(triangle(p1,p2,p3));
+    Point* p1 = new Point(glm::vec3(vertexList[i], vertexList[i + 1], vertexList[i + 2]));
+    p1->addNormal(normallist[i], normallist[i + 1], normallist[i + 2]);
+    if (uvlist.size() != 0){
+      p1->addUV(uvlist[uvIndex], uvlist[uvIndex + 1]);
+    }
+    else{
+      p1->addUV(0, 0);
+    }
+
+    Point* p2 = new Point(glm::vec3(vertexList[i + 3], vertexList[i + 4], vertexList[i + 5]));
+    p2->addNormal(normallist[i + 3], normallist[i + 4], normallist[i + 5]);
+    if (uvlist.size() != 0){
+      p2->addUV(uvlist[uvIndex + 2], uvlist[uvIndex + 3]);
+    }
+    else{
+      p2->addUV(0, 0);
+    }
+
+    Point* p3 = new Point(glm::vec3(vertexList[i + 6], vertexList[i + 7], vertexList[i + 8]));
+    p3->addNormal(normallist[i + 6], normallist[i + 7], normallist[i + 8]);
+    if (uvlist.size() != 0){
+      p3->addUV(uvlist[uvIndex + 4], uvlist[uvIndex + 5]);
+    }
+    else{
+      p3->addUV(0, 0);
+    }
+
+    list.push_back(triangle(p1, p2, p3));
+
+    uvIndex += 6;
   }
   return list;
 }
 
-std::vector<float> loopSubDivision(std::vector<float> list){
+void loopSubDivision(std::vector<float>& vertexlist, std::vector<float>& normallist, std::vector<float>& uvlist){
   //construct
-  std::vector<triangle> triangleList = construct(list);
+  std::vector<triangle> triangleList = construct(vertexlist, normallist, uvlist);
   calculate(triangleList);
-  return deconstruct(triangleList);
+  //clear the list first
+  vertexlist.clear();
+  normallist.clear();
+  uvlist.clear();
+
+
+  deconstruct(triangleList, vertexlist, normallist, uvlist);
 }
 
 
@@ -380,62 +492,124 @@ Loop::Loop()
 Loop::~Loop()
 {
 }
-
+#include "Utilities\Texture.H"
 #include "DrawingTools.h"
 #include "gtc\matrix_transform.hpp"
 
-void loopTest(int numTimes, glm::mat4 proj, glm::mat4 view, glm::mat4 model){
-  static float list[] = {
-  
-    //0, 0, 1,
-    //1, 0, 0,
-    //-1, 0, 0,
-    0, 0, 1,
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1,
-    -1, 0, 0,
-    0, 1, 0,
-    1, 0, 0,
-    -1, 0, 0,
-    0, 1, 0
-    
-    /*
-    0,1,0,
-    0,0,1,
-    0,0,-1,
-    0,0,1,
-    1,0,0,
-    0,0,-1,
-    */
-  };
+void loopTest(int numTimes, glm::mat4 proj, glm::mat4 view, glm::mat4 model, glm::vec3 sun){
 
   static vector<float> vlist;
   static vector<float> nvlist;
 
   static GLuint  vertexBuffer;
+  static GLuint textureBuffer;
+  static GLuint normalBuffer;
   static GLuint shaderID;
-  model = model * glm::scale(glm::mat4(1.0f),glm::vec3(15, 10, 30)) 
-    * glm::translate(glm::mat4(1.0f),glm::vec3(10,10,0));
+  static int size;
+  static Texture* t;
+
+  model = model * glm::scale(glm::mat4(1.0f), glm::vec3(15, 10, 30))
+    * glm::translate(glm::mat4(1.0f), glm::vec3(10, 10, 0));
   glm::mat4 MVP = proj * view * model;
 
   static bool first = true;
 
   if (first){
     first = false;
-    for (int i = 0; i < (sizeof(list) / sizeof(float)); i++){
-      vlist.push_back(list[i]);
+
+    float vertexPoints[] = {
+
+      0, 0, 1,
+      1, 0, 0,
+      -1, 0, 0,
+
+      0, 0, 1,
+      1, 0, 0,
+      0, 1, 0,
+
+      0, 0, 1,
+      -1, 0, 0,
+      0, 1, 0,
+
+      1, 0, 0,
+      -1, 0, 0,
+      0, 1, 0
+
+      /*
+      0,1,0,
+      0,0,1,
+      0,0,-1,
+      0,0,1,
+      1,0,0,
+      0,0,-1,
+      */
+    };
+
+    float normalPoints[] = {
+      0, -1, 0,
+      0, -1, 0,
+      0, -1, 0,
+
+      0.5, 0.5, 0,
+      0.5, 0.5, 0,
+      0.5, 0.5, 0,
+
+      -0.5, 0.5, 0,
+      -0.5, 0.5, 0,
+      -0.5, 0.5, 0,
+
+      0, 0, -1,
+      0, 0, -1,
+      0, 0, -1,
+    };
+
+    float uvPoints[] = {
+      0, 0,
+      0, 1,
+      1, 1,
+      //
+      0, 0,
+      0, 1,
+      1, 1,
+      //
+      0, 0,
+      0, 1,
+      1, 1,
+      //
+      0, 0,
+      0, 1,
+      1, 1,
+    };
+
+    vector<float>vertexList;
+    vector<float>normalList;
+    vector<float>textureList;
+    //put the vertex and normal point into the list
+    for (int i = 0; i < (sizeof(vertexPoints) / sizeof(float)); i++){
+      vertexList.push_back(vertexPoints[i]);
+      normalList.push_back(normalPoints[i]);
     }
-    nvlist = vlist;
+    //put the uv coordinate into the list
+    for (int i = 0; i < (sizeof(uvPoints) / sizeof(float)); i++){
+      textureList.push_back(uvPoints[i]);
+    }
+
+    //do the loop subdivision calculations
     for (int j = 0; j < numTimes; j++){
-      nvlist = loopSubDivision(nvlist);
+      loopSubDivision(vertexList,normalList,textureList);
     }
-    bindToArrayBuffer(vertexBuffer,nvlist.size() * sizeof(float), &nvlist[0]);
+    //bind to the VBO
+    bindToArrayBuffer(vertexBuffer, vertexList.size() * sizeof(float), &vertexList[0]);
+    bindToArrayBuffer(normalBuffer, normalList.size() * sizeof(float), &normalList[0]);
+    bindToArrayBuffer(textureBuffer, textureList.size() * sizeof(float), &textureList[0]);
     char* err;
-    shaderID = loadShader("testVertex.glsl", "testFragment.glsl", err);
+    shaderID = loadShader("DinoVertex.glsl", "DinoFragment.glsl", err);
+    
+    size = vertexList.size();
+    t = fetchTexture("dinoTexture.jpg", true, true);
   }
-  
-  glm::vec3 sun(0, 1, 0);
+  t->bind();
+  //glm::vec3 sun(0, 1, 0);
 
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(2);
@@ -445,7 +619,6 @@ void loopTest(int numTimes, glm::mat4 proj, glm::mat4 view, glm::mat4 model){
   GLuint sampleLoc = glGetUniformLocation(shaderID, "textureInput");
   GLuint MatrixID = glGetUniformLocation(shaderID, "MVP");
   //draw the four sides;
-  for (int i = 0; i < 5; i++){
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glVertexAttribPointer(
@@ -456,13 +629,35 @@ void loopTest(int numTimes, glm::mat4 proj, glm::mat4 view, glm::mat4 model){
       0,                  // stride
       (void*)0            // array buffer offset
       );
+    
+    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+    glVertexAttribPointer(
+      3,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+      3,                  // size
+      GL_FLOAT,           // type
+      GL_FALSE,           // normalized?
+      0,                  // stride
+      (void*)0            // array buffer offset
+      );
 
+    glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
+    glVertexAttribPointer(
+      2,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+      2,                  // size
+      GL_FLOAT,           // type
+      GL_FALSE,           // normalized?
+      0,                  // stride
+      (void*)0            // array buffer offset
+      );
+
+
+      
     //get location of sun
-    // glUniform1i(sampleLoc, textureId);
+    glUniform1i(sampleLoc, t->texName);
     glUseProgram(shaderID);
 
     //glUniform3fv(sunID,3 * sizeof(float), (float*)glm::vec3(0, 1, 0));
-    //glUniform3f(sunID, sun.x, sun.y, sun.z);
+    glUniform3f(sunID, sun.x, sun.y, sun.z);
 
     //Send Uniform Values to shader
 
@@ -470,20 +665,13 @@ void loopTest(int numTimes, glm::mat4 proj, glm::mat4 view, glm::mat4 model){
 
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
     //draw the box
-    glDrawArrays(GL_TRIANGLES, 0, nvlist.size() / 3 );
+    glDrawArrays(GL_TRIANGLES, 0, size/ 3);
     //unbind texture
     glBindTexture(GL_TEXTURE_2D, 0);
     glUseProgram(0);
-  }
+
   glDisableVertexAttribArray(0);
   glDisableVertexAttribArray(2);
   glDisableVertexAttribArray(3);
-
-
-
-
-
-
-
 
 }

@@ -28,8 +28,22 @@ parent(0)
 
 
 	transform = glm::mat4(1.0f);
+  localTransform = glm::mat4(1.0f);
 	rideAbove = 0;
 }
+
+GrObjectVBO::GrObjectVBO(std::string _name, int& nn, char* xn) :
+ridable(0), interesting(0),
+parent(0){
+
+  name = _name + xn + std::to_string(nn++);
+
+  transform = glm::mat4(1.0f);
+  localTransform = glm::mat4(1.0f);
+  rideAbove = 0;
+
+}
+
 GrObjectVBO::~GrObjectVBO()
 {
 }
@@ -104,7 +118,7 @@ GrObjectVBO* add(GrObjectVBO* g, float x, float y, float z, float ry)
 	glm::mat4 m1(1.0f), m2(1.0f);
 	m1 = glm::rotate(ry, glm::vec3(0, 1, 0));
 	m2 = m1 * g->transform;
-	g->transform = glm::translate(m2, glm::vec3(x, y, z));
+	g->transform = g->transform * glm::translate(m2, glm::vec3(x, y, z));
 	return g;
 }
 
@@ -112,6 +126,10 @@ GrObjectVBO* add(GrObjectVBO* g, float x, float y, float z, float ry)
 void GrObjectVBO::initialize(){
 	//nothing yet, programs need to initialize this
 }
+
+void GrObjectVBO::preDraw(){
+
+};
 
 
 void GrObjectVBO::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model){
@@ -236,26 +254,28 @@ void drawObList(vector<GrObjectVBO*>& objs, DrawingState* drst, glm::mat4 proj, 
 	for (vector<GrObjectVBO*>::iterator i = objs.begin(); i != objs.end(); ++i) {
 		GrObjectVBO* g = (*i);
 		//TODO::don't draw if you are camera
-		model = model * g->transform;
-		g->realDraw(drst,proj,view,g->transform);
+    g->preDraw();
+    glm::mat4 newModel = model * g->transform;
+		g->realDraw(drst,proj,view, newModel * g->localTransform);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		if (g->children.size()) {
-			drawObList(g->children, drst,proj,view, model);
+			drawObList(g->children, drst,proj,view, newModel);
 		}
 	}
 }
 
 void drawAfterObList(vector<GrObjectVBO*>& objs, DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model)
 {
-	glPushMatrix();
 	for (std::vector<GrObjectVBO*>::iterator i = objs.begin(); i != objs.end(); ++i) {
 		GrObjectVBO* g = (*i);
 		//TODO:Camera
-		model = model * g->transform;
-		g->drawAfter(drst, proj, view, model);
+    //apply transformtion
+		glm::mat4 newModel = model * g->transform;
+		g->drawAfter(drst, proj, view, newModel);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		if (g->children.size()) {
-			drawAfterObList(g->children, drst, proj, view, model);
+      //apply transformation to child
+			drawAfterObList(g->children, drst, proj, view, newModel);
 		}
 	}
 }

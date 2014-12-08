@@ -15,5 +15,5 @@ public:
 };
 
 void calculate();
-std::vector<float> loopSubDivision(std::vector<float> list);
-void loopTest(int numTimes, glm::mat4 proj, glm::mat4 view, glm::mat4 model);
+void loopSubDivision(std::vector<float>& vertexlist, std::vector<float>& normallist, std::vector<float>& uvlist);
+void loopTest(int numTimes, glm::mat4 proj, glm::mat4 view, glm::mat4 model, glm::vec3 sun);

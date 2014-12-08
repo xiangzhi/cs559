@@ -24,6 +24,9 @@
 #include <iostream>
 #include <vector>
 
+#include "Particles.h"
+#include "SurfaceOfRevolution.h"
+
 using std::vector;
 
 // at idle time, this gets called
@@ -139,38 +142,17 @@ void TownViewWidget::draw()
   glm::mat4 model = glm::mat4(1.0f);//glm::translate(glm::mat4(1.0f),glm::vec3(10,5,0));  // Changes for each model !
   // Our ModelViewProjection : multiplication of our 3 matrices
   glm::mat4 MVP = proj * view * model; // Remember, matrix multiplication is the other way around
+  glm::mat4 VP = proj * view;
+
+
+  glm::vec3 camPos(cam[0][3], cam[1][3], cam[2][3]);
+  FlyCamera* flyCam = dynamic_cast<FlyCamera *>(drst.camera);
+  if (flyCam != NULL){
+    camPos = glm::vec3(flyCam->posX, flyCam->posY, flyCam->posZ);
+  }
 
 
 
- 
-
-  
-
-
-  glMatrixMode(GL_PROJECTION);
-  glViewport(0,0,w(),h());
-  glLoadIdentity();
-
-  
-  gluPerspective(drst.fieldOfView, aspect, 1, 600000);
-
-  // put the camera where we want it to be
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  setupLights(&drst);
-
-
-  glMultMatrixf(&camera[0][0]);
-
-  glClearStencil(0);
-
-
-  // the actual clearing goes on in the sky routine since its the only
-  // thing that knows what color to make the sky
-  drawSky(&drst);
-  //drawEarth(&drst);
-  drawEarthNew(&drst,MVP);
-  
   //lighting calculations
   float light = 0;
   //day time
@@ -180,53 +162,34 @@ void TownViewWidget::draw()
     float angle = (drst.timeOfDay - 6) / 3 * 45;
     sun = glm::rotateZ(glm::vec3(1, 0, 0), angle);
   }
+
+
+
+  //drawParticles(camPos);
+
+
+
+
+ 
+  glClearStencil(0);
+
+
+
+  // the actual clearing goes on in the sky routine since its the only
+  // thing that knows what color to make the sky
+  drawSky(&drst);
+  //drawEarth(&drst);
+  //drawEarthNew(&drst,MVP);
+  drawEarth(proj, view, camPos, sun, light);
+  
   drawSkyBox(sun, light, MVP);
 
+  //surfaceOfRevolutionTest(MVP, sun);
+
+
+
   //draw test
-  loopTest(5,proj,view,model);
-
-  // draw something
-  /*
-  float points[] = {
-    20.0f, 0.0f, -100.0f,
-    -20.0f, 0.0f, -100.0f,
-    0.0f, 20.0f, -100.0f,
-  };
-
-  GLuint vbo = 0;
-  glGenBuffers(1, &vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, 9 * sizeof (float), points, GL_STATIC_DRAW);
-
-
-  glEnableVertexAttribArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-  char* err;
-  GLuint shaderId = loadShader("simpleVertex.glsl", "simpleFragment.glsl", err);
-
-
-
-
-  // wipe the drawing surface clear
-
-  glUseProgram(shaderId);
-
-  // Get a handle for our "MVP" uniform.
-  // Only at initialisation time.
-  GLuint MatrixID = glGetUniformLocation(shaderId, "MVP");
-  // Send our transformation to the currently bound shader,
-  // in the "MVP" uniform
-  // For each model you render, since the MVP will be different (at least the M part)
-  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-  // draw points 0-3 from the currently bound VAO with current in-use shader
-
-  glDrawArrays(GL_TRIANGLES, 0, 3);
-
-  glUseProgram(0);
-  glDisableVertexAttribArray(0);
-  
-  */
+//  loopTest(2,proj,view,model,sun);
 
   //Draw VBO based objects
   drawObList(theVBOobjects, &drst, proj, view, model);
@@ -244,8 +207,6 @@ void TownViewWidget::draw()
 	  ui->rate->value(ifr);
   }
   lastDrawDone = clock();
-  
- 
 
 }
 

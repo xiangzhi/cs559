@@ -13,6 +13,7 @@
 #include <vector>
 #include "Utilities\Texture.H"
 #include "Utilities\ShaderTools.H"
+#include "DrawingTools.h"
 
 //GrOBjectVBO
 //the aim of the class is to run VBO code with a similar structure as as the old GrObject
@@ -26,8 +27,15 @@ class Behavior;
 extern int notTheSame;
 class GrObjectVBO {
 public:
-	GrObjectVBO(char* nameBase = "NoName", int& nameCtr2 = notTheSame, char* xn = 0);
+  GrObjectVBO(char* nameBase = "NoName", int& nameCtr2 = notTheSame, char* xn = 0); 
+  GrObjectVBO(std::string name, int& nameCtr2 = notTheSame, char* xn = 0);
 	virtual ~GrObjectVBO();
+
+
+  virtual void preDraw();
+
+
+  glm::vec3 translation;
 
 	// things to know about the object
 	bool ridable;					/* can we "ride" this thing */
@@ -80,6 +88,9 @@ public:
 	// in general, most objects will have their centers at their
 	// local original and use this matrix to move them around
 	glm::mat4 transform;
+
+  //transform that won't effect the children;
+  glm::mat4 localTransform;
 
 	// if we are "riding" this object (that means that it is the current
 	// camera), it has two responsibilities:
