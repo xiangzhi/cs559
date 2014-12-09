@@ -4,48 +4,19 @@
 // written November 2008 by Michael Gleicher
 // with code borrowed from the tutorial by Cody Robson
 //
-// warning: this code assumes that you're using GLEE
+//Update 2014: Heavily changed to suit my need, based on code on the tutorial on line
+// at http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
 
 #include <string>
 #include <vector>
 
-// because we don't want to do the gl include for you, the code 
-// says "unsigned int" instead of GLuint
+//a different shader loader that is based on the one given in the following tutorial
+//http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
+//it loads the shader and if there is an error in the shader, it throws a runtime exception
+//with the error(good for debug and well, you know the shader is wrong).
+unsigned int loadShdaer(std::string vertexFileName, std::string fragmentFileName);
 
-// read a shader - keep the lines seperate (otherwise, comments get messed up)
-// reads it into a C++ data structure
-// note: this searches the global list of paths "shaderPaths"
-bool readShaderFile(const char* filename, std::vector<std::string>& program);
-
-// these routines check for errors after compiling/linking
-// not only do they do the test, but they print the error log
-// if there is one
-
-// see if the shader compiled correctly
-// if it did not, return a true value, and print an error
-// call this after compileShader
-bool checkShaderError(unsigned int shader);
-
-// see if the program linked correctly
-// if it did not, return a true value, and print an error
-// call this after linkProgram
-bool checkProgramError(unsigned int program);
-
-
-// load in and compile a vertex and fragment shader into a "program"
-// this is taken from Cody's tutorial
-// if there is an error, the the "error" variable points to a string
-// for an error message (otherwise its set to zero)
-// (notice that error is call by reference so we can return a value)
-//
-// note: this routine is sloppy about freeing memory in error cases
-// (since we assume the program will abort).
-// also: this routine doesn't give you handles to the shader objects,
-// so you can't free them or re-use them
-// in a big system, this may be problematic, but for writing 559 projects
-// it should be OK
-//
-// remember, this searches the list of shader paths
+//leaved as legacy code, the error never returns error
 unsigned int loadShader(const char* vertexFileName, const char* fragmentFileName,
 				        char*& error);
 
