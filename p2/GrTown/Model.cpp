@@ -1,10 +1,18 @@
 #include "Model.h"
 #include "ObjectLoader.h"
+#include "BHLights.h"
 
 Model::Model()
 {
 }
 
+Model::Model(GrObjectVBO* _track) :GrObjectVBO("BlackHawak")
+{
+  track = _track;
+  GrObjectVBO* light = new BHLights(this, _track);
+  light->parent = this;
+  children.push_back(light);
+}
 
 Model::~Model()
 {
@@ -15,7 +23,7 @@ void Model::initialize(){
   std::vector< glm::vec3 > vertices;
   std::vector< glm::vec2 > uvs;
   std::vector< glm::vec3 > normals; // Won't be used at the moment.
-  bool res = loadOBJ("superman.obj", vertices, uvs, normals);
+  bool res = loadOBJ("blackHawk.obj", vertices, uvs, normals);
 
   glGenBuffers(1, &vertexBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -27,15 +35,33 @@ void Model::initialize(){
 
   glGenBuffers(1, &textureBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
-  glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec3), &uvs[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 
   //shader
   char* err;
-  transform = glm::translate(glm::vec3(0, 30, 0)) * glm::scale(glm::vec3(5,5,5));
+  //transform = glm::translate(glm::vec3(0, 30, 0)) * glm::scale(glm::vec3(5,5,5));
   type = GL_TRIANGLES;
 
   vertexNum = vertices.size() / 3;
   shaderID = loadShader("simpleVertex.glsl", "simpleFragment.glsl", err);
+}
 
+void Model::preDraw(){
 
+  localTransform = glm::scale(glm::vec3(20, 20, 20));
+  transform = glm::mat4(1.0f);
+  pos.x = track->pos.x + 10;
+  pos.y = 300;
+  pos.z = track->pos.z + 10;
+  transform = glm::translate(pos) * transform;
+}
+
+glm::mat4 Model::getCamera(){
+  glm::vec3 eye(pos.x + 10, pos.y + 10, pos.z);
+  glm::vec3 target(track->pos);
+  return glm::lookAt(
+    eye,
+    target,
+    glm::vec3(0, 1, 0)
+    );
 }

@@ -20,9 +20,10 @@
 #include "Model.h"
 #include "Billboards.h"
 #include "Dino.h"
+#include "Bob.h"
+#include "BHLights.h"
 
-
-
+#include "Examples\Suburbs.H"
 // define this to get 2 cars that always turn
 // #define TESTCARS
 
@@ -53,20 +54,75 @@ int main(int /*argc*/, char** /*argv*/)
   // cubes are particularly easy since they set their own position
   // we need to raise the cube since we're giving the position of the
   // center 
-
+  // add some more stuff
+  GrObject* o1 = new Church;
+  o1->interesting = true;
+  o1->laX = 0; o1->laY = 0; o1->laZ = 0;
+  o1->lfX = -50; o1->lfY = 100; o1->lfZ = 300;
+  add(o1, -100, 0, 100, pi / 2.f);
 
   GrObjectVBO* b = new Building();
   add(b);
-  GrObjectVBO* super = new Model();
-  //add(super);
-  GrObjectVBO* billboard = new Billboards();
-  add(billboard);
+  b->laX = 0;
+  b->laY = 0;
+  b->laZ = 0;
+  b->lfX = 100;
+  b->lfY = 50;
+  b->lfZ = 100;
+  b->interesting = true;
+
+
+  for (int i = 0; i < 100; i++){
+    GrObjectVBO* billboard = new Billboards();
+
+    float x = (4000 - rand() % 2001);
+    if (rand() % 2 == 0){
+      x *= -1;
+    }
+
+    float z = rand() % 4000;
+    if (rand() % 2 == 0){
+      z *= -1;
+    }
+    
+    billboard->pos = glm::vec3(x,0,z);
+
+    add(billboard);
+  }
+
+  for (int i = 0; i < 100; i++){
+    GrObjectVBO* billboard = new Billboards();
+
+    float z = (4000 - rand() % 2001);
+    if (rand() % 2 == 0){
+      z *= -1;
+    }
+
+    float x = rand() % 4000;
+    if (rand() % 2 == 0){
+      x *= -1;
+    }
+
+    billboard->pos = glm::vec3(x, 0, z);
+
+    add(billboard);
+  }
+
+
   GrObjectVBO* dino = new Dino();
   add(dino);
-
+  GrObjectVBO* bob = new Bob();
+  bob->interesting = true;
+  add(bob);
+  GrObjectVBO* super = new Model(bob);
+  super->interesting = true;
+  add(super);
   //GrObjectVBO* s = new Sphere();
   //add(s);
 
+
+  GrObjectVBO* obj = new BHLights();
+  add(obj);
 
   // *****************************************************************
   // now make a UI

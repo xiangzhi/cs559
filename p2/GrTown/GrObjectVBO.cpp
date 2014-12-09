@@ -52,11 +52,30 @@ GrObjectVBO::~GrObjectVBO()
 // them
 void GrObjectVBO::draw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model)
 {
-	//nothing
+  //if for some reason, something change
+  if (redraw){
+    //reinitialize the buffer and put stuff in.
+    initialize();
+    redraw = false;
+  }
+  realDraw(drst, proj, view, model);
 }
 void GrObjectVBO::drawAfter(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model)
 {
-	//nothing
+  //if for some reason, something change
+  if (redrawAfter){
+    //reinitialize the buffer and put stuff in.
+    initializeAfter();
+    redrawAfter = false;
+  }
+  realDraw(drst,proj,view,model);
+}
+
+void GrObjectVBO::runAttribute(glm::mat4 proj, glm::mat4 view, glm::mat4 model){
+  //nothing
+}
+void  GrObjectVBO::runAttributeAfter(){
+  //nothing
 }
 
 
@@ -131,15 +150,16 @@ void GrObjectVBO::preDraw(){
 
 };
 
-
+#include "World.h"
 void GrObjectVBO::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model){
-	
+  /*
 	//if for some reason, something change
 	if (redraw){
 		//reinitialize the buffer and put stuff in.
 		initialize();
 		redraw = false;
 	}
+  */
 
 	//generate the PVM matrux
 	glm::mat4 MVP = proj * view * model;
@@ -203,27 +223,28 @@ void GrObjectVBO::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, g
 		(void*)0            // array buffer offset
 		);
 	glUseProgram(shaderID);
+  runAttribute(proj,view,model);
 	//get the location of MVP in shader
 	GLuint MatrixID = glGetUniformLocation(shaderID, "MVP");
 	//pass our MVP to shader
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
+  GLuint ModelID = glGetUniformLocation(shaderID, "model");
+  glUniformMatrix4fv(ModelID, 1, GL_FALSE, &model[0][0]);
+
+
   //lighting calculations
-  float light = 0;
-  //day time
-  glm::vec3 sun(0, 0, 0);
-  if (drst->timeOfDay > 6 && drst->timeOfDay < 18){
-    light = 6 - abs(12 - drst->timeOfDay);
-    float angle = (drst->timeOfDay - 6) / 3 * 45;
-    sun = glm::rotateZ(glm::vec3(1, 0, 0), angle);
-  }
-
-
+  float light = calculateSunLight(drst);
+  glm::vec3 sun = calculateSunDirection(drst);
 
 	//get location of sun
 	GLuint sunID = glGetUniformLocation(shaderID, "sunDirection");
 	//glUniform3fv(sunID,3 * sizeof(float), (float*)glm::vec3(0, 1, 0));
 	glUniform3f(sunID, sun.x, sun.y, sun.z);
+
+  GLuint lightID = glGetUniformLocation(shaderID, "light");
+  glUniform1f(lightID, light);
+  
 
   if (useIndex){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
@@ -248,6 +269,11 @@ void GrObjectVBO::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, g
   glDisableVertexAttribArray(4);
 }
 
+void GrObjectVBO::initializeAfter(){
+  //nothing here
+}
+
+
 // draw a list of objects
 void drawObList(vector<GrObjectVBO*>& objs, DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model)
 {
@@ -256,7 +282,7 @@ void drawObList(vector<GrObjectVBO*>& objs, DrawingState* drst, glm::mat4 proj, 
 		//TODO::don't draw if you are camera
     g->preDraw();
     glm::mat4 newModel = model * g->transform;
-		g->realDraw(drst,proj,view, newModel * g->localTransform);
+    g->draw(drst, proj, view, newModel * g->localTransform);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		if (g->children.size()) {
 			drawObList(g->children, drst,proj,view, newModel);

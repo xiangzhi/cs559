@@ -9,15 +9,18 @@
 
 #include <string>
 #include <vector>
+#include <windows.h>
+#include <GL/glew.h>
+
 
 //a different shader loader that is based on the one given in the following tutorial
 //http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
 //it loads the shader and if there is an error in the shader, it throws a runtime exception
 //with the error(good for debug and well, you know the shader is wrong).
-unsigned int loadShdaer(std::string vertexFileName, std::string fragmentFileName);
-
+GLuint loadShader(std::string& vertexFileName, std::string& fragmentFileName);
+GLuint loadShader(const char* vertexFileName, const char* fragmentFileName);
 //leaved as legacy code, the error never returns error
-unsigned int loadShader(const char* vertexFileName, const char* fragmentFileName,
+GLuint loadShader(const char* vertexFileName, const char* fragmentFileName,
 				        char*& error);
 
 // we'll look for shader programs on this list of paths

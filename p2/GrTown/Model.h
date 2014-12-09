@@ -5,7 +5,11 @@ class Model :
 {
 public:
   Model();
+  Model(GrObjectVBO* track);
   ~Model();
   void initialize();
+  void preDraw();
+  glm::mat4 getCamera();
+  GrObjectVBO* track;
 };
 

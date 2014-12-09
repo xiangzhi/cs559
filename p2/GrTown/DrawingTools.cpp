@@ -25,6 +25,123 @@ void bindToArrayBuffer(GLuint& ptrToBuffer, std::vector<glm::vec2> list){
   glBufferData(GL_ARRAY_BUFFER, list.size() * sizeof(glm::vec2), &list[0], GL_STATIC_DRAW);
 }
 
+void drawCube(std::vector<glm::vec3> &vertexList, std::vector<glm::vec3> &normalList, std::vector<glm::vec2> &uvList, float _l, float _w, float _h){
+
+  float l = _l / 2;
+  float w = _w / 2;
+  float h = _h / 2;
+  //front
+  vertexList.push_back(glm::vec3(-l, -h, w));
+  vertexList.push_back(glm::vec3(l, -h, w));
+  vertexList.push_back(glm::vec3(l, h, w));
+  vertexList.push_back(glm::vec3(-l, -h, w));
+  vertexList.push_back(glm::vec3(-l, h, w));
+  vertexList.push_back(glm::vec3(l, h, w));
+  //right side
+  vertexList.push_back(glm::vec3(l, -h, w));
+  vertexList.push_back(glm::vec3(l, -h, -w));
+  vertexList.push_back(glm::vec3(l, h, -w));
+  vertexList.push_back(glm::vec3(l, -h, w));
+  vertexList.push_back(glm::vec3(l, h, w));
+  vertexList.push_back(glm::vec3(l, h, -w));
+  //left side
+  vertexList.push_back(glm::vec3(-l, -h, w));
+  vertexList.push_back(glm::vec3(-l, -h, -w));
+  vertexList.push_back(glm::vec3(-l, h, -w));
+  vertexList.push_back(glm::vec3(-l, -h, w));
+  vertexList.push_back(glm::vec3(-l, h, w));
+  vertexList.push_back(glm::vec3(-l, h, -w));
+  //back
+  vertexList.push_back(glm::vec3(-l, -h, -w));
+  vertexList.push_back(glm::vec3(l, -h, -w));
+  vertexList.push_back(glm::vec3(l, h, -w));
+  vertexList.push_back(glm::vec3(-l, -h, -w));
+  vertexList.push_back(glm::vec3(-l, h, -w));
+  vertexList.push_back(glm::vec3(l, h, -w));
+  //top
+  vertexList.push_back(glm::vec3(-l, h, w));
+  vertexList.push_back(glm::vec3(l, h, w));
+  vertexList.push_back(glm::vec3(l, h, -w));
+  vertexList.push_back(glm::vec3(-l, h, w));
+  vertexList.push_back(glm::vec3(-l, h, -w));
+  vertexList.push_back(glm::vec3(l, h, -w));
+  //bottom
+  vertexList.push_back(glm::vec3(-l, -h, w));
+  vertexList.push_back(glm::vec3(l, -h, w));
+  vertexList.push_back(glm::vec3(l, -h, -w));
+  vertexList.push_back(glm::vec3(-l, -h, w));
+  vertexList.push_back(glm::vec3(-l, -h, -w));
+  vertexList.push_back(glm::vec3(l, -h, -w));
+
+  //normals
+  normalList.push_back(glm::vec3(0, 0, 1));
+  normalList.push_back(glm::vec3(0, 0, 1));
+  normalList.push_back(glm::vec3(0, 0, 1));
+  normalList.push_back(glm::vec3(0, 0, 1));
+  normalList.push_back(glm::vec3(0, 0, 1));
+  normalList.push_back(glm::vec3(0, 0, 1));
+  //right
+  normalList.push_back(glm::vec3(1, 0, 0));
+  normalList.push_back(glm::vec3(1, 0, 0));
+  normalList.push_back(glm::vec3(1, 0, 0));
+  normalList.push_back(glm::vec3(1, 0, 0));
+  normalList.push_back(glm::vec3(1, 0, 0));
+  normalList.push_back(glm::vec3(1, 0, 0));
+  //left
+  normalList.push_back(glm::vec3(-1, 0, 0));
+  normalList.push_back(glm::vec3(-1, 0, 0));
+  normalList.push_back(glm::vec3(-1, 0, 0));
+  normalList.push_back(glm::vec3(-1, 0, 0));
+  normalList.push_back(glm::vec3(-1, 0, 0));
+  normalList.push_back(glm::vec3(-1, 0, 0));
+  //back
+  normalList.push_back(glm::vec3(0, 0, -1));
+  normalList.push_back(glm::vec3(0, 0, -1));
+  normalList.push_back(glm::vec3(0, 0, -1));
+  normalList.push_back(glm::vec3(0, 0, -1));
+  normalList.push_back(glm::vec3(0, 0, -1));
+  normalList.push_back(glm::vec3(0, 0, -1));
+  //top
+  normalList.push_back(glm::vec3(0, 1, 0));
+  normalList.push_back(glm::vec3(0, 1, 0));
+  normalList.push_back(glm::vec3(0, 1, 0));
+  normalList.push_back(glm::vec3(0, 1, 0));
+  normalList.push_back(glm::vec3(0, 1, 0));
+  normalList.push_back(glm::vec3(0, 1, 0));
+  //bottom
+  normalList.push_back(glm::vec3(0, -1, 0));
+  normalList.push_back(glm::vec3(0, -1, 0));
+  normalList.push_back(glm::vec3(0, -1, 0));
+  normalList.push_back(glm::vec3(0, -1, 0));
+  normalList.push_back(glm::vec3(0, -1, 0));
+  normalList.push_back(glm::vec3(0, -1, 0));
+
+  //uv List
+  for (int i = 0; i < 4; i++){
+    float temp = i * 0.25;
+    uvList.push_back(glm::vec2(0 + temp, 0));
+    uvList.push_back(glm::vec2(0.25 +  temp, 0));
+    uvList.push_back(glm::vec2(0.25 + temp, 0.25));
+    uvList.push_back(glm::vec2(0 + temp, 0));
+    uvList.push_back(glm::vec2(0.0 + temp, 0.25));
+    uvList.push_back(glm::vec2(0.25 + temp, 0.25));
+  }
+
+  uvList.push_back(glm::vec2(0, 0.25));
+  uvList.push_back(glm::vec2(0.25, 0.25));
+  uvList.push_back(glm::vec2(0.25, 0.50));
+  uvList.push_back(glm::vec2(0, 0.25));
+  uvList.push_back(glm::vec2(0, 0.50));
+  uvList.push_back(glm::vec2(0.25, 0.50));
+
+  uvList.push_back(glm::vec2(0.25, 0.25));
+  uvList.push_back(glm::vec2(0.50, 0.25));
+  uvList.push_back(glm::vec2(0.5, 0.50));
+  uvList.push_back(glm::vec2(0.25, 0.25));
+  uvList.push_back(glm::vec2(0.25, 0.50));
+  uvList.push_back(glm::vec2(0.5, 0.50));
+
+}
 
 void drawCube(std::vector<float> &vertexList, std::vector<float> &normalList, float l, float w, float h){
   float points[] = {

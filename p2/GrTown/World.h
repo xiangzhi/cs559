@@ -5,7 +5,9 @@
 #include <GL\GL.h>
 #include <GL\GLU.h>
 #include <glm.hpp>
+#include <gtx\rotate_vector.hpp>
 
+#include "DrawingState.H"
 
 #include "DrawingTools.h"
 
@@ -17,3 +19,6 @@ void drawSkyBox(glm::vec3 sun, float light, glm::mat4 MVP);
 
 void drawEarth(glm::mat4 P, glm::mat4 V, glm::vec3 camPos, glm::vec3 sunDirection, float light);
 
+float calculateSunLight(DrawingState* drst);
+
+glm::vec3 calculateSunDirection(DrawingState* drst);

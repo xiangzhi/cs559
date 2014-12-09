@@ -76,9 +76,6 @@ TownViewWidget::TownViewWidget(int x, int y, int w, int h,
   Fl::add_idle(tvIdler,this);
   followCamera = new FollowCam();
   interestingCamera = new InterestingCam();
-
-
-
 }
   
 unsigned long lastDrawDone = 0;
@@ -116,6 +113,10 @@ void TownViewWidget::draw()
   glEnable( GL_DEPTH_TEST );
   glDepthFunc(GL_LESS);
   
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   /*
   // we use blending for everything nowadays - there's little cost to having it on
   // NOTE: we avoid Z-writes if alpha is small, so transparent really is transparent
@@ -154,23 +155,10 @@ void TownViewWidget::draw()
 
 
   //lighting calculations
-  float light = 0;
+  float light = calculateSunLight(&drst);
   //day time
-  glm::vec3 sun(0, 0, 0);
-  if (drst.timeOfDay > 6 && drst.timeOfDay < 18){
-    light = 6 - abs(12 - drst.timeOfDay);
-    float angle = (drst.timeOfDay - 6) / 3 * 45;
-    sun = glm::rotateZ(glm::vec3(1, 0, 0), angle);
-  }
+  glm::vec3 sun = calculateSunDirection(&drst);
 
-
-
-  //drawParticles(camPos);
-
-
-
-
- 
   glClearStencil(0);
 
 

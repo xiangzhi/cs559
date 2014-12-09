@@ -4,6 +4,7 @@ out vec3 color;
 in vec2 UV;
 in vec3 sun;
 in vec3 normal;
+in float lightIntensity;
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D textureInput;
@@ -16,5 +17,5 @@ void main (void) {
   float theta = clamp(dot(normal,sun),0,1);
   float light = theta * 2 + ambient;
   //color = light * vec3(1,0,0);
-  color =  texture(textureInput, nUV).rgb;
+  color =  clamp(lightIntensity,0,1) * texture(textureInput, nUV).rgb;
 };

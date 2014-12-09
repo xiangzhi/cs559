@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
-    </Filter>
     <Filter Include="Engine Core">
       <UniqueIdentifier>{916b80a5-22d3-4f76-989e-1558d4cef593}</UniqueIdentifier>
     </Filter>
@@ -24,9 +20,6 @@
     </Filter>
     <Filter Include="Utilities\Source">
       <UniqueIdentifier>{9b6a38e2-795c-4654-ab32-9639d4cf6ae9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Models">
-      <UniqueIdentifier>{79f5f8e2-10b6-493b-a1e2-cc1563886b22}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +104,12 @@
     <ClInclude Include="normalMapping.h">
       <Filter>Engine Core\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Bob.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BHLights.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Behavior.cpp">
@@ -192,6 +191,15 @@
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="normalMapping.cpp">
+      <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bob.cpp">
+      <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BHLights.cpp">
+      <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Examples\Suburbs.cpp">
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -145,6 +145,7 @@ void drawSkyBox(glm::vec3 sun, float light, glm::mat4 MVP){
   GLuint sunID = glGetUniformLocation(shaderID, "sunDirection");
   GLuint sampleLoc = glGetUniformLocation(shaderID, "textureInput");
   GLuint MatrixID = glGetUniformLocation(shaderID, "MVP");
+  GLuint lightID = glGetUniformLocation(shaderID, "light");
   //draw the four sides;
   for (int i = 0; i < 5; i++){
     GLuint vertexBuffer = bufferList[(i * 3)];
@@ -194,7 +195,7 @@ void drawSkyBox(glm::vec3 sun, float light, glm::mat4 MVP){
 
     //glUniform3fv(sunID,3 * sizeof(float), (float*)glm::vec3(0, 1, 0));
     glUniform3f(sunID, sun.x, sun.y, sun.z);
-
+    glUniform1f(lightID, light);
     //Send Uniform Values to shader
     
 
@@ -228,8 +229,6 @@ static Texture * landT;
 static Texture * landNormalT;
 static int headSize;
 
-
-
 void doubleHead(std::vector<float> & list, std::vector<float> & normallist, std::vector<float> & UVlist, int x, int z){
   int size = list.size();
   for (int i = 0; i < size; i += 3){
@@ -256,7 +255,6 @@ void doubleHead(std::vector<float> & list, std::vector<float> & normallist, std:
   }
 }
 bool head = false;
-
 
 #include "normalMapping.h"
 
@@ -538,4 +536,33 @@ void drawEarth(glm::mat4 proj,glm::mat4 view, glm::vec3 camPos,glm::vec3 sunDire
 
   //only draw heads near the user
 
+}
+/**
+float calculateSunLight(DrawingState drst){
+  //lighting calculations
+  return 1.05 - (abs(12 - drst.timeOfDay) / 12.0);
+}
+
+glm::vec3 calculateSunDirection(DrawingState drst){
+  glm::vec3 sun(0, 0, 0);
+  if (drst.timeOfDay > 6 && drst.timeOfDay < 18){
+    float angle = (drst.timeOfDay - 6) / 3 * 45;
+    sun = glm::rotateZ(glm::vec3(1, 0, 0), angle);
+  }
+  return sun;
+}
+*/
+
+float calculateSunLight(DrawingState* drst){
+  //lighting calculations
+  return 1.05 - (abs(12 - drst->timeOfDay) / 12.0);
+}
+
+glm::vec3 calculateSunDirection(DrawingState* drst){
+  glm::vec3 sun(0, 0, 0);
+  if (drst->timeOfDay > 6 && drst->timeOfDay < 18){
+    float angle = (drst->timeOfDay - 6) / 3 * 45;
+    sun = glm::rotateZ(glm::vec3(1, 0, 0), angle);
+  }
+  return sun;
 }

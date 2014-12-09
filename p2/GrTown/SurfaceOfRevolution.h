@@ -14,6 +14,7 @@
 //pass the value in and rotate around the surface OfRevoultion.
 //also return a list of normal filled with th
 void surfaceOfRevolution(glm::vec3 center, std::vector<float>& vertexlist, std::vector<float> * normallist, std::vector<float> * uvlist);
+void surfaceOfRevolution(glm::vec3 center, float sample, std::vector<glm::vec3>& vertexList, std::vector<glm::vec3>& normalList, std::vector<glm::vec2>& uvList);
 
 void surfaceOfRevolutionTest(glm::mat4 VP, glm::vec3 sun);
 

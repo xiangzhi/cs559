@@ -123,7 +123,9 @@
     <ClInclude Include="..\Utilities\ShaderTools.H" />
     <ClInclude Include="..\Utilities\Texture.H" />
     <ClInclude Include="Behavior.H" />
+    <ClInclude Include="BHLights.h" />
     <ClInclude Include="Billboards.h" />
+    <ClInclude Include="Bob.h" />
     <ClInclude Include="Building.h" />
     <ClInclude Include="Dino.h" />
     <ClInclude Include="DrawingState.H" />
@@ -152,12 +154,15 @@
     <ClCompile Include="..\Utilities\ShaderTools.cpp" />
     <ClCompile Include="..\Utilities\Texture.cpp" />
     <ClCompile Include="Behavior.cpp" />
+    <ClCompile Include="BHLights.cpp" />
     <ClCompile Include="Billboards.cpp" />
+    <ClCompile Include="Bob.cpp" />
     <ClCompile Include="Building.cpp" />
     <ClCompile Include="Dino.cpp" />
     <ClCompile Include="DrawingState.cpp" />
     <ClCompile Include="DrawingTools.cpp" />
     <ClCompile Include="DrawUtils.cpp" />
+    <ClCompile Include="Examples\Suburbs.cpp" />
     <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="GraphicsTownUI.cxx" />
     <ClCompile Include="GrObject.cpp" />

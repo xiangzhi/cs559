@@ -10,6 +10,7 @@ public:
   ~Billboards();
 
   void initialize();
-  void realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model);
+  void runAttribute(glm::mat4 proj, glm::mat4 view, glm::mat4 model);
+  //void realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model);
 };
 

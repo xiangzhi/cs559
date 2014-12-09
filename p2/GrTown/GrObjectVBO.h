@@ -78,9 +78,17 @@ public:
   GLuint type = GL_TRIANGLES;
 	Texture * t = NULL;
 	int vertexNum;
-	bool redraw = true;
+  bool redraw = true;
+  bool redrawAfter = true;
 	bool useTexture = false;
   bool useIndex = false;
+  glm::vec3 pos;
+
+  virtual void initializeAfter();
+
+
+  virtual void runAttribute(glm::mat4 proj, glm::mat4 view, glm::mat4 model);
+  virtual void runAttributeAfter();
 
 
 	// most objects have some way to position themselves

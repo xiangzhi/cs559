@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <fstream>
+#include <iostream>
 
 using std::ifstream;
 using std::string;
@@ -96,7 +97,7 @@ GLuint loadShader(std::string &vertexFileName, std::string& fragmentFileName){
 	int InfoLogLength;
 
 	// Compile Vertex Shader
-	printf("Compiling Vectex shader : %s\n", vertex_file_path);
+  std::cout << "Compiling Vectex shader : " << vertex_file_path << std::endl;
 	char const * VertexSourcePointer = VertexShaderCode.c_str();
 	glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
 	glCompileShader(VertexShaderID);
@@ -107,12 +108,12 @@ GLuint loadShader(std::string &vertexFileName, std::string& fragmentFileName){
 	std::vector<char> VertexShaderErrorMessage(InfoLogLength);
 	if (VertexShaderErrorMessage.size() > 1){
 		glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-		//straight away throw error
+    fprintf(stderr, "ERROR:%s\n", &VertexShaderErrorMessage[0]);
 		throw std::runtime_error(&VertexShaderErrorMessage[0]);
 	}
 
 	// Compile Fragment Shader
-	printf("Compiling Fragment shader : %s\n", fragment_file_path);
+  std::cout << "Compiling Fragment shader : " << fragment_file_path << std::endl;
 	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
 	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
 	glCompileShader(FragmentShaderID);
@@ -124,6 +125,7 @@ GLuint loadShader(std::string &vertexFileName, std::string& fragmentFileName){
 	if (FragmentShaderErrorMessage.size() > 1){
 		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
 		//straight away throw error
+    fprintf(stderr, "ERROR:%s\n", &FragmentShaderErrorMessage[0]);
 		throw std::runtime_error(&FragmentShaderErrorMessage[0]);
 	}
 
@@ -140,7 +142,7 @@ GLuint loadShader(std::string &vertexFileName, std::string& fragmentFileName){
 	std::vector<char> ProgramErrorMessage(InfoLogLength);
 	if (ProgramErrorMessage.size() > 1){
 		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-		//straight away throw error
+    fprintf(stderr, "ERROR:%s\n", &FragmentShaderErrorMessage[0]);
 		throw std::runtime_error(&FragmentShaderErrorMessage[0]);
 	}
 
@@ -149,6 +151,13 @@ GLuint loadShader(std::string &vertexFileName, std::string& fragmentFileName){
 	fprintf(stdout, "SharderID: %d\n", (int)ProgramID);
 	return ProgramID;
 }
+
+
+//shortHand
+GLuint loadShader(const char* vertexFileName, const char* fragmentFileName){
+  return loadShader((std::string)vertexFileName, (std::string)fragmentFileName);
+}
+
 
 //leaved for legacy codes that might used this.
 GLuint loadShader(const char* vertexFileName, const char* fragmentFileName, char*& error){

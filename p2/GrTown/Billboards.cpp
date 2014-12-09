@@ -108,7 +108,7 @@ void Billboards::initialize(){
   shaderID = loadShader("billboardVertex.glsl", "billboardFragment.glsl", err);
   vertexNum = vList.size();
 
-  transform = glm::mat4(1.0f);
+  transform = glm::translate(pos);
 
 
   t = fetchTexture("testTree.png", true, true);
@@ -116,7 +116,7 @@ void Billboards::initialize(){
 
 }
 
-
+/**
 void Billboards::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model){
 
   //if for some reason, something change
@@ -204,38 +204,6 @@ void Billboards::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, gl
     sun = glm::rotateZ(glm::vec3(1, 0, 0), angle);
   }
 
-
-  //billboard stuff
-
-  glm::vec4 center = glm::vec4(0, 10, -500, 0);
-  center = model * center;
-  glm::vec3 camRight = glm::vec3(view[0][0], view[1][0], view[2][0]);
-  glm::vec3 camUp = glm::vec3(view[0][1], view[1][1], view[2][1]);
-
-
-  sendVec3ToShader(shaderID, "camRight", glm::vec3(view[0][0], view[1][0], view[2][0]));
-  sendVec3ToShader(shaderID, "camUp", glm::vec3(view[0][1], view[1][1], view[2][1]));
-  sendVec3ToShader(shaderID, "center", glm::vec3(center));
-  sendVec3ToShader(shaderID, "size", glm::vec3(40, 20, 0));
-
-  glm::mat4 trans(1.0f);
-  trans[0][0] = view[0][0];
-  trans[1][0] = view[1][0];
-  trans[2][0] = view[2][0];
-
-  trans[0][1] = view[0][1];
-  trans[1][1] = view[1][1];
-  trans[2][1] = view[2][1];
-
-
-
-  //get the location of MVP in shader
-  MatrixID = glGetUniformLocation(shaderID, "trans");
-  //pass our MVP to shader
-  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &trans[0][0]);
-
-
-
   //get location of sun
   GLuint sunID = glGetUniformLocation(shaderID, "sunDirection");
   //glUniform3fv(sunID,3 * sizeof(float), (float*)glm::vec3(0, 1, 0));
@@ -262,4 +230,33 @@ void Billboards::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, gl
   glDisableVertexAttribArray(2);
   glDisableVertexAttribArray(3);
   glDisableVertexAttribArray(4);
+}
+*/
+void Billboards::runAttribute(glm::mat4 proj, glm::mat4 view, glm::mat4 model){
+  //billboard stuff
+
+  glm::vec4 center = glm::vec4(pos.x + 0, pos.y + 10, pos.z + -100, 0);
+  center = model * center;
+  glm::vec3 camRight = glm::vec3(view[0][0], view[1][0], view[2][0]);
+  glm::vec3 camUp = glm::vec3(view[0][1], view[1][1], view[2][1]);
+
+
+  sendVec3ToShader(shaderID, "camRight", glm::vec3(view[0][0], view[1][0], view[2][0]));
+  sendVec3ToShader(shaderID, "camUp", glm::vec3(view[0][1], view[1][1], view[2][1]));
+  sendVec3ToShader(shaderID, "center", glm::vec3(center));
+  sendVec3ToShader(shaderID, "size", glm::vec3(40, 20, 0));
+
+  glm::mat4 trans(1.0f);
+  trans[0][0] = view[0][0];
+  trans[1][0] = view[1][0];
+  trans[2][0] = view[2][0];
+
+  trans[0][1] = view[0][1];
+  trans[1][1] = view[1][1];
+  trans[2][1] = view[2][1];
+
+  //get the location of MVP in shader
+  GLuint MatrixID = glGetUniformLocation(shaderID, "trans");
+  //pass our MVP to shader
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &trans[0][0]);
 }

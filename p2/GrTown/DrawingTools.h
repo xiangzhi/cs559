@@ -17,6 +17,7 @@ void bindToArrayBuffer(GLuint& ptrToBuffer, std::vector<glm::vec3> list);
 void bindToArrayBuffer(GLuint& ptrToBuffer, std::vector<glm::vec2> list);
 
 //return a list of normal and vertex that represent a cube with the variables
+void drawCube(std::vector<glm::vec3> &vertexList, std::vector<glm::vec3> &normalList, std::vector<glm::vec2> &uvList, float _l = 10, float _w = 10, float _h = 10);
 void drawCube(std::vector<float> &vertexList, std::vector<float> &normalList, float l = 10,float w = 10, float h = 10);
 
 

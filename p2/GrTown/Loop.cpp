@@ -218,6 +218,189 @@ Point* getAveragePoint(Point* p1, Point* p2){
   return p;
 }
 
+void calculate(std::vector<triangle> &triangles, int times){
+
+  for (int i = 0; i < times; i++){
+    std::vector<triangle> newList;
+
+    //first generate all new points along the edge;
+    for (int i = 0; i < triangles.size(); i++){
+      //p12
+      Point* p = getAveragePoint(triangles[i].p[0], triangles[i].p[1]);
+      p->parents.push_back(triangles[i].p[0]);
+      triangles[i].p[0]->child.push_back(p);
+      p->parents.push_back(triangles[i].p[1]);
+      triangles[i].p[1]->child.push_back(p);
+      //updat the far parents(the vertex on the triangle that is not the parents)
+      p->farParents.push_back(triangles[i].p[2]);
+      triangles[i].p[2]->farChild.push_back(p);
+
+      triangles[i].np[0] = p;
+
+      //p13
+      p = getAveragePoint(triangles[i].p[0], triangles[i].p[2]);
+      p->parents.push_back(triangles[i].p[0]);
+      triangles[i].p[0]->child.push_back(p);
+      p->parents.push_back(triangles[i].p[2]);
+      triangles[i].p[2]->child.push_back(p);
+      p->farParents.push_back(triangles[i].p[1]);
+      triangles[i].p[1]->farChild.push_back(p);
+
+      triangles[i].np[1] = p;
+      //p23
+      p = getAveragePoint(triangles[i].p[1], triangles[i].p[2]);
+      p->parents.push_back(triangles[i].p[1]);
+      triangles[i].p[1]->child.push_back(p);
+      p->parents.push_back(triangles[i].p[2]);
+      triangles[i].p[2]->child.push_back(p);
+      p->farParents.push_back(triangles[i].p[0]);
+      triangles[i].p[0]->farChild.push_back(p);
+      triangles[i].np[2] = p;
+    }
+
+    //to store the point list
+    std::vector<Point> ptrList;
+
+    //check all points if there is an overlap, merge
+    for (int i = 0; i < triangles.size(); i++){
+      triangle currTri = triangles[i];
+      for (int j = 0; j < triangles.size(); j++){
+        if (i == j){
+          continue;
+        }
+        triangle searchTri = triangles[j];
+        for (int pp = 0; pp < 3; pp++){
+          for (int spp = 0; spp < 3; spp++){
+            if (isSamePoint(currTri.p[pp], searchTri.p[spp])){
+              //combine the information of both
+              //replace that point with the same reference pointer;
+              currTri.p[pp]->merge(searchTri.p[spp]);
+              Point* temp = searchTri.p[spp];
+              update(temp, currTri.p[pp]);
+              delete temp;
+              //link the two points together
+              searchTri.p[spp] = currTri.p[pp];
+            }
+          }
+        }
+        triangles[j] = searchTri;
+      }
+      triangles[i] = currTri;
+    }
+    //to fix the weird delete problem
+    std::vector<void*> deleteList;
+    //update new points neighbors table, if there is overlap, make it only one point
+    for (int i = 0; i < triangles.size(); i++){
+      triangle currTri = triangles[i];
+      for (int j = 0; j < triangles.size(); j++){
+        if (i == j){
+          continue;
+        }
+        triangle searchTri = triangles[j];
+        for (int pp = 0; pp < 3; pp++){
+          for (int spp = 0; spp < 3; spp++){
+            if (isSamePoint(currTri.np[pp], searchTri.np[spp])){
+              //combine the information of both
+              //replace that point with the same reference pointer;
+              currTri.np[pp]->merge(searchTri.np[spp]);
+              Point* temp = searchTri.np[spp];
+              searchTri.np[spp] = currTri.np[pp];
+
+              deleteList.push_back(temp);
+            }
+          }
+        }
+        triangles[j] = searchTri;
+      }
+      triangles[i] = currTri;
+    }
+
+    //delete the points
+    for (int j = 0; j < deleteList.size(); j++){
+      delete deleteList[j];
+    }
+
+    //update all the new value, we can do it again and again for the same point, since it doesn't depend on the old value
+    for (int i = 0; i < triangles.size(); i++){
+      triangle currTri = triangles[i];
+      loopValueForNew(currTri.np[0]);
+      loopValueForNew(currTri.np[1]);
+      loopValueForNew(currTri.np[2]);
+      triangles[i] = currTri;
+    }
+
+    //now we go and tell every original point they have the child and populate their neighbor field.
+    for (int i = 0; i < triangles.size(); i++){
+      triangle currTri = triangles[i];
+      //just add the parent to the list
+      for (int j = 0; j < 3; j++){
+        Point* currPoint = currTri.np[j];
+        ((Point*)currPoint->parents[0])->neighbors.push_back(currPoint);
+        ((Point*)currPoint->parents[1])->neighbors.push_back(currPoint);
+      }
+    }
+
+    //now all the points should be link together.
+    //calculate the new position for all old position
+    for (int i = 0; i < triangles.size(); i++){
+      triangle currTri = triangles[i];
+      //just add the parent to the list
+      for (int j = 0; j < 3; j++){
+        Point* currPoint = currTri.p[j];
+        loopValueForOld(currPoint);
+      }
+    }
+
+
+    //now throw them all into new triangles.
+    for (int i = 0; i < triangles.size(); i++){
+      triangle currTri = triangles[i];
+
+      //first New Triangle;
+      Point* p1 = new Point(currTri.p[0]);
+      Point* p2 = new Point(currTri.np[0]);
+      Point* p3 = new Point(currTri.np[1]);
+      newList.push_back(triangle(p1, p2, p3));
+
+      p1 = new Point(currTri.p[2]);
+      p2 = new Point(currTri.np[1]);
+      p3 = new Point(currTri.np[2]);
+      newList.push_back(triangle(p1, p2, p3));
+
+      p1 = new Point(currTri.p[1]);
+      p2 = new Point(currTri.np[0]);
+      p3 = new Point(currTri.np[2]);
+      newList.push_back(triangle(p1, p2, p3));
+
+      p1 = new Point(currTri.np[0]);
+      p2 = new Point(currTri.np[1]);
+      p3 = new Point(currTri.np[2]);
+      newList.push_back(triangle(p1, p2, p3));
+      //don't delete points here, don't forget they share multiple points.
+    }
+
+
+    //a hacky way of knowing what I deleted.
+    std::vector<void*> addrList;
+    //cleaning up, remove all the stuff
+    for (int i = 0; i < triangles.size(); i++){
+      triangle currTri = triangles[i];
+
+      for (int j = 0; j < 3; j++){
+        if (!searchList(addrList, currTri.np[j])){
+          addrList.push_back(currTri.np[j]);
+          delete(currTri.np[j]);
+        }
+        if (!searchList(addrList, currTri.p[j])){
+          delete currTri.p[j];
+          addrList.push_back(currTri.p[j]);
+        }
+      }
+    }
+
+    triangles = newList;
+  }
+}
 
 void calculate(std::vector<triangle> &triangles){
 
@@ -409,25 +592,53 @@ void calculate(std::vector<triangle> &triangles){
 
 }
 
-std::vector<float> deconstruct(std::vector<triangle> triangleList, std::vector<float>& vertexList, std::vector<float>& normalList, std::vector<float>& uvList){
+
+
+void construct(std::vector<triangle>& list, std::vector<glm::vec3>& vertexList, std::vector<glm::vec3>& normallist, std::vector<glm::vec2>& uvlist){
+  int uvIndex = 0;
+  for (int i = 0; i < vertexList.size() - 2; i += 3){
+
+    Point* p1 = new Point(vertexList[i]);
+    p1->normal = normallist[i];
+    if (uvlist.size() != 0){
+      p1->texture = uvlist[i];
+    }
+    else{
+      p1->addUV(0, 0);
+    }
+
+    Point* p2 = new Point(vertexList[i+1]);
+    p2->normal = normallist[i+1];
+    if (uvlist.size() != 0){
+      p2->texture = uvlist[i+1];
+    }
+    else{
+      p2->addUV(0, 0);
+    }
+
+    Point* p3 = new Point(vertexList[i + 2]);
+    p3->normal = normallist[i + 2];
+    if (uvlist.size() != 0){
+      p3->texture = uvlist[i + 2];
+    }
+    else{
+      p3->addUV(0, 0);
+    }
+
+    list.push_back(triangle(p1, p2, p3));
+  }
+}
+void deconstruct(std::vector<triangle>& triangleList, std::vector<glm::vec3>& vertexList, std::vector<glm::vec3>& normalList, std::vector<glm::vec2>& uvList){
   std::vector<float> list;
   for (int i = 0; i < triangleList.size(); i++){
     triangle t = triangleList[i];
+
     for (int j = 0; j < 3; j++){
-      vertexList.push_back(t.p[j]->loc.x);
-      vertexList.push_back(t.p[j]->loc.y);
-      vertexList.push_back(t.p[j]->loc.z);
-
-      normalList.push_back(t.p[j]->normal.x);
-      normalList.push_back(t.p[j]->normal.y);
-      normalList.push_back(t.p[j]->normal.z);
-
-      uvList.push_back(t.p[j]->texture.x);
-      uvList.push_back(t.p[j]->texture.y);
-
+      vertexList.push_back(t.p[j]->loc);
+      normalList.push_back(t.p[j]->normal);
+      uvList.push_back(t.p[j]->texture);
     }
   }
-  return list;
 }
 
 std::vector<triangle> construct(std::vector<float>& vertexList, std::vector<float>& normallist, std::vector<float>& uvlist){
@@ -468,6 +679,26 @@ std::vector<triangle> construct(std::vector<float>& vertexList, std::vector<floa
   }
   return list;
 }
+std::vector<float> deconstruct(std::vector<triangle> triangleList, std::vector<float>& vertexList, std::vector<float>& normalList, std::vector<float>& uvList){
+  std::vector<float> list;
+  for (int i = 0; i < triangleList.size(); i++){
+    triangle t = triangleList[i];
+    for (int j = 0; j < 3; j++){
+      vertexList.push_back(t.p[j]->loc.x);
+      vertexList.push_back(t.p[j]->loc.y);
+      vertexList.push_back(t.p[j]->loc.z);
+
+      normalList.push_back(t.p[j]->normal.x);
+      normalList.push_back(t.p[j]->normal.y);
+      normalList.push_back(t.p[j]->normal.z);
+
+      uvList.push_back(t.p[j]->texture.x);
+      uvList.push_back(t.p[j]->texture.y);
+
+    }
+  }
+  return list;
+}
 
 void loopSubDivision(std::vector<float>& vertexlist, std::vector<float>& normallist, std::vector<float>& uvlist){
   //construct
@@ -482,6 +713,17 @@ void loopSubDivision(std::vector<float>& vertexlist, std::vector<float>& normall
   deconstruct(triangleList, vertexlist, normallist, uvlist);
 }
 
+void loopSubDivision(int times, std::vector<glm::vec3>& vertexlist, std::vector<glm::vec3>& normallist, std::vector<glm::vec2>& uvlist){
+  //construct
+  std::vector<triangle> triangleList;
+  construct(triangleList, vertexlist, normallist, uvlist);
+  calculate(triangleList,times);
+  //clear the list first
+  vertexlist.clear();
+  normallist.clear();
+  uvlist.clear();
+  deconstruct(triangleList, vertexlist, normallist, uvlist);
+}
 
 
 Loop::Loop()
