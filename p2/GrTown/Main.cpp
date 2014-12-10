@@ -55,11 +55,6 @@ int main(int /*argc*/, char** /*argv*/)
   // we need to raise the cube since we're giving the position of the
   // center 
   // add some more stuff
-  GrObject* o1 = new Church;
-  o1->interesting = true;
-  o1->laX = 0; o1->laY = 0; o1->laZ = 0;
-  o1->lfX = -50; o1->lfY = 100; o1->lfZ = 300;
-  add(o1, -100, 0, 100, pi / 2.f);
 
   GrObjectVBO* b = new Building();
   add(b);
@@ -71,7 +66,7 @@ int main(int /*argc*/, char** /*argv*/)
   b->lfZ = 100;
   b->interesting = true;
 
-
+  /*
   for (int i = 0; i < 100; i++){
     GrObjectVBO* billboard = new Billboards();
 
@@ -107,16 +102,16 @@ int main(int /*argc*/, char** /*argv*/)
 
     add(billboard);
   }
-
+  */
 
   GrObjectVBO* dino = new Dino();
   add(dino);
   GrObjectVBO* bob = new Bob();
   bob->interesting = true;
   add(bob);
-  GrObjectVBO* super = new Model(bob);
-  super->interesting = true;
-  add(super);
+  //GrObjectVBO* super = new Model(bob);
+  //super->interesting = true;
+  //add(super);
   //GrObjectVBO* s = new Sphere();
   //add(s);
 

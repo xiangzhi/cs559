@@ -38,9 +38,6 @@
     <ClInclude Include="GraphicsTownUI.H">
       <Filter>Engine Core\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GrObject.H">
-      <Filter>Engine Core\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GrTown_PCH.H">
       <Filter>Engine Core\Header Files</Filter>
     </ClInclude>
@@ -110,6 +107,9 @@
     <ClInclude Include="BHLights.h">
       <Filter>Engine Core\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="House.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Behavior.cpp">
@@ -125,9 +125,6 @@
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsTownUI.cxx">
-      <Filter>Engine Core\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GrObject.cpp">
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GrWorld.cpp">
@@ -199,7 +196,7 @@
     <ClCompile Include="BHLights.cpp">
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Examples\Suburbs.cpp">
+    <ClCompile Include="House.cpp">
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

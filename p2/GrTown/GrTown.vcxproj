@@ -133,10 +133,10 @@
     <ClInclude Include="DrawUtils.H" />
     <ClInclude Include="FlyCamera.H" />
     <ClInclude Include="GraphicsTownUI.H" />
-    <ClInclude Include="GrObject.H" />
     <ClInclude Include="GrObjectVBO.h" />
     <ClInclude Include="GrTown_PCH.H" />
     <ClInclude Include="GrWorld.H" />
+    <ClInclude Include="House.h" />
     <ClInclude Include="Loop.h" />
     <ClInclude Include="MMatrix.H" />
     <ClInclude Include="Model.h" />
@@ -162,12 +162,11 @@
     <ClCompile Include="DrawingState.cpp" />
     <ClCompile Include="DrawingTools.cpp" />
     <ClCompile Include="DrawUtils.cpp" />
-    <ClCompile Include="Examples\Suburbs.cpp" />
     <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="GraphicsTownUI.cxx" />
-    <ClCompile Include="GrObject.cpp" />
     <ClCompile Include="GrObjectVBO.cpp" />
     <ClCompile Include="GrWorld.cpp" />
+    <ClCompile Include="House.cpp" />
     <ClCompile Include="Loop.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MMatrix.cpp" />

@@ -12,6 +12,8 @@ public:
   GrObjectVBO* track;
 
   void initializeAfter();
-  void preDraw();
+  void preDraw(DrawingState* drst);
+  void redoSOR();
+  float rotation = 10;
 };
 

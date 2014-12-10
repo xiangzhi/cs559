@@ -5,11 +5,11 @@
 // updated Fall, 2005
 //
 
-#include "GrObject.H"
-
 // the main kind of camera that flies around under user control
 
-class FlyCamera : public GrObject {
+#include "GrObjectVBO.h"
+
+class FlyCamera : public GrObjectVBO {
 public:
   FlyCamera();
 
@@ -20,7 +20,7 @@ public:
   virtual bool uiStep();
 
   // computes the transform from the angles
-  void getCamera(Matrix);
+  //void getCamera(Matrix);
   //similar but uses GLM
   glm::mat4 getCamera();
 
@@ -43,7 +43,7 @@ public:
 // along by the object as if you we on a spring (or rigid rod)
 // because its not too much fun to be pulled along the ground, there
 // is a special hack to stay above the ground
-class FollowCam : public GrObject {
+class FollowCam : public GrObjectVBO {
 public:
   unsigned long lastUItime;
   FollowCam();
@@ -51,10 +51,10 @@ public:
   virtual bool uiStep();
   virtual int handle(int);
 
-  void getCamera(Matrix); 
-
+  //void getCamera(Matrix); 
+  glm::mat4 getCamera();
   // the object that we're following
-  GrObject* following;
+  GrObjectVBO* following;
 
   // the distance to follow at
   float followDistance;
@@ -64,11 +64,11 @@ public:
 };
 
 // a "plan" or map view - but not really orthographic
-class Map : public GrObject {
+class Map : public GrObjectVBO {
 public:
   Map();
-  void getCamera(Matrix); 
-
+  //void getCamera(Matrix); 
+  glm::mat4 getCamera();
   virtual bool uiStep();
   virtual int handle(int);
   unsigned long lastUItime;
@@ -76,15 +76,16 @@ public:
   float x,y,z;
 };
 
+
 ///////////////////////
 // a camera that looks at interesting objects
-class InterestingCam : public GrObject {
+class InterestingCam : public GrObjectVBO {
 public:
   InterestingCam();
 
-  void getCamera(Matrix);
+  glm::mat4 getCamera();
 
-  GrObject* focus;
+  GrObjectVBO* focus;
 };
 
 // $Header: /p/course/cs559-gleicher/private/CVS/GrTown/FlyCamera.H,v 1.3 2007/11/12 16:56:06 gleicher Exp $

@@ -8,7 +8,7 @@ public:
   Model(GrObjectVBO* track);
   ~Model();
   void initialize();
-  void preDraw();
+  void preDraw(DrawingState* drst);
   glm::mat4 getCamera();
   GrObjectVBO* track;
 };

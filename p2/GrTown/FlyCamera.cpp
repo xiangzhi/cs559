@@ -14,10 +14,11 @@
 
 int flyCamCount = 0;
 
-FlyCamera::FlyCamera() : GrObject("FlyCamera",flyCamCount), 
+FlyCamera::FlyCamera() : GrObjectVBO("FlyCamera",flyCamCount), 
   direction(0), pitch(0), posX(0), posY(10), posZ(0),
   lastUItime(0), buttonDown(0)
 {
+	pos = glm::vec3(0);
   // don't make this ridable, since its special
   //  ridable = true; 
 }
@@ -27,6 +28,7 @@ void FlyCamera::draw(DrawingState*)
 
 // build the transformation
 // C = T Ry Rx
+/*
 void FlyCamera::getCamera(Matrix camera)
 {
 	Matrix tmp1,  tmp2,  tmp3;
@@ -37,21 +39,44 @@ void FlyCamera::getCamera(Matrix camera)
 	rotMatrix(tmp1,'X',-pitch);
 	multMatrix(tmp3,tmp1,camera);
 }
+*/
+
+#include <math.h>
+/** Degrees to Radian **/
+#define degreesToRadians( degrees ) ((float)( ( degrees ) / 180.0 * M_PI ))
+
+/** Radians to Degrees **/
+#define radiansToDegrees( radians ) ((float)(( radians ) * ( 180.0 / M_PI ))
+
 
 glm::mat4 FlyCamera::getCamera(){
   //TODO:spend time thinking how to make it lookat
-  /*
+	Matrix tmp1, tmp2, tmp3,finals;
+
+	transMatrix(tmp1, -posX, -posY, -posZ);
+	rotMatrix(tmp2, 'Y', -direction);
+	glm::mat4 c1 = toGLMMat4(tmp2);
+	multMatrix(tmp1, tmp2, tmp3);
+	rotMatrix(tmp1, 'X', -pitch);
+	glm::mat4 c2 = toGLMMat4(tmp2);
+	multMatrix(tmp3, tmp1, finals);
+	glm::mat4 test = toGLMMat4(finals);
+	return test;
+
   glm::mat4 m(1.0f);
   glm::mat4 m2(1.0f);
+  glm::mat4 m3(1.0f);
  
   m = glm::translate(m, glm::vec3(-posX, -posY, -posZ));
-  m2 = glm::rotate(glm::mat4(1.0f), -direction, glm::vec3(0, 1, 0));
-  m = m * m2;
-  m2 = glm::rotate(glm::mat4(1.0f), -pitch, glm::vec3(1, 0, 0));
-  m = m2 * m;
+  m2 = glm::rotate(glm::mat4(1.0f),-direction, glm::vec3(0, 1, 0));
+  glm::mat4 c3 = m2;
+  m3 = m2 * m;
+  m2 = glm::rotate(m, -pitch, glm::vec3(1, 0, 0));
+  glm::mat4 c4 = m2;
+  m = m2 * m3;
   return m;
   
-  */
+  /*
   glm::vec4 dVec(1,0,0,0);
   
   glm::mat4 dirX = glm::rotate(glm::mat4(1.0f), -direction, glm::vec3(0, 1, 0));
@@ -69,7 +94,7 @@ glm::mat4 FlyCamera::getCamera(){
 
 
   return m;
-  
+  */
 }
 
 
@@ -125,8 +150,12 @@ int FlyCamera::handle(int e)
 // is - to find it out, look at the Z axis of the camera transform
 void FlyCamera::forward(float a)
 {
-	Matrix cam;
-	getCamera(cam);
+	glm::mat4 cam = getCamera();
+	//getCamera(cam);
+
+	pos.x -= a*cam[0][2];
+	pos.y -= a*cam[1][2];
+	pos.z -= a*cam[2][2];
 
 	posX -= a*cam[0][2];
 	posY -= a*cam[1][2];
@@ -137,12 +166,16 @@ void FlyCamera::forward(float a)
 // but the transform really isn't used, so we have to get the camera
 void FlyCamera::localTrans(float x,float y,float z)
 {
-	Matrix cam;
-	getCamera(cam);
+	glm::mat4 cam = getCamera();
+	//getCamera(cam);
 
-	  posX -= x*cam[0][0] + y*cam[0][1] + z*cam[0][2];
-	  posY -= x*cam[1][0] + y*cam[1][1] + z*cam[1][2];
-	  posZ -= x*cam[2][0] + y*cam[2][1] + z*cam[2][2];
+	pos.x -= x*cam[0][0] + y*cam[0][1] + z*cam[0][2];
+	pos.y -= x*cam[1][0] + y*cam[1][1] + z*cam[1][2];
+	pos.z -= x*cam[2][0] + y*cam[2][1] + z*cam[2][2];
+
+	posX -= x*cam[0][0] + y*cam[0][1] + z*cam[0][2];
+	posY -= x*cam[1][0] + y*cam[1][1] + z*cam[1][2];
+	posZ -= x*cam[2][0] + y*cam[2][1] + z*cam[2][2];
 }
 
 
@@ -200,33 +233,37 @@ bool FlyCamera::uiStep()
 
 
 ///////////////////////////////////////////////////////////////
-FollowCam::FollowCam() : GrObject("follower"), 
+FollowCam::FollowCam() : GrObjectVBO("follower"), 
 	following(0), followDistance(45), minY(15)
 {
   ridable = 1;
   lastUItime = 0;
 }
 
+/*
 // build a transformation that looks at the object that is being
 // followed, and tries to keep a sane distance away
 void FollowCam::getCamera(Matrix camera)
 {
+  /*
   float atX, atY, atZ;		// where we're looking at
-
   if (following) {
+	  /*
 	atX = following->transform[3][0];
 	atY = following->transform[3][1];
 	atZ = following->transform[3][2];
+
   } else {
 	  std::cerr << "No object for followcam!";
 	  return;
   }
 
+  /*
   // get the old "from" point from the matrix
   float oldFromX = transform[3][0];
   float oldFromY = transform[3][1];
   float oldFromZ = transform[3][2];
-
+ 
   // compute the new from point
   float fromX, fromY, fromZ;
 
@@ -249,7 +286,14 @@ void FollowCam::getCamera(Matrix camera)
   if (fromY < minY) fromY = minY;
 
   lookatMatrix(fromX,fromY,fromZ, atX,atY,atZ, camera);
+
 }
+*/
+
+glm::mat4 FollowCam::getCamera(){
+	return glm::mat4(1.0f);
+}
+
 
 bool FollowCam::uiStep()
 {  unsigned long uitime = clock();
@@ -273,11 +317,11 @@ int FollowCam::handle(int e)
 }
 
 ////////////////////////////////////////////////////////////////////////
-Map::Map() :  GrObject("Map"), x(0), y(0), z(-2000)
+Map::Map() :  GrObjectVBO("Map"), x(0), y(0), z(-2000)
 {
   ridable = 1;
 }
-
+/*
 void Map::getCamera(Matrix camera)
 {
   transMatrix(camera,x,y,z);
@@ -286,6 +330,17 @@ void Map::getCamera(Matrix camera)
   camera[1][2] = 1;
   camera[2][1] = -1;
   camera[2][2] = 0;
+}
+*/
+
+glm::mat4 Map::getCamera(){
+	glm::mat4 camera = glm::translate(glm::mat4(1.0f),glm::vec3(x, y, z));
+	camera[0][0] = 1;
+	camera[1][1] = 0;
+	camera[1][2] = 1;
+	camera[2][1] = -1;
+	camera[2][2] = 0;
+	return camera;
 }
 
 int Map::handle(int e)
@@ -330,24 +385,29 @@ bool Map::uiStep()
   return didSomething;
 }
 
+#include "glm.hpp"
+#include <gtc\matrix_transform.hpp>
 ///////////////////////////////////////////////////////////////////////
 InterestingCam::InterestingCam() : focus(0)
 {
 }
 
-void InterestingCam::getCamera(Matrix camera)
+glm::mat4 InterestingCam::getCamera()
 {
-	float laX, laY, laZ, lfX, lfY, lfZ;
-
 	// find the points in world coordinates
 	if (focus) {
-	  transformMatrix(focus->transform, focus->laX, focus->laY, focus->laZ, laX, laY, laZ); 
-	  transformMatrix(focus->transform, focus->lfX, focus->lfY, focus->lfZ, lfX, lfY, lfZ);
-	} else {
-	  laX = laY = laZ = 0;
-	  lfX = lfY = lfZ = 500;
+		return glm::lookAt(
+			focus->from,
+			focus->pos,
+			glm::vec3(0, 1, 0)
+		);
 	}
-	lookatMatrix(lfX,lfY,lfZ, laX, laY, laZ, camera);
+	return glm::lookAt(
+		glm::vec3(100,100,100),
+		glm::vec3(0,0,0),
+		glm::vec3(0, 1, 0)
+	);
+	
 }
 
 // $Header: /p/course/cs559-gleicher/private/CVS/GrTown/FlyCamera.cpp,v 1.7 2007/11/12 16:56:06 gleicher Exp $

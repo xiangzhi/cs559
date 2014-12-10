@@ -14,7 +14,6 @@
 using std::vector;
 
 // stuff in the world
-vector<GrObject*> theObjects;
 vector<GrObjectVBO*> theVBOobjects;
 
 // things for drawing the world

@@ -11,7 +11,6 @@
 // "the world" - framework for stuff to go into
 //
 class DrawingState;
-class GrObject;
 class GrObjectVBO;
 
 // the sky and "earth" are special objects, so we draw them

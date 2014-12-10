@@ -16,13 +16,23 @@ void bindToArrayBuffer(GLuint& ptrToBuffer, double sizeOfLocation, void* ptrToLo
 void bindToArrayBuffer(GLuint& ptrToBuffer, std::vector<glm::vec3> list){
   glGenBuffers(1, &ptrToBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, ptrToBuffer);
-  glBufferData(GL_ARRAY_BUFFER, list.size() * sizeof(glm::vec3), &list[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, list.size() * sizeof(glm::vec3), &list[0], GL_DYNAMIC_DRAW);
 }
 
 void bindToArrayBuffer(GLuint& ptrToBuffer, std::vector<glm::vec2> list){
   glGenBuffers(1, &ptrToBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, ptrToBuffer);
-  glBufferData(GL_ARRAY_BUFFER, list.size() * sizeof(glm::vec2), &list[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, list.size() * sizeof(glm::vec2), &list[0], GL_DYNAMIC_DRAW);
+}
+
+void rebindToArrayBuffer(GLuint& ptrToBuffer, std::vector<glm::vec3> list){
+	glBindBuffer(GL_ARRAY_BUFFER, ptrToBuffer);
+	glBufferData(GL_ARRAY_BUFFER, list.size() * sizeof(glm::vec3), &list[0], GL_DYNAMIC_DRAW);
+}
+
+void rebindToArrayBuffer(GLuint& ptrToBuffer, std::vector<glm::vec2> list){
+	glBindBuffer(GL_ARRAY_BUFFER, ptrToBuffer);
+	glBufferData(GL_ARRAY_BUFFER, list.size() * sizeof(glm::vec2), &list[0], GL_DYNAMIC_DRAW);
 }
 
 void drawCube(std::vector<glm::vec3> &vertexList, std::vector<glm::vec3> &normalList, std::vector<glm::vec2> &uvList, float _l, float _w, float _h){

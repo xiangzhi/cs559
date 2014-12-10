@@ -156,7 +156,7 @@ void Building::initialize(){
 
 	//move the building to the location
 	glm::mat4 op = glm::scale(glm::vec3(1, 3, 1));
-  op = glm::rotate(op, 45.0f, glm::vec3(0, 1, 0));
+    op = glm::rotate(op, 45.0f, glm::vec3(0, 1, 0));
 	op = glm::translate(glm::vec3(0, 0, 200)) * op;
 
 	transform = op;

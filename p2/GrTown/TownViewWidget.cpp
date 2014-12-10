@@ -8,7 +8,6 @@
 #include "DrawingState.H"
 #include "GrWorld.H"
 #include "GraphicsTownUI.H"
-#include "GrObject.H"
 #include "GrObjectVBO.h"
 
 #include "World.h"
@@ -53,10 +52,7 @@ void tvIdler(void* v)
  
  
   if (ti > 0){
-	  for (vector<GrObject*>::iterator g = theObjects.begin(); g != theObjects.end(); ++g)
-		  (*g)->simulateUntil(tv->time);
 
-	  
 	  for (vector<GrObjectVBO*>::iterator g = theVBOobjects.begin(); g != theVBOobjects.end(); ++g)
 		  (*g)->simulateUntil(tv->time);
 	 
@@ -130,14 +126,14 @@ void TownViewWidget::draw()
 
 
   Matrix camera;
-  drst.camera->getCamera(camera);
+  //drst.camera->getCamera(camera);
   glm::mat4 cam = drst.camera->getCamera();
   // compute the aspect ratio so we don't distort things
   double aspect = ((double)w()) / ((double)h());
   // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
   glm::mat4 proj = glm::perspective(drst.fieldOfView, (float)aspect, 0.1f, 10000.0f);
   // Camera matrix
-  glm::mat4 view = toGLMMat4(camera);
+  glm::mat4 view = cam;
 
   // Model matrix : an identity matrix (model will be at the origin)
   glm::mat4 model = glm::mat4(1.0f);//glm::translate(glm::mat4(1.0f),glm::vec3(10,5,0));  // Changes for each model !
@@ -184,10 +180,6 @@ void TownViewWidget::draw()
   drawAfterObList(theVBOobjects, &drst, proj, view, model);
 
  
-  //  GrObject* g;
-  drawObList(theObjects,&drst);
-  drawAfterObList(theObjects, &drst);
-
 
 
   if (lastDrawDone) {
@@ -203,23 +195,27 @@ void TownViewWidget::getStateFromUI(DrawingState* st)
 	st->timeOfDay = (int) ui->time->value();
 	st->fieldOfView = (float) ui->fov->value();
 	st->camera = getCamera();
-	st->backCull = ui->cull->value();
-	st->drGrTex = ui->lgTex->value();
+	//st->backCull = ui->cull->value();
+	//st->drGrTex = ui->lgTex->value();
+	st->physics = (ui->Physic->value() != 0);
+	st->eatable = (ui->Eatable->value() != 0);
+	st->soRRotation = ui->sorRotation->value();
+	st->loopDivisionTimes = (int)ui->loopDivision->value();
 }
 
-GrObject* TownViewWidget::getCamera()
+GrObjectVBO* TownViewWidget::getCamera()
 {
   int p = ui->pickCamera->value();
   if (p) {
 	if (ui->follower->value()) {
-	  followCamera->following =  (GrObject*) ui->pickCamera->data(p);
+	  followCamera->following =  (GrObjectVBO*) ui->pickCamera->data(p);
 	  return followCamera;
 	}
-	return (GrObject*) ui->pickCamera->data(p);
+	return (GrObjectVBO*) ui->pickCamera->data(p);
   } else {
 	p = ui->pickInteresting->value();
 	if (p) {
-	  interestingCamera->focus = (GrObject*) ui->pickInteresting->data(p);
+	  interestingCamera->focus = (GrObjectVBO*) ui->pickInteresting->data(p);
 	  return interestingCamera;
 	} else
 	  return defaultCamera;

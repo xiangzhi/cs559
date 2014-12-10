@@ -13,7 +13,6 @@
 
 class GraphicsTownUI;
 class DrawingState;
-class GrObject;
 class GrObjectVBO;
 class FollowCam;
 class FlyCamera;
@@ -30,14 +29,14 @@ class TownViewWidget : public Fl_Gl_Window
 
   void getStateFromUI(DrawingState*);
 
-  GrObject* getCamera();
+  GrObjectVBO* getCamera();
 
   FlyCamera* defaultCamera;
   FollowCam* followCamera;
   InterestingCam* interestingCamera;
 
   // point the defaultCamera at an object that is interesting
-  void lookat(GrObject*);
+  void lookat(GrObjectVBO*);
 
   // for keeping track of time
   // remember each time step (so we can scale time if we want to)

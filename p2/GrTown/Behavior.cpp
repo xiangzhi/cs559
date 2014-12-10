@@ -11,11 +11,10 @@
 #include "GrTown_PCH.H"
 
 #include "Behavior.H"
-#include "GrObject.H"
 #include "GrObjectVBO.h"
 
 ////////////////////////////////////////////////////////////////////////
-Behavior::Behavior(GrObject* o) :
+Behavior::Behavior(GrObjectVBO* o) :
   owner(o), lastV(0)
 {
 	o->behaviors.push_back(this);

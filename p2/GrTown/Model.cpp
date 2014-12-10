@@ -46,7 +46,7 @@ void Model::initialize(){
   shaderID = loadShader("simpleVertex.glsl", "simpleFragment.glsl", err);
 }
 
-void Model::preDraw(){
+void Model::preDraw(DrawingState* drst){
 
   localTransform = glm::scale(glm::vec3(20, 20, 20));
   transform = glm::mat4(1.0f);

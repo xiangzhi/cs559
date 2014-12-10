@@ -12,8 +12,8 @@
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Browser.H>
-#include <FL/Fl_Button.H>
 #include <FL/Fl_Value_Slider.H>
+#include <FL/Fl_Button.H>
 #include <FL/Fl_Value_Output.H>
 
 class GraphicsTownUI {
@@ -26,7 +26,6 @@ private:
   inline void cb_pickCamera_i(Fl_Browser*, void*);
   static void cb_pickCamera(Fl_Browser*, void*);
 public:
-  Fl_Button *cull;
   Fl_Value_Slider *time;
 private:
   inline void cb_time_i(Fl_Value_Slider*, void*);
@@ -37,7 +36,6 @@ private:
   inline void cb_fov_i(Fl_Value_Slider*, void*);
   static void cb_fov(Fl_Value_Slider*, void*);
 public:
-  Fl_Button *lgTex;
   Fl_Button *follower;
   Fl_Value_Output *rate;
   Fl_Value_Slider *speedup;
@@ -47,5 +45,25 @@ private:
   static void cb_pickInteresting(Fl_Browser*, void*);
   inline void cb_Fly_i(Fl_Button*, void*);
   static void cb_Fly(Fl_Button*, void*);
+public:
+  Fl_Value_Slider *loopDivision;
+private:
+  inline void cb_loopDivision_i(Fl_Value_Slider*, void*);
+  static void cb_loopDivision(Fl_Value_Slider*, void*);
+public:
+  Fl_Value_Slider *sorRotation;
+private:
+  inline void cb_sorRotation_i(Fl_Value_Slider*, void*);
+  static void cb_sorRotation(Fl_Value_Slider*, void*);
+public:
+  Fl_Button *Eatable;
+private:
+  inline void cb_Eatable_i(Fl_Button*, void*);
+  static void cb_Eatable(Fl_Button*, void*);
+public:
+  Fl_Button *Physic;
+private:
+  inline void cb_Physic_i(Fl_Button*, void*);
+  static void cb_Physic(Fl_Button*, void*);
 };
 #endif

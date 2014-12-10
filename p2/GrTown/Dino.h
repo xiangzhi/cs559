@@ -10,7 +10,7 @@ public:
 
   void initialize();
   void simulateUntil(unsigned long t);
-  void preDraw();
+  void preDraw(DrawingState* drst);
   float lx = 0;
   float lz = 0;
   float ax = 1;

@@ -27,16 +27,15 @@
 //
 // some simple examples are given in the "SimpleBehaviors.H" file
 //
-class GrObject;
 class GrObjectVBO;
 
 // an attempt to decouple how we decide where something is with what
 // the thing is
 class Behavior {
 public:
-  Behavior(GrObject* owner);
+  Behavior(GrObjectVBO* owner);
 
-  GrObject* owner;				// who to make go
+  GrObjectVBO* owner;				// who to make go
 
   // what time did the last step end - after you do something, be sure to set
   // this to the time at the end of the step!

@@ -32,8 +32,8 @@ public:
 	virtual ~GrObjectVBO();
 
 
-  virtual void preDraw();
-
+	//use to change stuff before drawing
+   virtual void preDraw(DrawingState* drst);
 
   glm::vec3 translation;
 
@@ -83,6 +83,7 @@ public:
 	bool useTexture = false;
   bool useIndex = false;
   glm::vec3 pos;
+  glm::vec3 from;
 
   virtual void initializeAfter();
 

@@ -11,7 +11,6 @@
 // about drawing themselves. The drawing state gives them as much info
 // as possible so they can do things like cull themselves, do fake
 // lighting if they want to, ...
-class GrObject;
 class GrObjectVBO;
 
 #include "DrawUtils.H"
@@ -31,13 +30,22 @@ public:
   Color ground;
 
   // which object is the camera?
-  GrObject* camera;
+  GrObjectVBO* camera;
 
   float fieldOfView;
 
   // these are really bools, but since bools generate too many warnings...
   int backCull;
   int drGrTex;		// draw ground textures
+
+  //whether physics is actve or not
+  bool physics = false;
+  //how detail is the surface of rotation
+  double soRRotation = 0;
+  //number of times the surface is subdivided
+  int loopDivisionTimes = 0;
+  //whether buildings can be destroyed
+  bool eatable = false;
 };
 
 // $Header: /p/course/cs559-gleicher/private/CVS/GrTown/DrawingState.H,v 1.2 2007/11/01 21:23:42 gleicher Exp $

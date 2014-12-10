@@ -43,7 +43,7 @@ public:
     rotation = 0;
   }
   bool hand = false;
-  void preDraw(){
+  void preDraw(DrawingState* drst){
     
     glm::vec3 trans = translation;
     transform = glm::mat4(1.0f);
@@ -100,7 +100,7 @@ class DinoHead : public GrObjectVBO{
     bindToArrayBuffer(textureBuffer, textureList.size() * sizeof(float), &textureList[0]);
     vertexNum = vertexList.size() / 3;
   }
-  void preDraw(){
+  void preDraw(DrawingState* drst){
     glm::vec3 trans = translation;
     transform = glm::mat4(1.0f);
     transform = transform * glm::translate(glm::mat4(1.0f), trans);
@@ -192,7 +192,7 @@ void Dino::initialize(){
   }
 }
 
-void Dino::preDraw(){
+void Dino::preDraw(DrawingState* drst){
   rotation = 45;
   transform = glm::mat4(1.0f);
   transform = transform * glm::rotate(glm::mat4(1), rotation, glm::vec3(0, 1, 0));

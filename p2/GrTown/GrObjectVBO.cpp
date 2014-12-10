@@ -146,7 +146,7 @@ void GrObjectVBO::initialize(){
 	//nothing yet, programs need to initialize this
 }
 
-void GrObjectVBO::preDraw(){
+void GrObjectVBO::preDraw(DrawingState* drst){
 
 };
 
@@ -280,7 +280,7 @@ void drawObList(vector<GrObjectVBO*>& objs, DrawingState* drst, glm::mat4 proj, 
 	for (vector<GrObjectVBO*>::iterator i = objs.begin(); i != objs.end(); ++i) {
 		GrObjectVBO* g = (*i);
 		//TODO::don't draw if you are camera
-    g->preDraw();
+    g->preDraw(drst);
     glm::mat4 newModel = model * g->transform;
     g->draw(drst, proj, view, newModel * g->localTransform);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -296,6 +296,7 @@ void drawAfterObList(vector<GrObjectVBO*>& objs, DrawingState* drst, glm::mat4 p
 		GrObjectVBO* g = (*i);
 		//TODO:Camera
     //apply transformtion
+		g->preDraw(drst);
 		glm::mat4 newModel = model * g->transform;
 		g->drawAfter(drst, proj, view, newModel);
 		glBindTexture(GL_TEXTURE_2D, 0);
