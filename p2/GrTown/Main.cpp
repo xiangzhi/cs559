@@ -22,7 +22,7 @@
 #include "Dino.h"
 #include "Bob.h"
 #include "BHLights.h"
-
+#include "City.h"
 #include "Examples\Suburbs.H"
 // define this to get 2 cars that always turn
 // #define TESTCARS
@@ -109,15 +109,18 @@ int main(int /*argc*/, char** /*argv*/)
   GrObjectVBO* bob = new Bob();
   bob->interesting = true;
   add(bob);
-  //GrObjectVBO* super = new Model(bob);
-  //super->interesting = true;
-  //add(super);
+  GrObjectVBO* super = new Model(bob);
+  super->interesting = true;
+  add(super);
   //GrObjectVBO* s = new Sphere();
   //add(s);
 
 
   GrObjectVBO* obj = new BHLights();
   add(obj);
+  GrObjectVBO* city = new City();
+  ((City*) city)->destroyer = bob;
+  add(city);
 
   // *****************************************************************
   // now make a UI

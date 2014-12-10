@@ -19,5 +19,6 @@ public:
   glm::vec3 acc;
   glm::vec3 scale;
   bool physic;
+  glm::vec3 touchPos;
 };
 

@@ -20,7 +20,7 @@ void BHLights::initializeAfter(){
   std::vector<glm::vec3> vertexList;
   //add the points;
   vertexList.push_back(glm::vec3(0, 0, 0));
-  vertexList.push_back(glm::vec3(100, -300, 0));
+  vertexList.push_back(glm::vec3(100, -1000, 0));
   std::vector<glm::vec3> normalList;
   std::vector<glm::vec2> uvList;
 

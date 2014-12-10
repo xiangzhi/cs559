@@ -14,7 +14,7 @@ void main (void) {
  //color = vec3(0,1,0);
   float  ambient = 0.3;
   vec2 nUV = UV * 10;
-  vec3 Nnormal = model * normal;
+  vec3 Nnormal = normal;
   float theta = clamp(dot(Nnormal,sun),0,1);
   float light = theta * 2 + ambient;
   //color = light * vec3(1,0,0);

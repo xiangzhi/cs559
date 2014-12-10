@@ -38,7 +38,7 @@ void Bob::initialize(){
 	std::vector<glm::vec2> uvList;
 
   //draw the cube
-  drawCube(vertexList, normalList, uvList,100,100,100);
+  drawCube(vertexList, normalList, uvList,400,400,400);
 
   loopSubDivision(divideTime, vertexList, normalList, uvList);
 
@@ -61,7 +61,7 @@ void Bob::preDraw(DrawingState* drst){
 		//std::thread(&Bob::redoSubDivision,this).detach();
 	}
 
-  transform = glm::translate(glm::vec3(0, 50, 0));
+  transform = glm::translate(glm::vec3(0, 200, 0));
   transform = glm::scale(scale)  * transform;
   transform = glm::translate(pos) * transform;
   //redraw = true;
@@ -79,7 +79,7 @@ void Bob::simulateUntil(unsigned long time){
   static long lastTime = 0;
   
   //usg 
-  static float initAcceleration = 15;
+  static float initAcceleration = 20;
   static float maxNumOfTerms = (initAcceleration / gravity) + 1;
   static float maxHeight = (maxNumOfTerms * (initAcceleration)) / 2;
 
@@ -95,10 +95,11 @@ void Bob::simulateUntil(unsigned long time){
       acc.y -= gravity;
     }
     else{
-      acc.y = -1;
+      acc.y = -10;
     }
     if (pos.y < 0){
       pos.y = 0;
+      touchPos = pos;
       acc.y = initAcceleration;
       ax = rand() % 11 - 5;
       az = rand() % 11 - 5;
@@ -119,7 +120,7 @@ void Bob::simulateUntil(unsigned long time){
     if (physic)
       acc.y -= gravity;
     else
-      acc.y = 1;
+      acc.y = 10;
   }
 
   //change y;

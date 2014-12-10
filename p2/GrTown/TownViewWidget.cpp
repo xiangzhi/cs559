@@ -166,7 +166,7 @@ void TownViewWidget::draw()
   //drawEarthNew(&drst,MVP);
   drawEarth(proj, view, camPos, sun, light);
   
-  drawSkyBox(sun, light, MVP);
+  //drawSkyBox(sun, light, MVP);
 
   //surfaceOfRevolutionTest(MVP, sun);
 

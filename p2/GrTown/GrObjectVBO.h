@@ -14,6 +14,7 @@
 #include "Utilities\Texture.H"
 #include "Utilities\ShaderTools.H"
 #include "DrawingTools.h"
+#include "DrawingState.H"
 
 //GrOBjectVBO
 //the aim of the class is to run VBO code with a similar structure as as the old GrObject
@@ -84,6 +85,7 @@ public:
   bool useIndex = false;
   glm::vec3 pos;
   glm::vec3 from;
+  glm::vec3 scale;
 
   virtual void initializeAfter();
 

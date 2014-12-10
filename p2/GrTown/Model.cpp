@@ -48,10 +48,10 @@ void Model::initialize(){
 
 void Model::preDraw(DrawingState* drst){
 
-  localTransform = glm::scale(glm::vec3(20, 20, 20));
+  localTransform = glm::scale(glm::vec3(60, 60, 60));
   transform = glm::mat4(1.0f);
   pos.x = track->pos.x + 10;
-  pos.y = 300;
+  pos.y = 800;
   pos.z = track->pos.z + 10;
   transform = glm::translate(pos) * transform;
 }

@@ -11,7 +11,7 @@ out float light;
 
 void main (void) {
 	gl_Position = MVP * vec4(vp, 1.0);
-	light = 1 - (-1 * vp.y/300) - (1 - (abs(vp.x)/50));
+	light = 1 - (-1 * vp.y/300);
 	if(light < 0){
 		light = 0;
 	}

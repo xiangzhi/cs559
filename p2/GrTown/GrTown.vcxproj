@@ -127,6 +127,7 @@
     <ClInclude Include="Billboards.h" />
     <ClInclude Include="Bob.h" />
     <ClInclude Include="Building.h" />
+    <ClInclude Include="City.h" />
     <ClInclude Include="Dino.h" />
     <ClInclude Include="DrawingState.H" />
     <ClInclude Include="DrawingTools.h" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Billboards.cpp" />
     <ClCompile Include="Bob.cpp" />
     <ClCompile Include="Building.cpp" />
+    <ClCompile Include="City.cpp" />
     <ClCompile Include="Dino.cpp" />
     <ClCompile Include="DrawingState.cpp" />
     <ClCompile Include="DrawingTools.cpp" />
