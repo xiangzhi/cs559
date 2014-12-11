@@ -68,7 +68,9 @@ void LegoBrick::initialize(){
 	bindToArrayBuffer(normalBuffer, normalList);
 	vertexNum = vertexList.size();
 	//load shaders
-	shaderID = loadShader("testVertex.glsl", "testFragment.glsl");
+
+ 
+	shaderID = loadShader("legoVertex.glsl", "legoFragment.glsl");
 
 	for (int i = 0; i < 4; i++){
 		LegoBrickHead* head = new LegoBrickHead();

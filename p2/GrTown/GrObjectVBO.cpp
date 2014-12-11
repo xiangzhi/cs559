@@ -126,6 +126,11 @@ void GrObjectVBO::draw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::
   //pass our MVP to shader
   glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
+  glm::mat3 rotationMatrix = glm::mat3(glm::rotate(glm::mat4(1.0f), ry, glm::vec3(0, 1, 0)));
+
+  MatrixID = glGetUniformLocation(shaderID, "ry");
+  glUniformMatrix3fv(MatrixID, 1, GL_FALSE, &rotationMatrix[0][0]);
+
   GLuint ModelID = glGetUniformLocation(shaderID, "model");
   glUniformMatrix4fv(ModelID, 1, GL_FALSE, &model[0][0]);
 

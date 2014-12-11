@@ -67,12 +67,20 @@ void City::initialize(){
   std::default_random_engine generator;
   std::normal_distribution<double> distribution(0, 600);
 
+  //set different shaders
+  GLuint shaders[3];
+  shaders[0] = loadShader("legoVertex.glsl", "legoRedFragment.glsl");
+  shaders[1] = loadShader("legoVertex.glsl", "legoBlueFragment.glsl");
+  shaders[2] = loadShader("legoVertex.glsl", "legoGreenFragment.glsl");
+
+
   int numBrick = 75;
   for (int i = 0; i < numBrick; i++){
     LegoBrick* brick2 = brick->clone();
     int x = floor(distribution(generator));
     int z = floor(distribution(generator));
     brick2->pos = (glm::vec3(x, 0, z));
+    brick2->shaderID = shaders[rand() % 3];
     //50-50 chance of it facing another direction
     if (rand() % 2 == 0){
       brick2->ry = 90;
@@ -104,6 +112,12 @@ void City::initialize(){
       delete brick2;
       continue;
     }
+
+    //make the children also use the same shader
+    for (int k = 0; k < brick2->children.size(); k++){
+      brick2->children[k]->shaderID = brick2->shaderID;
+    }
+
 
     children.push_back(brick2);
     brick2->parent = this;
