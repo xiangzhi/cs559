@@ -105,8 +105,9 @@ void Heli::preDraw(DrawingState* drst){
 }
 
 glm::mat4 Heli::getCamera(){
-  glm::vec3 eye(pos.x + 10, pos.y + 10, pos.z);
-  glm::vec3 target(track->pos);
+
+  glm::vec3 eye(pos.x + 450, pos.y + 400, pos.z + 450);
+  glm::vec3 target(pos);
   return glm::lookAt(
     eye,
     target,

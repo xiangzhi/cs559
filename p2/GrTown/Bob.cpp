@@ -203,8 +203,54 @@ void Bob::simulateUntil(unsigned long time){
       pos.y = 0;
       touchPos = pos;
       acc.y = initAcceleration;
-      ax = rand() % 11 - 5;
-      az = rand() % 11 - 5;
+      int static limit = 500;
+
+      ax = rand() % 5;
+      float xDirection = 1;
+
+      //calculate the direction;
+      if (pos.x > limit || pos.x < -limit){
+        xDirection = (pos.x / pos.x) * -1;
+      }
+      else if(rand() % 2 == 0){
+        xDirection = -1;
+      }
+      
+      ax *= xDirection;
+
+      az = rand() % 5;
+      float zDirection = 1;
+
+      //calculate the direction;
+      if (pos.z > limit || pos.z < -limit){
+        zDirection = (pos.z / pos.z) * -1;
+      }
+      else if (rand() % 2 == 0){
+        zDirection = -1;
+      }
+
+      az *= zDirection;
+
+  
+      /*
+      if (chance == 1)
+
+      if (pos.x < limit && pos.x > - limit){
+        ax = rand() % 11 - 5;
+      }
+      else{
+        ax = rand() % 11 - 5;
+        ax = ax * ((pos.x) / (pos.x));
+      }
+
+      if (pos.z < limit && pos.z > -limit){
+        az = rand() % 11 - 5;
+      }
+      else{
+        az = rand() % 11 - 5;
+        az = az * ((pos.z) / (pos.z));
+      }
+      */
       fall = false;
     }
   }
@@ -214,7 +260,7 @@ void Bob::simulateUntil(unsigned long time){
     fall = true;
     return;
   }
-  else if ((!physic) && pos.y == 100){
+  else if ((!physic) && pos.y > 100){
     fall = true;
   }
   else{
@@ -235,15 +281,23 @@ void Bob::simulateUntil(unsigned long time){
   pos.z += az;
 
   //update from camera
-  from.x = pos.x + 100;
+  if (pos.x < 0){
+    from.x = pos.x + 100;
+  }
+  else{
+    from.x = pos.x - 100;
+  }
+  if (pos.z < 0)
+    from.z = pos.z + 100;
+  else
+    from.z = pos.z - 100;
   from.y = 100;
-  from.z = pos.z + 100;
 
 }
 
 glm::mat4 Bob::getCamera(){
 
-	glm::vec3 from(pos.x, pos.y + 30, pos.z + 30);
+	glm::vec3 from(pos.x + 300, pos.y + 1000, pos.z + 300);
 
 	return glm::lookAt(
 		from,

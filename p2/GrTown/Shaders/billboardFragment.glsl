@@ -14,6 +14,8 @@ void main (void) {
   float theta = clamp(dot(normal,sun),0,1);
   //float light = theta * 2 + ambient;
 
-  color = vec4(lightIntensity * texture(textureInput,UV).rgb, 1.0);
+  vec3 colorVector = texture(textureInput,UV).rgb;
+
+  color = vec4(lightIntensity * colorVector ,texture(textureInput,UV).a);
   //color = vec3(1,0,0);
 };

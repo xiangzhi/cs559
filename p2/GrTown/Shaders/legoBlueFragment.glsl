@@ -22,7 +22,7 @@ void main (void) {
   vec3 specularColor = vec3(1,1,1);
 
   float speculatIntensity = 0;
-  float shininess = 2;
+  float shininess = 10;
 
   //calculate diffuse lighting
   float diffuseIntensity = clamp(dot(normal, sun),0,1);
@@ -44,8 +44,6 @@ void main (void) {
     reflectOfView = -1 * reflectOfView;
     //lightup as gold
   	tempLight = clamp(dot(reflectOfView, normal),0,1) * vec3(1,0.84,0) * clamp( 1 - (abs(camDistance)/500),0,1);
-
-  	// /tempLight = vec3(1,0.84,0);
   }
   color = vec4(tempLight,1.0);
 };

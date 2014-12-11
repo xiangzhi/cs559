@@ -234,7 +234,7 @@ bool FlyCamera::uiStep()
 
 ///////////////////////////////////////////////////////////////
 FollowCam::FollowCam() : GrObjectVBO("follower"), 
-	following(0), followDistance(45), minY(15)
+	following(0), followDistance(100), minY(15)
 {
   ridable = 1;
   lastUItime = 0;
@@ -291,21 +291,21 @@ void FollowCam::getCamera(Matrix camera)
 */
 
 glm::mat4 FollowCam::getCamera(){
-	return glm::mat4(1.0f);
+
   float atX, atY, atZ;
   if (following){
-    atX = following->transform[3][0];
-    atY = following->transform[3][1];
-    atZ = following->transform[3][2];
+    atX = following->pos.x;//following->transform[3][0];
+    atY = following->pos.y;// following->transform[3][1];
+    atZ = following->pos.z;//transform[3][2];
   } else {
     std::cerr << "No object for followcam!";
     return glm::mat4(1.0F);
   }
 
   // get the old "from" point from the matrix
-  float oldFromX = transform[3][0];
-  float oldFromY = transform[3][1];
-  float oldFromZ = transform[3][2];
+  static float oldFromX = transform[3][0];
+  static float oldFromY = transform[3][1];
+  static float oldFromZ = transform[3][2];
 
   // compute the new from point
   float fromX, fromY, fromZ;
@@ -329,11 +329,20 @@ glm::mat4 FollowCam::getCamera(){
   }
   if (fromY < minY) fromY = minY;
 
+
+  oldFromX = fromX;
+  oldFromY = fromY;
+  oldFromZ = fromZ;
+
   return glm::lookAt(
     glm::vec3(fromX, fromY, fromZ),
     glm::vec3(atX, atY, atZ),
     glm::vec3(0, 1, 0)
   );
+
+
+
+
 }
 
 

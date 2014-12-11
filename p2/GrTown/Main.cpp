@@ -105,19 +105,26 @@ int main(int /*argc*/, char** /*argv*/)
   
 
   GrObjectVBO* bob = new Bob();
-  bob->interesting = true;
+  bob->name = "Bob - The jumping Monster";
+  bob->ridable = true;
+  bob->rideAbove = 500;
   add(bob);
+
   GrObjectVBO* heli = new Heli(bob);
-  heli->interesting = true;
-  heli->name = "BlackHawak-1";
+  heli->name = "BlackHawk-1";
+  heli->ridable = true;
+  heli->rideAbove = 500;
   add(heli);
+
   GrObjectVBO* city = new City();
   ((City*) city)->destroyer = bob;
   add(city);
+
   GrObjectVBO* billboard = new Billboards();
-  billboard->pos = glm::vec3(-3000, -300, 2000);
-  //billboard->to = glm::vec3(-3000, 400, 2000);
-  billboard->from = glm::vec3(-3000, 500, 2500);
+  billboard->name = "TeddyBear Billboard";
+  billboard->pos = glm::vec3(-2500, -200, 1500);
+  billboard->to = glm::vec3(-3000, 400, 2000);
+  billboard->from = glm::vec3(2000, 600, -1500);
   billboard->interesting = true;
   add(billboard);
 
