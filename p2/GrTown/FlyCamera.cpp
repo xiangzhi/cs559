@@ -43,10 +43,10 @@ void FlyCamera::getCamera(Matrix camera)
 
 #include <math.h>
 /** Degrees to Radian **/
-#define degreesToRadians( degrees ) ((float)( ( degrees ) / 180.0 * M_PI ))
+#define degreesToRadians( degrees ) ((float)( ( degrees ) / 180.0 * M_PI )))
 
 /** Radians to Degrees **/
-#define radiansToDegrees( radians ) ((float)(( radians ) * ( 180.0 / M_PI ))
+#define radiansToDegrees( radians ) ((float)(( radians ) * ( 180.0 / M_PI )))
 
 
 glm::mat4 FlyCamera::getCamera(){
@@ -57,7 +57,7 @@ glm::mat4 FlyCamera::getCamera(){
 	rotMatrix(tmp2, 'Y', -direction);
 	glm::mat4 c1 = toGLMMat4(tmp2);
 	multMatrix(tmp1, tmp2, tmp3);
-	rotMatrix(tmp1, 'X', -pitch);
+	rotMatrix(tmp1, 'X',-pitch);
 	glm::mat4 c2 = toGLMMat4(tmp2);
 	multMatrix(tmp3, tmp1, finals);
 	glm::mat4 test = toGLMMat4(finals);
@@ -68,10 +68,10 @@ glm::mat4 FlyCamera::getCamera(){
   glm::mat4 m3(1.0f);
  
   m = glm::translate(m, glm::vec3(-posX, -posY, -posZ));
-  m2 = glm::rotate(glm::mat4(1.0f),-direction, glm::vec3(0, 1, 0));
+  m2 = glm::rotate(glm::mat4(1.0f),radiansToDegrees(-direction), glm::vec3(0, 1, 0));
   glm::mat4 c3 = m2;
   m3 = m2 * m;
-  m2 = glm::rotate(m, -pitch, glm::vec3(1, 0, 0));
+  m2 = glm::rotate(m, radiansToDegrees(pitch), glm::vec3(1, 0, 0));
   glm::mat4 c4 = m2;
   m = m2 * m3;
   return m;

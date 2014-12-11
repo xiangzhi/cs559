@@ -81,11 +81,22 @@ public:
 	int vertexNum;
   bool redraw = true;
   bool redrawAfter = true;
-	bool useTexture = false;
+  bool useTexture = false;
   bool useIndex = false;
+  bool onlyBack = false;
   glm::vec3 pos;
   glm::vec3 from;
   glm::vec3 scale;
+  float ry = 0;
+
+  GLuint shaderIDAfter;
+  GLuint vertexBufferAfter;
+  GLuint textureBufferAfter;
+  GLuint normalBufferAfter;
+  GLuint colorBufferAfter;
+  int vertexNumAfter;
+  GrObjectVBO* clone(GrObjectVBO* ptr = nullptr);
+  virtual void additionalCloning(GrObjectVBO*);
 
   virtual void initializeAfter();
 

@@ -36,78 +36,81 @@ void randomTexture(House* house){
   house->color = swap;
 }
 
+#include "ObjectLoader.h"
+#include "SurfaceOfRevolution.h"
+#include "LegoBrick.h"
+#include <random>
+
+
+
+const int range = 150;
+bool sameSpace(glm::vec3 pos, glm::vec3 tmp){
+  float x1 = pos.x + range;
+  float x2 = pos.x - range;
+  float z1 = pos.z + range;
+  float z2 = pos.z - range;
+
+  if (x2 < tmp.x && z2 < tmp.z)
+    if (tmp.x < x1 && tmp.z < z1)
+      return true;
+  return false;
+}
+
 void City::initialize(){
   //create the base template for the houses and pass them to the children properties
 
-  std::vector<glm::vec3> vertexList;
-  std::vector<glm::vec3> normalList;
-  std::vector<glm::vec2> uvList;
-  //draw the house
-  drawCube(vertexList, normalList, uvList, 100, 100, 100);
+  //TODO::change to an arraylist of precompute if sharing did become a problem
+  LegoBrick* brick = new LegoBrick(1);
+  brick->initialize();
+  brick->redraw = false;
+  //distribution of lego pieces;
+  std::default_random_engine generator;
+  std::normal_distribution<double> distribution(0, 600);
 
-  //bind them first
-  GLuint vertexBuffer;
-  GLuint normalBuffer;
-  GLuint uvBuffer;
-  bindToArrayBuffer(vertexBuffer, vertexList);
-  bindToArrayBuffer(normalBuffer, normalList);
-  bindToArrayBuffer(uvBuffer, uvList);
+  int numBrick = 75;
+  for (int i = 0; i < numBrick; i++){
+    LegoBrick* brick2 = brick->clone();
+    int x = floor(distribution(generator));
+    int z = floor(distribution(generator));
+    brick2->pos = (glm::vec3(x, 0, z));
+    //50-50 chance of it facing another direction
+    if (rand() % 2 == 0){
+      brick2->ry = 90;
+    }
 
-  std::vector<glm::vec3> * ptrvertexList = new std::vector<glm::vec3>(vertexList);
-  std::vector<glm::vec3> * ptrnormalList = new std::vector<glm::vec3>(normalList);
-  std::vector<glm::vec2> * ptruvList = new std::vector<glm::vec2>(uvList);
-
-  GLuint shaderID = loadShader("sameVertex.glsl", "sameFragment.glsl");
-
-  for (int i = 0; i < 10; i++){
-    for (int j = 0; j < 10; j++){
-      if (i == 5 && j == 5){
-        continue;
-      }
-      //add children
-      for (int k = 0; k < 2; k++){
-        House* house = new House();
-        randomTexture(house);
-        house->vertexBuffer = vertexBuffer;
-        house->normalBuffer = normalBuffer;
-        house->textureBuffer = uvBuffer;
-        house->shaderID = shaderID;
-        house->vertexNum = vertexList.size();
-        int x = -1650 + (i * 330);
-        int z = -1650 + (j * 330) + k * 130;
-        float yScale = 2 + ((rand() % 800) / 800.0);
-        house->scale = glm::vec3(1, yScale, 1);
-        house->pos = glm::vec3(x, yScale * 50, z);
-        children.push_back(house);
-        house->parent = this;
-        house->useTexture = true;
-        house->vertexList = ptrvertexList;
-        house->normalList = ptrnormalList;
-        house->uvList = ptruvList;
-
-
-        house = new House();
-        randomTexture(house);
-        house->vertexBuffer = vertexBuffer;
-        house->normalBuffer = normalBuffer;
-        house->textureBuffer = uvBuffer;
-        house->shaderID = shaderID;
-        house->vertexNum = vertexList.size();
-        x = -1650 + (i * 330) + 130;
-        z = -1650 + (j * 330) + k * 130;
-        yScale = 2 + ((rand() % 800) / 800.0);
-        house->scale = glm::vec3(1, yScale, 1);
-        house->pos = glm::vec3(x, yScale * 50, z);
-        house->useTexture = true;
-        children.push_back(house);
-        house->parent = this;
-        house->vertexList = ptrvertexList;
-        house->normalList = ptrnormalList;
-        house->uvList = ptruvList;
+    //check whether the current location already have a brick
+    //if there is already a brick, change the height of that brick;
+    bool same = false;
+    int index = -1;
+    for (int j = children.size() - 1; j >= 0; j--){
+      glm::vec3 childLoc = children[j]->pos;
+      if (sameSpace(childLoc, brick2->pos)){
+        //remove for now
+        same = true;
+        index = j;
+        break;
       }
     }
+
+    //if overlap remove for now
+    if (same){
+      LegoBrick* sameBrick = (LegoBrick*)children[index];
+      sameBrick->scale.y = sameBrick->scale.y * 1.4;
+      //float scaleFactor = ((sameBrick->scale.y - 6) * 2);
+      for (int k = 0; k < sameBrick->children.size(); k++){
+        ((LegoBrick*)children[index])->children[k]->scale.y = (sameBrick->children[k]->scale.y)/1.4;
+      }
+
+      delete brick2;
+      continue;
+    }
+
+    children.push_back(brick2);
+    brick2->parent = this;
   }
 }
+
+
 void City::preDraw(DrawingState* drst){
 
 }

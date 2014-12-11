@@ -26,14 +26,18 @@ void BHLights::initializeAfter(){
 
   surfaceOfRevolution(glm::vec3(0, 1, 0), rotation, vertexList, normalList, uvList);
   //drawCube(vertexList, normalList, uvList);
+  
 
+  bindToArrayBuffer(vertexBufferAfter, vertexList);
+  bindToArrayBuffer(normalBufferAfter, normalList);
+  bindToArrayBuffer(textureBufferAfter, uvList);
+  vertexNumAfter = vertexList.size();
+  onlyBack = true;
+  shaderIDAfter = loadShader("BHLightVertex.glsl", "BHLightFragment.glsl");
+}
 
-  bindToArrayBuffer(vertexBuffer, vertexList);
-  bindToArrayBuffer(normalBuffer, normalList);
-  bindToArrayBuffer(textureBuffer, uvList);
-  vertexNum = vertexList.size();
+void BHLights::draw(DrawingState*, glm::mat4 proj, glm::mat4 view, glm::mat4 model){
 
-  shaderID = loadShader("BHLightVertex.glsl", "BHLightFragment.glsl");
 }
 
 

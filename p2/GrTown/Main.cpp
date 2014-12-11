@@ -7,16 +7,14 @@
 #include "GrTown_PCH.H"
 #include "GraphicsTownUI.H"
 #include "FlyCamera.H"
-#include "GrWorld.H"
 #include "DrawUtils.H"
 
-// for setting up shader paths and textures
+// for setting up shader paths ands textures
 #include "Utilities/ShaderTools.H"
 #include "Utilities/Texture.H"
 
 
 #include "Building.h"
-#include "Sphere.h"
 #include "Model.h"
 #include "Billboards.h"
 #include "Dino.h"
@@ -24,6 +22,7 @@
 #include "BHLights.h"
 #include "City.h"
 #include "Examples\Suburbs.H"
+#include "LegoBrick.h"
 // define this to get 2 cars that always turn
 // #define TESTCARS
 
@@ -57,7 +56,7 @@ int main(int /*argc*/, char** /*argv*/)
   // add some more stuff
 
   GrObjectVBO* b = new Building();
-  add(b);
+  //add(b);
   b->laX = 0;
   b->laY = 0;
   b->laZ = 0;
@@ -103,9 +102,9 @@ int main(int /*argc*/, char** /*argv*/)
     add(billboard);
   }
   */
-
+  
   GrObjectVBO* dino = new Dino();
-  add(dino);
+  //add(dino);
   GrObjectVBO* bob = new Bob();
   bob->interesting = true;
   add(bob);
@@ -122,10 +121,19 @@ int main(int /*argc*/, char** /*argv*/)
   ((City*) city)->destroyer = bob;
   add(city);
 
+  GrObjectVBO* billboard = new Billboards();
+  billboard->pos = glm::vec3(0, 0, 3000);
+  billboard->from = glm::vec3(3100, 50, 3100);
+  billboard->interesting = true;
+  add(billboard);
+
   // *****************************************************************
   // now make a UI
   FlyCamera* fc = new FlyCamera;
   Map* m = new Map;
+
+
+
 
   add(fc);
   add(m);

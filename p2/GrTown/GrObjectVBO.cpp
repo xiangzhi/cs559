@@ -6,8 +6,8 @@
 
 #include "GrObjectVBO.h"
 #include "Behavior.H"
-#include "GrWorld.H"
 #include "DrawingState.H"
+#include "World.h"
 
 using std::vector;
 
@@ -58,7 +58,112 @@ void GrObjectVBO::draw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::
     initialize();
     redraw = false;
   }
-  realDraw(drst, proj, view, model);
+  //generate the PVM matrux
+  glm::mat4 MVP = proj * view * model;
+
+  //enable the vertexAttribArray
+  glEnableVertexAttribArray(0);
+  glEnableVertexAttribArray(1);
+  glEnableVertexAttribArray(2);
+  glEnableVertexAttribArray(3);
+  glEnableVertexAttribArray(4);
+
+  //bind vertex buffer
+  glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+  glVertexAttribPointer(
+	  0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+	  3,                  // size
+	  GL_FLOAT,           // type
+	  GL_FALSE,           // normalized?
+	  0,                  // stride
+	  (void*)0            // array buffer offset
+	  );
+
+  //bind colorBuffer
+  glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+  glVertexAttribPointer(
+	  1,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+	  3,                  // size
+	  GL_FLOAT,           // type
+	  GL_FALSE,           // normalized?
+	  0,                  // stride
+	  (void*)0            // array buffer offset
+	  );
+
+
+  //make sure the texture exist
+  if (useTexture){
+	  //bind before every draw
+	  t->bind();
+	  glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
+	  glVertexAttribPointer(
+		  2,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+		  2,                                // size
+		  GL_FLOAT,                         // type
+		  GL_FALSE,                         // normalized?
+		  0,                                // stride
+		  (void*)0                          // array buffer offset
+		  );
+
+	  GLuint sampleLoc = glGetUniformLocation(shaderID, "textureInput");
+	  glUniform1i(sampleLoc, t->texName);
+  }
+
+  //bind normalBufferAfter
+  glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+  glVertexAttribPointer(
+	  3,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+	  3,                  // size
+	  GL_FLOAT,           // type
+	  GL_FALSE,           // normalized?
+	  0,                  // stride
+	  (void*)0            // array buffer offset
+	  );
+  glUseProgram(shaderID);
+  runAttribute(proj, view, model);
+  //get the location of MVP in shader
+  GLuint MatrixID = glGetUniformLocation(shaderID, "MVP");
+  //pass our MVP to shader
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+  GLuint ModelID = glGetUniformLocation(shaderID, "model");
+  glUniformMatrix4fv(ModelID, 1, GL_FALSE, &model[0][0]);
+
+
+  //lighting calculations
+  float light = calculateSunLight(drst);
+  glm::vec3 sun = calculateSunDirection(drst);
+
+  //get location of sun
+  GLuint sunID = glGetUniformLocation(shaderID, "sunDirection");
+  //glUniform3fv(sunID,3 * sizeof(float), (float*)glm::vec3(0, 1, 0));
+  glUniform3f(sunID, sun.x, sun.y, sun.z);
+
+  GLuint lightID = glGetUniformLocation(shaderID, "light");
+  glUniform1f(lightID, light);
+
+
+  if (useIndex){
+	  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+
+	  glDrawElements(
+		  type,
+		  indexNum,
+		  GL_UNSIGNED_INT,
+		  (void*)0
+		  );
+  }
+  else{
+	  glDrawArrays(type, 0, vertexNum);
+  }
+
+  //disable everything
+  glUseProgram(0);
+  glDisableVertexAttribArray(0);
+  glDisableVertexAttribArray(1);
+  glDisableVertexAttribArray(2);
+  glDisableVertexAttribArray(3);
+  glDisableVertexAttribArray(4);
 }
 void GrObjectVBO::drawAfter(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model)
 {
@@ -68,7 +173,112 @@ void GrObjectVBO::drawAfter(DrawingState* drst, glm::mat4 proj, glm::mat4 view, 
     initializeAfter();
     redrawAfter = false;
   }
-  realDraw(drst,proj,view,model);
+  //generate the PVM matrux
+  glm::mat4 MVP = proj * view * model;
+
+  //enable the vertexAttribArray
+  glEnableVertexAttribArray(0);
+  glEnableVertexAttribArray(1);
+  glEnableVertexAttribArray(2);
+  glEnableVertexAttribArray(3);
+  glEnableVertexAttribArray(4);
+
+  //bind vertex buffer
+  glBindBuffer(GL_ARRAY_BUFFER, vertexBufferAfter);
+  glVertexAttribPointer(
+	  0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+	  3,                  // size
+	  GL_FLOAT,           // type
+	  GL_FALSE,           // normalized?
+	  0,                  // stride
+	  (void*)0            // array buffer offset
+	  );
+
+  //bind colorBuffer
+  glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+  glVertexAttribPointer(
+	  1,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+	  3,                  // size
+	  GL_FLOAT,           // type
+	  GL_FALSE,           // normalized?
+	  0,                  // stride
+	  (void*)0            // array buffer offset
+	  );
+
+
+  //make sure the texture exist
+  if (useTexture){
+	  //bind before every draw
+	  t->bind();
+	  glBindBuffer(GL_ARRAY_BUFFER, textureBufferAfter);
+	  glVertexAttribPointer(
+		  2,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+		  2,                                // size
+		  GL_FLOAT,                         // type
+		  GL_FALSE,                         // normalized?
+		  0,                                // stride
+		  (void*)0                          // array buffer offset
+		  );
+
+	  GLuint sampleLoc = glGetUniformLocation(shaderIDAfter, "textureInput");
+	  glUniform1i(sampleLoc, t->texName);
+  }
+
+  //bind normalBufferAfter
+  glBindBuffer(GL_ARRAY_BUFFER, normalBufferAfter);
+  glVertexAttribPointer(
+	  3,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+	  3,                  // size
+	  GL_FLOAT,           // type
+	  GL_FALSE,           // normalized?
+	  0,                  // stride
+	  (void*)0            // array buffer offset
+	  );
+  glUseProgram(shaderIDAfter);
+  runAttribute(proj, view, model);
+  //get the location of MVP in shader
+  GLuint MatrixID = glGetUniformLocation(shaderIDAfter, "MVP");
+  //pass our MVP to shader
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+  GLuint ModelID = glGetUniformLocation(shaderIDAfter, "model");
+  glUniformMatrix4fv(ModelID, 1, GL_FALSE, &model[0][0]);
+
+
+  //lighting calculations
+  float light = calculateSunLight(drst);
+  glm::vec3 sun = calculateSunDirection(drst);
+
+  //get location of sun
+  GLuint sunID = glGetUniformLocation(shaderIDAfter, "sunDirection");
+  //glUniform3fv(sunID,3 * sizeof(float), (float*)glm::vec3(0, 1, 0));
+  glUniform3f(sunID, sun.x, sun.y, sun.z);
+
+  GLuint lightID = glGetUniformLocation(shaderIDAfter, "light");
+  glUniform1f(lightID, light);
+
+
+  if (useIndex){
+	  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+
+	  glDrawElements(
+		  type,
+		  indexNum,
+		  GL_UNSIGNED_INT,
+		  (void*)0
+		  );
+  }
+  else{
+	  glDrawArrays(type, 0, vertexNumAfter);
+  }
+
+  //disable everything
+  glUseProgram(0);
+  glDisableVertexAttribArray(0);
+  glDisableVertexAttribArray(1);
+  glDisableVertexAttribArray(2);
+  glDisableVertexAttribArray(3);
+  glDisableVertexAttribArray(4);
 }
 
 void GrObjectVBO::runAttribute(glm::mat4 proj, glm::mat4 view, glm::mat4 model){
@@ -273,6 +483,43 @@ void GrObjectVBO::initializeAfter(){
   //nothing here
 }
 
+GrObjectVBO* GrObjectVBO::clone(GrObjectVBO* temp){
+  if (temp == nullptr){
+    temp = new GrObjectVBO();
+  }
+
+	//copy all the information
+	temp->pos = pos;
+	temp->scale = scale;
+	temp->vertexBuffer = vertexBuffer;
+	temp->normalBuffer = normalBuffer;
+	temp->textureBuffer = textureBuffer;
+	temp->useTexture = useTexture;
+	temp->vertexNum = vertexNum;
+	temp->shaderID = shaderID;
+
+	temp->redraw = redraw;
+	temp->redrawAfter = redrawAfter;
+
+	//secondary informations
+	temp->vertexBufferAfter = vertexBufferAfter;
+	temp->normalBufferAfter = normalBufferAfter;
+	temp->textureBufferAfter = textureBufferAfter;
+	temp->vertexNumAfter = vertexNumAfter;
+	temp->shaderIDAfter = shaderIDAfter;
+
+  temp->transform = transform;
+  temp->localTransform = localTransform;
+
+	//let the user decide whether they want to clone more stuff
+	additionalCloning(temp);
+	return temp;
+}
+
+void GrObjectVBO::additionalCloning(GrObjectVBO*){
+
+}
+
 
 // draw a list of objects
 void drawObList(vector<GrObjectVBO*>& objs, DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model)
@@ -280,9 +527,9 @@ void drawObList(vector<GrObjectVBO*>& objs, DrawingState* drst, glm::mat4 proj, 
 	for (vector<GrObjectVBO*>::iterator i = objs.begin(); i != objs.end(); ++i) {
 		GrObjectVBO* g = (*i);
 		//TODO::don't draw if you are camera
-    g->preDraw(drst);
-    glm::mat4 newModel = model * g->transform;
-    g->draw(drst, proj, view, newModel * g->localTransform);
+		g->preDraw(drst);
+		glm::mat4 newModel = model * g->transform;
+		g->draw(drst, proj, view, newModel * g->localTransform);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		if (g->children.size()) {
 			drawObList(g->children, drst,proj,view, newModel);
@@ -306,6 +553,8 @@ void drawAfterObList(vector<GrObjectVBO*>& objs, DrawingState* drst, glm::mat4 p
 		}
 	}
 }
+
+
 
 
 // $Header: /p/course/cs559-gleicher/private/CVS/GrTown/GrObjectVBO.cpp,v 1.4 2008/11/14 19:53:30 gleicher Exp $

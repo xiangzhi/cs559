@@ -119,3 +119,7 @@ Texture* fetchTexture(char* name, bool wrapS = false, bool wrapT = false, GLenum
 // keep the list of directories to search
 // add a new directory to the list
 extern std::vector<const char*> texturePaths;
+
+
+//load a PNG with alpha channel
+Texture* loadPNG(std::string filename);

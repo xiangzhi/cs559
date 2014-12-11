@@ -10,7 +10,7 @@
 #include "GrTown_PCH.H"
 #include "GraphicsTownUI.H"
 #include "GrObjectVBO.h"
-#include "GrWorld.H"
+#include "World.h"
 using std::vector;
 
 void GraphicsTownUI::cb_pickCamera_i(Fl_Browser*, void*) {
@@ -81,7 +81,7 @@ void GraphicsTownUI::cb_Physic(Fl_Button* o, void* v) {
 }
 
 Fl_Double_Window* GraphicsTownUI::make_window() {
-  { window = new Fl_Double_Window(1272, 712, "CS 559 Graphics Town!");
+  { window = new Fl_Double_Window(1264, 704, "CS559 - Toy Town");
     window->labelsize(12);
     window->user_data((void*)(this));
     { TownViewWidget* o = townView = new TownViewWidget(5, 5, 1024, 710);

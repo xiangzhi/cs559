@@ -21,15 +21,34 @@ void sendVec3ToShader(GLuint shaderID, std::string name, glm::vec3 v){
 void Billboards::initialize(){
 
   std::vector<glm::vec3> vList;
-  vList.push_back(glm::vec3(-10, 0, -100));
-  vList.push_back(glm::vec3(10, 0, -100));
-  vList.push_back(glm::vec3(10, 10, -100));
+  vList.push_back(glm::vec3(-10, 0, 0));
+  vList.push_back(glm::vec3(10, 0, 0)); 
+  vList.push_back(glm::vec3(10, 10,0));
 
-  vList.push_back(glm::vec3(-10, 0, -100));
-  vList.push_back(glm::vec3(-10, 10, -100));
-  vList.push_back(glm::vec3(10, 10, -100));
+  vList.push_back(glm::vec3(-10, 0, 0));
+  vList.push_back(glm::vec3(-10, 10, 0));
+  vList.push_back(glm::vec3(10, 10, 0));
 
+  std::vector<glm::vec2> uList;
 
+  uList.push_back(glm::vec2(1, 1));
+  uList.push_back(glm::vec2(0, 1));
+  uList.push_back(glm::vec2(0, 0));
+
+  uList.push_back(glm::vec2(1, 1));
+  uList.push_back(glm::vec2(1, 0));
+  uList.push_back(glm::vec2(0, 0));
+
+  std::vector<glm::vec3> nList;
+
+  nList.push_back(glm::vec3(0, 0, 1));
+  nList.push_back(glm::vec3(0, 0, 1));
+  nList.push_back(glm::vec3(0, 0, 1));
+  nList.push_back(glm::vec3(0, 0, 1));
+  nList.push_back(glm::vec3(0, 0, 1));
+  nList.push_back(glm::vec3(0, 0, 1));
+
+  /*
   int size = 8;
   int xDecrease = 5;
   int yIncrease = 10;
@@ -70,7 +89,7 @@ void Billboards::initialize(){
     uList.push_back(glm::vec2(0.5, 1));
     uList.push_back(glm::vec2(0.5, 1));
   }
-
+  */
   float normals[] = {
     0, 0, 1,
     0, 0, 1,
@@ -108,10 +127,12 @@ void Billboards::initialize(){
   shaderID = loadShader("billboardVertex.glsl", "billboardFragment.glsl", err);
   vertexNum = vList.size();
 
-  transform = glm::translate(pos);
+  transform = glm::scale(glm::vec3(200,200,200));
+  transform = glm::translate(pos) * transform;
 
 
-  t = fetchTexture("testTree.png", true, true);
+  //t = fetchTexture("testTree.png", true, true);
+  t = loadPNG("bear-transparent.png");
   useTexture = true;
 
 }

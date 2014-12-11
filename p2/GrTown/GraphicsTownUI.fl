@@ -28,7 +28,7 @@ decl {\#include "GrObjectVBO.h"} {private local
 decl {\#include "TownViewWidget.H"} {public local
 } 
 
-decl {\#include "GrWorld.H"} {private local
+decl {\#include "World.h"} {private local
 } 
 
 decl {using std::vector;} {private local
@@ -39,8 +39,8 @@ class GraphicsTownUI {open
   Function {make_window()} {open
   } {
     Fl_Window window {
-      label {CS 559 Graphics Town!} open
-      xywh {104 104 1272 712} type Double labelsize 12 resizable visible
+      label {CS559 - Toy Town} open selected
+      xywh {108 108 1264 704} type Double labelsize 12 resizable visible
     } {
       Fl_Box townView {
         xywh {5 5 1024 710} align 2 resizable

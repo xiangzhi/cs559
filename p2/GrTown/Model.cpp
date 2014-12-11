@@ -23,7 +23,7 @@ void Model::initialize(){
   std::vector< glm::vec3 > vertices;
   std::vector< glm::vec2 > uvs;
   std::vector< glm::vec3 > normals; // Won't be used at the moment.
-  bool res = loadOBJ("blackHawk.obj", vertices, uvs, normals);
+  bool res = loadOBJ("blackHawk.obj.model", vertices, uvs, normals);
 
   glGenBuffers(1, &vertexBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);

@@ -51,7 +51,10 @@ void House::redoSubDivision(){
   if (vertexloopList[divideTime] == -1){
     std::vector<glm::vec3> vertexList(*vertexList);
     std::vector<glm::vec3> normalList(*normalList);
-    std::vector<glm::vec2> uvList(*uvList);
+	std::vector<glm::vec2> uvList;// (*uvList);
+	for(int i = 0; i < normalList.size();i++){
+		uvList.push_back(glm::vec2(0, 0));
+	}
 
     loopSubDivision(divideTime, vertexList, normalList, uvList);
     //rebind vertex buffer;
@@ -64,13 +67,13 @@ void House::redoSubDivision(){
 
     vertexloopList[divideTime] = vertexBuffer;
     normalloopList[divideTime] = normalBuffer;
-    uvloopList[divideTime] = textureBuffer;
+    //uvloopList[divideTime] = textureBuffer;
     vNumLoopList[divideTime] = vertexNum;
   }
   else{
     vertexBuffer = vertexloopList[divideTime];
     normalBuffer = normalloopList[divideTime];
-    textureBuffer = uvloopList[divideTime];
+    //textureBuffer = uvloopList[divideTime];
     vertexNum = vNumLoopList[divideTime];
   }
 }

@@ -6,7 +6,6 @@
 
 #include "TownViewWidget.H"
 #include "DrawingState.H"
-#include "GrWorld.H"
 #include "GraphicsTownUI.H"
 #include "GrObjectVBO.h"
 
@@ -165,8 +164,8 @@ void TownViewWidget::draw()
   //drawEarth(&drst);
   //drawEarthNew(&drst,MVP);
   drawEarth(proj, view, camPos, sun, light);
-  
-  //drawSkyBox(sun, light, MVP);
+  //draw the sky
+  drawSkyBox(sun, light, MVP);
 
   //surfaceOfRevolutionTest(MVP, sun);
 

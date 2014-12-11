@@ -345,6 +345,71 @@ void* read_PNG(char *filename, int *width, int *height)
 	return result;
 }// read_BMP
 
+//method that check whether the file exist of not
+//based on the answer given at
+//http://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exist-using-standard-c-c11-c
+inline bool fileExistsTest2(const std::string& name) {
+	struct stat buffer;
+	return (stat(name.c_str(), &buffer) == 0);
+}
+
+//loop through the list of paths and find the  texture,
+//return empty if cannot find.
+std::string findCorrectPath2(std::string& name){
+
+	std::string path = "";
+
+	for (int i = 0; i < texturePaths.size(); i++){
+		std::string temp = std::string(texturePaths[i]) + "/" + name;
+		if (fileExistsTest2(temp)){
+			path = temp;
+			break;
+		}
+	}
+	return path;
+}
+
+
+
+#include "GrTown\lodePNG.h"
+#include  <iostream>
+Texture* loadPNG(string _filename)
+{
+	std::string filename = findCorrectPath2(_filename);
+	std::vector<unsigned char> image; //the raw pixels
+	unsigned width, height;
+
+	//decode
+	unsigned error = lodepng::decode(image, width, height, filename);
+
+	//if there's an error, display it
+	if (error) std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+
+	//looad it into openGL
+	glEnable(GL_TEXTURE_2D);
+	
+	Texture* t = new Texture();
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+	t->texName = textureID;
+	t->width = width;
+	t->height = height;
+	t->textureUnit = 0;
+
+	// "Bind" the newly created texture : all future texture functions will modify this texture
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]);
+
+	//smooth the images;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// When MINifying the image, use a LINEAR blend of two mipmaps, each filtered LINEARLY too
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	// Generate mipmaps, by the way.
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	return t;
+}
+
 //*************************************************************************************
 //
 // * The core guts of the thing...
@@ -426,7 +491,7 @@ Texture* fetchTexture(char* name, bool wrapS, bool wrapT, GLenum textureUnit)
 		t->bits     = b;
 		t->width    = w;
 		t->height   = h;
-    t->textureUnit = textureUnit;
+        t->textureUnit = textureUnit;
 		theTextures.push_back(t);
 	
     //make sure its in the correct texture unit

@@ -6,6 +6,38 @@
 
 #include "SurfaceOfRevolution.h"
 
+#include "GrTown_PCH.H"
+#include "DrawingState.H"
+#include "DrawUtils.H"
+#include "Utilities\ShaderTools.H"
+#include "Utilities\Texture.H"
+#include "GrObjectVBO.h"
+
+using std::vector;
+
+// stuff in the world
+vector<GrObjectVBO*> theVBOobjects;
+
+
+// remember, these function have some responsibilities defined in the
+// header... 
+// for now these do simple things. in the future, maybe they will draw
+// more nicely
+void drawSky(DrawingState* st)
+{
+	// figure out the sky color...
+	if (st->timeOfDay < 5) st->sky(0, 0, .2f);
+	else if (st->timeOfDay < 8) st->sky(.2f, .2f, .8f);
+	else if (st->timeOfDay < 16) st->sky(.7f, .7f, 1);
+	else if (st->timeOfDay < 19) st->sky(.2f, .2f, .8f);
+	else st->sky(0, 0, .2f);
+
+	glClearColor(st->sky.r, st->sky.g, st->sky.b, st->sky.a);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT /*| GL_STENCIL_BUFFER_BIT*/);
+}
+
+
+
 
 //store the buffers for everything
 static std::vector<GLuint> bufferList;

@@ -22,3 +22,7 @@ void drawEarth(glm::mat4 P, glm::mat4 V, glm::vec3 camPos, glm::vec3 sunDirectio
 float calculateSunLight(DrawingState* drst);
 
 glm::vec3 calculateSunDirection(DrawingState* drst);
+
+//copied from the function in the original GrWorld.cpp
+//combined both of the world files
+void drawSky(DrawingState* st);
