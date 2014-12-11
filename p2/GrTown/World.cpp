@@ -3,6 +3,7 @@
 #include "Utilities\ShaderTools.H"
 #include <vector>
 
+#include "SurfaceOfRevolution.h"
 
 #include "SurfaceOfRevolution.h"
 
@@ -163,6 +164,109 @@ void initializeSkyBox(){
   shaderID = loadShader("sameVertex.glsl", "skyBoxFragment.glsl", err);
 }
 
+
+
+void drawSkyBoxDome(glm::vec3 sun, float light, glm::mat4 MVP){
+  static int vertexNum;
+  static GLuint skyVertexBuffer;
+  static GLuint skyNormalBuffer;
+  static GLuint skyUVBuffer;
+  static GLuint skyShaderID;
+  static Texture * skyTexture;
+  static int skyVertexNum;
+  static bool first = true;
+
+  if (first){
+    std::vector<glm::vec3> vertexList;
+    std::vector<glm::vec3> normalList;
+    std::vector<glm::vec2> uvList;
+
+    vertexList.push_back(glm::vec3(5000, 0, 0));
+    //vertexList.push_back(glm::vec3(4000, 250, 0));
+    //vertexList.push_back(glm::vec3(3000, 500, 0));
+    //vertexList.push_back(glm::vec3(2000, 1500, 0));
+    //vertexList.push_back(glm::vec3(1000, 3500, 0));
+    //vertexList.push_back(glm::vec3(500, 4500, 0));
+    vertexList.push_back(glm::vec3(0, 5000, 0));
+
+    surfaceOfRevolution(glm::vec3(0, 1, 0), 0.5, vertexList, normalList, uvList);
+
+    bindToArrayBuffer(skyVertexBuffer, vertexList);
+    bindToArrayBuffer(skyNormalBuffer, normalList);
+    bindToArrayBuffer(skyUVBuffer, uvList);
+
+    skyShaderID = loadShader("sameVertex.glsl", "skyBoxFragment.glsl");
+    skyTexture = fetchTexture("skyBox2.jpg", true, true);
+    skyVertexNum = vertexList.size();
+    first = false;
+
+  }
+  glEnableVertexAttribArray(0);
+  glEnableVertexAttribArray(2);
+  glEnableVertexAttribArray(3);
+  skyTexture->bind();
+  GLuint sunID = glGetUniformLocation(skyShaderID, "sunDirection");
+  GLuint sampleLoc = glGetUniformLocation(skyShaderID, "textureInput");
+  GLuint MatrixID = glGetUniformLocation(skyShaderID, "MVP");
+  GLuint lightID = glGetUniformLocation(skyShaderID, "lightInput");
+
+  glBindBuffer(GL_ARRAY_BUFFER, skyVertexBuffer);
+  glVertexAttribPointer(
+    0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+    3,                  // size
+    GL_FLOAT,           // type
+    GL_FALSE,           // normalized?
+    0,                  // stride
+    (void*)0            // array buffer offset
+    );
+
+  glBindBuffer(GL_ARRAY_BUFFER, skyUVBuffer);
+  glVertexAttribPointer(
+    2,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+    2,                                // size
+    GL_FLOAT,                         // type
+    GL_FALSE,                         // normalized?
+    0,                                // stride
+    (void*)0                          // array buffer offset
+    );
+
+  glUniform1i(sampleLoc, skyTexture->texName);
+
+  //bind normal
+  glBindBuffer(GL_ARRAY_BUFFER, skyNormalBuffer);
+  glVertexAttribPointer(
+    3,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+    3,                                // size
+    GL_FLOAT,                         // type
+    GL_TRUE,                         // normalized?
+    0,                                // stride
+    (void*)0                          // array buffer offset
+    );
+  //get
+
+  //get location of sun
+  // glUniform1i(sampleLoc, textureId);
+  glUseProgram(skyShaderID);
+
+  //glUniform3fv(sunID,3 * sizeof(float), (float*)glm::vec3(0, 1, 0));
+  glUniform3f(sunID, sun.x, sun.y, sun.z);
+  glUniform1f(lightID, light);
+  //Send Uniform Values to shader
+
+
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+  //draw the box
+  glDrawArrays(GL_TRIANGLES, 0, skyVertexNum);
+  //unbind texture
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glUseProgram(0);
+
+  glDisableVertexAttribArray(0);
+  glDisableVertexAttribArray(2);
+  glDisableVertexAttribArray(3);
+}
+
+
 void drawSkyBox(glm::vec3 sun, float light, glm::mat4 MVP){
   static bool first = true;
   if (first){
@@ -291,46 +395,7 @@ bool head = false;
 #include "normalMapping.h"
 
 void initializeEarth(){
-  char* err;
-  if (head){
-    //head
-    float headPoints[] = {
-      1, 0, 0,
-      1, 1, 0,
-      0, 1, 0
-    };
-
-    std::vector<float> vList;
-    std::vector<float> uList;
-    std::vector<float> nList;
-
-
-    //double vList
-
-
-    listToVector(headPoints, sizeof(headPoints) / sizeof(float), vList);
-    surfaceOfRevolution(glm::vec3(0, 1, 0), vList, &nList, &uList);
-
-    //doubleHead(vList, nList, uList, 80, 0);
-    doubleHead(vList, nList, uList, 40, 0);
-    doubleHead(vList, nList, uList, 20, 0);
-    doubleHead(vList, nList, uList, 10, 0);
-    //doubleHead(vList, nList, uList, 0, 80);
-    doubleHead(vList, nList, uList, 0, 40);
-    doubleHead(vList, nList, uList, 0, 20);
-    doubleHead(vList, nList, uList, 0, 10);
-
-
-    bindToArrayBuffer(headVertexBuffer, vList);
-    bindToArrayBuffer(headUVBuffer, uList);
-    bindToArrayBuffer(headNormalBuffer, nList);
-
-    headSize = nList.size();
-    
-
-    headShaderID = loadShader("EarthHeadVertex.glsl", "EarthHeadFragment.glsl", err);
-  }
-
+  
   //all the vertexs
   float points[] = {
     -25000.0f, -1.0f, -25000.0f,
@@ -381,61 +446,11 @@ void initializeEarth(){
   bindToArrayBuffer(landUVBuffer, sizeof(UVpoints), UVpoints);
   bindToArrayBuffer(landUVBuffer, sizeof(UVpoints), UVpoints);
 
-  landShaderID = loadShader("EarthVertex.glsl", "EarthFragment.glsl", err);
+  landShaderID = loadShader("EarthVertex.glsl", "EarthFragment.glsl");
   landT = fetchTexture("lego.jpg", true, true);
   glActiveTexture(GL_TEXTURE1);
   landNormalT = fetchTexture("normalLego.jpg", true, true, GL_TEXTURE1);
   glActiveTexture(GL_TEXTURE0);
-}
-
-void drawHead(glm::mat4 MVP, glm::vec3 sun, float light){
-  //draw the vList;
-  glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(2);
-  glEnableVertexAttribArray(3);
-  //get the location of the values outside, since we reusing shader
-  GLuint sunID = glGetUniformLocation(headShaderID, "sunDirection");
-  GLuint sampleLoc = glGetUniformLocation(shaderID, "textureInput");
-  GLuint MatrixID = glGetUniformLocation(headShaderID, "MVP");
-  //draw the four sides;
-
-  glBindBuffer(GL_ARRAY_BUFFER, headVertexBuffer);
-  glVertexAttribPointer(
-    0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-    3,                  // size
-    GL_FLOAT,           // type
-    GL_FALSE,           // normalized?
-    0,                  // stride
-    (void*)0            // array buffer offset
-    );
-
-  glBindBuffer(GL_ARRAY_BUFFER, headNormalBuffer);
-  glVertexAttribPointer(
-    3,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-    3,                  // size
-    GL_FLOAT,           // type
-    GL_FALSE,           // normalized?
-    0,                  // stride
-    (void*)0            // array buffer offset
-    );
-
-  //get location of sun
-  glUniform1i(sampleLoc, landT->texName);
-  glUseProgram(headShaderID);
-
-  //glUniform3fv(sunID,3 * sizeof(float), (float*)glm::vec3(0, 1, 0));
-  glUniform3f(sunID, sun.x, sun.y, sun.z);
-
-  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-  //draw the box
-  glDrawArrays(GL_TRIANGLES, 0, headSize / 3);
-  //unbind texture
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glUseProgram(0);
-
-  glDisableVertexAttribArray(0);
-  glDisableVertexAttribArray(2);
-  glDisableVertexAttribArray(3);
 }
 
 void drawLand(glm::mat4 proj, glm::mat4 view, glm::mat4 model, glm::vec3 sun, float light){
@@ -550,40 +565,7 @@ void drawEarth(glm::mat4 proj,glm::mat4 view, glm::vec3 camPos,glm::vec3 sunDire
     first = false;
   }
   drawLand(proj, view, glm::mat4(1.0f), sunDirection, light);
-  
-  if (head){
-
-    float distance = 80;
-    for (int i = 0; i < 2; i++){
-      float x = ((i - 1) * distance) + camPos.x;
-      for (int j = 0; j < 1; j++){
-        float z = ((j - 1) * distance) + camPos.z;
-        glm::mat4 trans = glm::scale(glm::mat4(1.0f), glm::vec3(6, 6, 6)) * glm::translate(glm::mat4(1.0f), glm::vec3(x, 0, z));
-        glm::mat4 model = trans;
-        glm::mat4 MVP = proj * view * model;
-        drawHead(MVP, sunDirection, 0);
-      }
-    }
-  }
-
-  //only draw heads near the user
-
 }
-/**
-float calculateSunLight(DrawingState drst){
-  //lighting calculations
-  return 1.05 - (abs(12 - drst.timeOfDay) / 12.0);
-}
-
-glm::vec3 calculateSunDirection(DrawingState drst){
-  glm::vec3 sun(0, 0, 0);
-  if (drst.timeOfDay > 6 && drst.timeOfDay < 18){
-    float angle = (drst.timeOfDay - 6) / 3 * 45;
-    sun = glm::rotateZ(glm::vec3(1, 0, 0), angle);
-  }
-  return sun;
-}
-*/
 
 float calculateSunLight(DrawingState* drst){
   //lighting calculations

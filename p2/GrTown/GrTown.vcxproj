@@ -141,7 +141,7 @@
     <ClInclude Include="lodePNG.h" />
     <ClInclude Include="Loop.h" />
     <ClInclude Include="MMatrix.H" />
-    <ClInclude Include="Model.h" />
+    <ClInclude Include="Heli.h" />
     <ClInclude Include="normalMapping.h" />
     <ClInclude Include="ObjectLoader.h" />
     <ClInclude Include="Particles.h" />
@@ -172,7 +172,7 @@
     <ClCompile Include="Loop.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MMatrix.cpp" />
-    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Heli.cpp" />
     <ClCompile Include="normalMapping.cpp" />
     <ClCompile Include="ObjectLoader.cpp" />
     <ClCompile Include="Particles.cpp" />

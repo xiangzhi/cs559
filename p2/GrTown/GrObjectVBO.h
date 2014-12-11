@@ -87,6 +87,7 @@ public:
   glm::vec3 pos;
   glm::vec3 from;
   glm::vec3 scale;
+  glm::vec3 to;
   float ry = 0;
 
   GLuint shaderIDAfter;

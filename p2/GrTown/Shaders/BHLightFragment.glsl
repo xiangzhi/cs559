@@ -2,7 +2,7 @@
 
 in vec3 sun;
 in vec3 normal;
-in float light;
+in float opacity;
 
 out vec4 color;
 
@@ -13,5 +13,5 @@ void main (void) {
   float theta = clamp(dot(normal,sun),0,1);
   //float light = theta + ambient;
 
-  color = vec4(vec3(1,1,0),light);
+  color = vec4(vec3(1,1,0),opacity);
 };

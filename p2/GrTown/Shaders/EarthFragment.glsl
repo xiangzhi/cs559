@@ -43,20 +43,20 @@ vec3 n = normalize(texture( normalInput, UV).rgb*2.0 - 1.0);
 float distance = length( sunDirection - Position_worldspace );
 
 //vec3 n = TextureNormal_tangentspace;
-//vec3 l = normalize(LightDirection_tangentspace);
+vec3 l = normalize(LightDirection_tangentspace);
 float cosTheta = clamp( dot( n,sunDirection ), 0,1 );
 
 // Eye vector (towards the camera)
-//vec3 E = normalize(EyeDirection_tangentspace);
+vec3 E = normalize(EyeDirection_tangentspace);
 // Direction in which the triangle reflects the light
-//vec3 R = reflect(-l,n);
+vec3 R = reflect(-l,n);
 // Cosine of the angle between the Eye vector and the Reflect vector,
 // clamped to 0
 // - Looking into the reflection -> 1
 // - Looking elsewhere -> < 1
-//float cosAlpha = clamp( dot( E,R ), 0,1 );
+float cosAlpha = clamp( dot( E,R ), 0,1 );
 
-color = MaterialAmbientColor  + MaterialDiffuseColor * cosTheta;
+color = MaterialAmbientColor  + MaterialDiffuseColor * cosTheta + MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5);
 // Ambient : simulates indirect lighting
 //MaterialAmbientColor +
 // Diffuse : "color" of the object

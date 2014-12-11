@@ -51,17 +51,17 @@ void BHLights::redoSOR(){
 
 	surfaceOfRevolution(glm::vec3(0, 1, 0), rotation, vertexList, normalList, uvList);
 
-	rebindToArrayBuffer(vertexBuffer, vertexList);
-	rebindToArrayBuffer(normalBuffer,normalList);
-	rebindToArrayBuffer(textureBuffer, uvList);
+	rebindToArrayBuffer(vertexBufferAfter, vertexList);
+	rebindToArrayBuffer(normalBufferAfter,normalList);
+	rebindToArrayBuffer(textureBufferAfter, uvList);
 
-	vertexNum = vertexList.size();
+	vertexNumAfter = vertexList.size();
 }
 
 #include "DrawingState.H"
 void BHLights::preDraw(DrawingState* drst){
   transform = transform;
-  
+
   //check whether setting changed
   static float lastRotation = 10;
   if ( lastRotation != drst->soRRotation){

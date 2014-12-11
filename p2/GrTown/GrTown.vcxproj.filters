@@ -110,14 +110,14 @@
     <ClInclude Include="House.h">
       <Filter>Models\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Models\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="lodePNG.h">
       <Filter>Utilities\Headers</Filter>
     </ClInclude>
     <ClInclude Include="LegoBrick.h">
       <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Heli.h">
+      <Filter>Models\Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -196,9 +196,6 @@
     <ClCompile Include="House.cpp">
       <Filter>Models\Source FIles</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>Models\Source FIles</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectLoader.cpp">
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
@@ -207,6 +204,9 @@
     </ClCompile>
     <ClCompile Include="LegoBrick.cpp">
       <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Heli.cpp">
+      <Filter>Models\Source FIles</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -3,11 +3,10 @@
 in vec3 sun;
 in vec2 UV;
 in vec3 normal;
-in float lightIntensity;
 out vec4 color;
 
 uniform sampler2D textureInput;
-uniform float light;
+uniform float lightIntensity;
 void main (void) {
   //frag_colour = fragmentColor;
 
@@ -15,6 +14,6 @@ void main (void) {
   float theta = clamp(dot(normal,sun),0,1);
   //float light = theta * 2 + ambient;
 
-  color = texture(textureInput,UV).rgba;
+  color = vec4(lightIntensity * texture(textureInput,UV).rgb, 1.0);
   //color = vec3(1,0,0);
 };

@@ -17,6 +17,8 @@
 //pass in the direction of the sun and intensity of light
 void drawSkyBox(glm::vec3 sun, float light, glm::mat4 MVP);
 
+void drawSkyBoxDome(glm::vec3 sun, float light, glm::mat4 MVP);
+
 void drawEarth(glm::mat4 P, glm::mat4 V, glm::vec3 camPos, glm::vec3 sunDirection, float light);
 
 float calculateSunLight(DrawingState* drst);

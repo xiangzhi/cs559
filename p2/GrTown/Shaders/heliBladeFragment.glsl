@@ -15,24 +15,25 @@ out vec4 color;
 //a simple Blinn-Phong lighting
 void main (void) {
  
-  vec3 ambientColor = vec3(0.019,0,0.3058);
+  vec3 ambientColor = vec3(0.1,0.1,0.1);
   //color of material
-  vec3 diffuseColor = vec3(0,0,1);
+  vec3 diffuseColor = vec3(0.4,0.4,0.4);
   //lower than 1,1,1 due to long distance from sun
   vec3 specularColor = vec3(1,1,1);
 
   float speculatIntensity = 0;
-  float shininess = 4;
+  float shininess = 2;
 
   //calculate diffuse lighting
   float diffuseIntensity = clamp(dot(normal, sun),0,1);
 
   if(dot(sun,normal) > 0){
-  	vec3 halfway = normalize(sun + viewDirection);
-  	float specTemp = max(dot(normal,halfway),0.0);
-  	speculatIntensity = pow(specTemp,shininess);
+    vec3 halfway = normalize(sun + viewDirection);
+    float specTemp = max(dot(normal,halfway),0.0);
+    speculatIntensity = pow(specTemp,shininess);
   }
 
-  vec3 tempLight = speculatIntensity * specularColor + diffuseIntensity * diffuseColor + ambientColor;
-  color = vec4(tempLight,1.0);
+  vec3 tempLight = speculatIntensity * specularColor + ambientColor;
+  tempLight = tempLight * lightIntensity;
+  color = vec4(tempLight,0.6);
 };

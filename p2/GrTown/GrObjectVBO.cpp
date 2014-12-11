@@ -134,6 +134,11 @@ void GrObjectVBO::draw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::
   GLuint ModelID = glGetUniformLocation(shaderID, "model");
   glUniformMatrix4fv(ModelID, 1, GL_FALSE, &model[0][0]);
 
+  //passes view matrix to shader
+  MatrixID = glGetUniformLocation(shaderID, "view");
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &view[0][0]);
+
+
 
   //lighting calculations
   float light = calculateSunLight(drst);
@@ -145,6 +150,9 @@ void GrObjectVBO::draw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::
   glUniform3f(sunID, sun.x, sun.y, sun.z);
 
   GLuint lightID = glGetUniformLocation(shaderID, "light");
+  glUniform1f(lightID, light);
+
+  lightID = glGetUniformLocation(shaderID, "lightIntensity");
   glUniform1f(lightID, light);
 
 
@@ -170,6 +178,8 @@ void GrObjectVBO::draw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::
   glDisableVertexAttribArray(3);
   glDisableVertexAttribArray(4);
 }
+
+
 void GrObjectVBO::drawAfter(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model)
 {
   //if for some reason, something change
@@ -243,9 +253,14 @@ void GrObjectVBO::drawAfter(DrawingState* drst, glm::mat4 proj, glm::mat4 view, 
   runAttribute(proj, view, model);
   //get the location of MVP in shader
   GLuint MatrixID = glGetUniformLocation(shaderIDAfter, "MVP");
-  //pass our MVP to shader
   glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
+
+
+  //passes view matrix to shader
+  MatrixID = glGetUniformLocation(shaderIDAfter, "view");
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &view[0][0]);
+  //passes model matrix to shader
   GLuint ModelID = glGetUniformLocation(shaderIDAfter, "model");
   glUniformMatrix4fv(ModelID, 1, GL_FALSE, &model[0][0]);
 
@@ -446,7 +461,6 @@ void GrObjectVBO::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, g
 
   GLuint ModelID = glGetUniformLocation(shaderID, "model");
   glUniformMatrix4fv(ModelID, 1, GL_FALSE, &model[0][0]);
-
 
   //lighting calculations
   float light = calculateSunLight(drst);

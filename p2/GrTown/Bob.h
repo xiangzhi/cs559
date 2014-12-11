@@ -20,5 +20,11 @@ public:
   glm::vec3 scale;
   bool physic;
   glm::vec3 touchPos;
+
+  //keep a copy of the original size;
+  std::vector<glm::vec3> oriVertexList;
+  std::vector<glm::vec3> oriNormalList;
+  std::vector<glm::vec2> oriUvList;
+
 };
 

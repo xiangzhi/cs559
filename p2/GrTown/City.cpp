@@ -65,7 +65,7 @@ void City::initialize(){
   brick->redraw = false;
   //distribution of lego pieces;
   std::default_random_engine generator;
-  std::normal_distribution<double> distribution(0, 600);
+  std::normal_distribution<double> distribution(0, 800);
 
   //set different shaders
   GLuint shaders[3];

@@ -15,12 +15,15 @@ Bob::~Bob()
 
 void Bob::redoSubDivision(){
 
-	std::vector<glm::vec3> vertexList;
-	std::vector<glm::vec3> normalList;
-	std::vector<glm::vec2> uvList;
+	std::vector<glm::vec3> vertexList(oriVertexList);
+	std::vector<glm::vec3> normalList(oriNormalList);
+	std::vector<glm::vec2> uvList(oriUvList);
+
+
+
 
 	//draw the cube
-	drawCube(vertexList, normalList, uvList, 100, 100, 100);
+	//drawCube(vertexList, normalList, uvList, 100, 100, 100);
 	//redo loopSubDivision
 	loopSubDivision(divideTime, vertexList, normalList, uvList);
 	//rebind vertex buffer;
@@ -33,12 +36,103 @@ void Bob::redoSubDivision(){
 
 
 void Bob::initialize(){
-	std::vector<glm::vec3> vertexList;
-	std::vector<glm::vec3> normalList;
-	std::vector<glm::vec2> uvList;
-
   //draw the cube
-  drawCube(vertexList, normalList, uvList,400,400,400);
+  //drawCube(vertexList, normalList, uvList,400,400,400);
+
+
+  oriVertexList.push_back(glm::vec3(0, 0, 400));
+  oriVertexList.push_back(glm::vec3(400, 0, 0));
+  oriVertexList.push_back(glm::vec3(-400, 0, 0));
+
+  oriVertexList.push_back(glm::vec3(0, 0, 400));
+  oriVertexList.push_back(glm::vec3(-400, 0, 0));
+  oriVertexList.push_back(glm::vec3(0, 400, 0));
+
+  oriVertexList.push_back(glm::vec3(0, 0, 400));
+  oriVertexList.push_back(glm::vec3(400, 0, 0));
+  oriVertexList.push_back(glm::vec3(0, 400, 0));
+
+  oriVertexList.push_back(glm::vec3(-400, 0, 0));
+  oriVertexList.push_back(glm::vec3(400, 0, 0));
+  oriVertexList.push_back(glm::vec3(0, 400, 0));
+
+  oriVertexList.push_back(glm::vec3(400, 0, 0));
+  oriVertexList.push_back(glm::vec3(600, 600, -400));
+  oriVertexList.push_back(glm::vec3(0, 400, 0));
+
+  oriVertexList.push_back(glm::vec3(-400, 0, 0));
+  oriVertexList.push_back(glm::vec3(-600, 600, -400));
+  oriVertexList.push_back(glm::vec3(0, 400, 0));
+
+  oriVertexList.push_back(glm::vec3(600, 600, -400));
+  oriVertexList.push_back(glm::vec3(-600, 600, -400));
+  oriVertexList.push_back(glm::vec3(0, 0, -400));
+
+  //normals
+  oriNormalList.push_back(glm::vec3(0, -1, 0));
+  oriNormalList.push_back(glm::vec3(0, -1, 0));
+  oriNormalList.push_back(glm::vec3(0, -1, 0));
+
+  oriNormalList.push_back(glm::vec3(0.5, 0.5, 0));
+  oriNormalList.push_back(glm::vec3(0.5, 0.5, 0));
+  oriNormalList.push_back(glm::vec3(0.5, 0.5, 0));
+
+  oriNormalList.push_back(glm::vec3(-0.5, 0.5, 0));
+  oriNormalList.push_back(glm::vec3(-0.5, 0.5, 0));
+  oriNormalList.push_back(glm::vec3(-0.5, 0.5, 0));
+
+  oriNormalList.push_back(glm::vec3(0, 0, -1));
+  oriNormalList.push_back(glm::vec3(0, 0, -1));
+  oriNormalList.push_back(glm::vec3(0, 0, -1));
+
+  oriNormalList.push_back(glm::vec3(0.5, 0, 0.5));
+  oriNormalList.push_back(glm::vec3(0.5, 0, 0.5));
+  oriNormalList.push_back(glm::vec3(0.5, 0, 0.5));
+
+  oriNormalList.push_back(glm::vec3(-0.5, 0, 0.5));
+  oriNormalList.push_back(glm::vec3(-0.5, 0, 0.5));
+  oriNormalList.push_back(glm::vec3(-0.5, 0, 0.5));
+
+  oriNormalList.push_back(glm::vec3(0, 0, -1));
+  oriNormalList.push_back(glm::vec3(0, 0, -1));
+  oriNormalList.push_back(glm::vec3(0, 0, -1));
+
+  oriUvList.push_back(glm::vec2(0, 0));
+  oriUvList.push_back(glm::vec2(0, 1));
+  oriUvList.push_back(glm::vec2(1, 1));
+
+  oriUvList.push_back(glm::vec2(0, 0));
+  oriUvList.push_back(glm::vec2(0, 1));
+  oriUvList.push_back(glm::vec2(1, 1));
+
+  oriUvList.push_back(glm::vec2(0, 0));
+  oriUvList.push_back(glm::vec2(0, 1));
+  oriUvList.push_back(glm::vec2(1, 1));
+
+  oriUvList.push_back(glm::vec2(0, 0));
+  oriUvList.push_back(glm::vec2(0, 1));
+  oriUvList.push_back(glm::vec2(1, 1));
+
+  oriUvList.push_back(glm::vec2(0, 0));
+  oriUvList.push_back(glm::vec2(0, 1));
+  oriUvList.push_back(glm::vec2(1, 1));
+
+  oriUvList.push_back(glm::vec2(0, 0));
+  oriUvList.push_back(glm::vec2(0, 1));
+  oriUvList.push_back(glm::vec2(1, 1));
+
+  oriUvList.push_back(glm::vec2(0, 0));
+  oriUvList.push_back(glm::vec2(0, 1));
+  oriUvList.push_back(glm::vec2(1, 1));
+
+
+  std::vector<glm::vec3> vertexList(oriVertexList);
+  std::vector<glm::vec3> normalList(oriNormalList);
+  std::vector<glm::vec2> uvList(oriUvList);
+
+
+
+
 
   loopSubDivision(divideTime, vertexList, normalList, uvList);
 
@@ -67,6 +161,14 @@ void Bob::preDraw(DrawingState* drst){
   //redraw = true;
 
   physic = drst->physics;
+
+  //to = pos;
+  /*
+  from.x = pos.x + 400;
+  from.y = 0;
+  from.z = pos.z + 400;
+  */
+
 }
 
 float gravity = 0.98;

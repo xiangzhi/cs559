@@ -292,6 +292,48 @@ void FollowCam::getCamera(Matrix camera)
 
 glm::mat4 FollowCam::getCamera(){
 	return glm::mat4(1.0f);
+  float atX, atY, atZ;
+  if (following){
+    atX = following->transform[3][0];
+    atY = following->transform[3][1];
+    atZ = following->transform[3][2];
+  } else {
+    std::cerr << "No object for followcam!";
+    return glm::mat4(1.0F);
+  }
+
+  // get the old "from" point from the matrix
+  float oldFromX = transform[3][0];
+  float oldFromY = transform[3][1];
+  float oldFromZ = transform[3][2];
+
+  // compute the new from point
+  float fromX, fromY, fromZ;
+
+  // for now, make the distance be constant
+  float dx = oldFromX - atX;
+  float dy = oldFromY - atY;
+  float dz = oldFromZ - atZ;
+  float d = sqrt(dx*dx + dy*dy + dz*dz);
+
+  if (d<1) {
+    fromX = atX + 10;
+    fromY = atY + 10;
+    fromZ = atZ + 10;
+  }
+  else {
+    float ds = followDistance / d;
+    fromX = atX + (dx * ds);
+    fromY = atY + (dy * ds);
+    fromZ = atZ + (dz * ds);
+  }
+  if (fromY < minY) fromY = minY;
+
+  return glm::lookAt(
+    glm::vec3(fromX, fromY, fromZ),
+    glm::vec3(atX, atY, atZ),
+    glm::vec3(0, 1, 0)
+  );
 }
 
 
@@ -398,7 +440,7 @@ glm::mat4 InterestingCam::getCamera()
 	if (focus) {
 		return glm::lookAt(
 			focus->from,
-			focus->pos,
+			focus->to,
 			glm::vec3(0, 1, 0)
 		);
 	}

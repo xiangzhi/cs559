@@ -8,7 +8,8 @@ uniform vec3 camRight;
 uniform vec3 camUp;
 uniform vec3 center;
 uniform vec3 size;
-uniform float light;
+
+
 layout(location = 3) in vec3 _normal;
 layout(location = 2) in vec2 _uv;
 

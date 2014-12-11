@@ -256,7 +256,7 @@ void Billboards::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, gl
 void Billboards::runAttribute(glm::mat4 proj, glm::mat4 view, glm::mat4 model){
   //billboard stuff
 
-  glm::vec4 center = glm::vec4(pos.x + 0, pos.y + 10, pos.z + -100, 0);
+  glm::vec4 center = glm::vec4(pos.x, pos.y, pos.z, 0);
   center = model * center;
   glm::vec3 camRight = glm::vec3(view[0][0], view[1][0], view[2][0]);
   glm::vec3 camUp = glm::vec3(view[0][1], view[1][1], view[2][1]);

@@ -15,7 +15,7 @@
 
 
 #include "Building.h"
-#include "Model.h"
+#include "Heli.h"
 #include "Billboards.h"
 #include "Dino.h"
 #include "Bob.h"
@@ -103,27 +103,21 @@ int main(int /*argc*/, char** /*argv*/)
   }
   */
   
-  GrObjectVBO* dino = new Dino();
-  //add(dino);
+
   GrObjectVBO* bob = new Bob();
   bob->interesting = true;
   add(bob);
-  GrObjectVBO* super = new Model(bob);
-  super->interesting = true;
-  add(super);
-  //GrObjectVBO* s = new Sphere();
-  //add(s);
-
-
-  GrObjectVBO* obj = new BHLights();
-  add(obj);
+  GrObjectVBO* heli = new Heli(bob);
+  heli->interesting = true;
+  heli->name = "BlackHawak-1";
+  add(heli);
   GrObjectVBO* city = new City();
   ((City*) city)->destroyer = bob;
   add(city);
-
   GrObjectVBO* billboard = new Billboards();
-  billboard->pos = glm::vec3(0, 0, 3000);
-  billboard->from = glm::vec3(3100, 50, 3100);
+  billboard->pos = glm::vec3(-3000, -300, 2000);
+  //billboard->to = glm::vec3(-3000, 400, 2000);
+  billboard->from = glm::vec3(-3000, 500, 2500);
   billboard->interesting = true;
   add(billboard);
 
