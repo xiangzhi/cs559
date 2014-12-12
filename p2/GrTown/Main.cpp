@@ -119,6 +119,10 @@ int main(int /*argc*/, char** /*argv*/)
   GrObjectVBO* city = new City();
   ((City*) city)->destroyer = bob;
   add(city);
+  city->name = "City View";
+  city->to = glm::vec3(0, 0, 0);
+  city->from = glm::vec3(1000, 1000, 1000);
+  city->interesting = true;
 
   GrObjectVBO* billboard = new Billboards();
   billboard->name = "TeddyBear Billboard";

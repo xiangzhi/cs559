@@ -127,7 +127,7 @@ void Billboards::initialize(){
   shaderID = loadShader("billboardVertex.glsl", "billboardFragment.glsl", err);
   vertexNum = vList.size();
 
-  transform = glm::scale(glm::vec3(200,200,200));
+  transform = glm::scale(glm::vec3(150,150,150));
   transform = glm::translate(pos) * transform;
 
 

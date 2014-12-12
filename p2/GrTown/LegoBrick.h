@@ -7,7 +7,7 @@ class LegoBrick :
 {
 public:
   LegoBrick();
-  LegoBrick(float);
+  LegoBrick(float t);
 	~LegoBrick();
 	void initialize();
 	void preDraw(DrawingState* drst);

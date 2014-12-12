@@ -20,6 +20,7 @@ uniform mat4 M;
 uniform mat3 M3;
 uniform mat4 V;
 uniform mat4 P;
+uniform vec3 sunDirection;
 
 void main (void) {
 
@@ -30,6 +31,8 @@ void main (void) {
 
 	vec3 vertexPosition_cameraspace = (V * M * vector).xyz;
 	EyeDirection_cameraspace = vec3(0,0,0) - vertexPosition_cameraspace;
+
+	LightDirection_cameraspace = sunDirection;
 
 	UV = vertexUV;
 

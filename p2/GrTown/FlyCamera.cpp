@@ -12,13 +12,22 @@
 #include <gtx\transform.hpp>
 #include <gtx\rotate_vector.hpp>
 
+#include <math.h>
+/** Degrees to Radian **/
+#define degreesToRadians( degrees ) ((float)( ( degrees ) / 180.0 * M_PI )))
+
+/** Radians to Degrees **/
+#define radiansToDegrees( radians ) ((float)(( radians ) * ( 180.0 / M_PI )))
+
 int flyCamCount = 0;
 
 FlyCamera::FlyCamera() : GrObjectVBO("FlyCamera",flyCamCount), 
-  direction(0), pitch(0), posX(0), posY(10), posZ(0),
+  direction(0), pitch(0), posX(1000), posY(1000), posZ(1000),
   lastUItime(0), buttonDown(0)
 {
-	pos = glm::vec3(0);
+  pos = glm::vec3(0);
+  direction = 7;
+    pitch = 0.5;
   // don't make this ridable, since its special
   //  ridable = true; 
 }
@@ -41,12 +50,7 @@ void FlyCamera::getCamera(Matrix camera)
 }
 */
 
-#include <math.h>
-/** Degrees to Radian **/
-#define degreesToRadians( degrees ) ((float)( ( degrees ) / 180.0 * M_PI )))
 
-/** Radians to Degrees **/
-#define radiansToDegrees( radians ) ((float)(( radians ) * ( 180.0 / M_PI )))
 
 
 glm::mat4 FlyCamera::getCamera(){
