@@ -13,8 +13,6 @@
 // lighting if they want to, ...
 class GrObjectVBO;
 
-#include "DrawUtils.H"
-
 // the drawing state class itself
 class DrawingState {
 public:
@@ -23,11 +21,6 @@ public:
 
   // time of day - military time (0 = midnight, 12=noon)
   int timeOfDay;
-
-  // some state
-  // draw sky/ground sets these based on time of day
-  Color sky;
-  Color ground;
 
   // which object is the camera?
   GrObjectVBO* camera;

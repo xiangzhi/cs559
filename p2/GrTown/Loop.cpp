@@ -1,3 +1,7 @@
+// CS 559 - Project 2 - Xiang Zhi Tan
+//Loop.cpp
+//Do the loop algorithm for the object
+
 #include "Loop.h"
 #include <glm.hpp>
 #include <vector>
@@ -7,6 +11,8 @@
 
 using std::vector;
 
+
+//data structure that represent each point
 class Point{
 public:
 
@@ -77,6 +83,7 @@ public:
   }
 };
 
+//data structure that represent each triangle
 class triangle{
 public:
   Point * p[3];
@@ -90,12 +97,12 @@ public:
 
 };
 
+//get the B value for the Loop Algorthim
 double getB(int size){
   return 3.0 / ((size + 2.0) * size);
 }
 
-
-
+//updae the link betwen the old point and the new point
 void update(Point * old, Point* nPtr){
   for (int i = 0; i < old->child.size(); i++){
     std::vector<void*> vec = ((Point*)old->child[i])->parents;
@@ -111,6 +118,20 @@ void update(Point * old, Point* nPtr){
   }
 }
 
+
+//how to calculate for vec3 - normal or vertex
+glm::vec3 calculateNewValue(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4){
+  return (3 / 8.0f) * p1 + (3 / 8.0f) * p2 + (1 / 8.0f) * p3 + (1 / 8.0f) * p4;
+}
+
+//how to calculate for vec2 - texture
+glm::vec2 calculateNewValue(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, glm::vec2 p4){
+  return (3 / 8.0f) * p1 + (3 / 8.0f) * p2 + (1 / 8.0f) * p3 + (1 / 8.0f) * p4;
+}
+
+
+//update the vertex at the point p
+//based on information of the neighbor stored inside
 void loopValueForOld(Point * p){
 
   double b = getB(p->neighbors.size());
@@ -154,15 +175,7 @@ void loopValueForOld(Point * p){
   p->texture = textureLocal;
 }
 
-
-glm::vec3 calculateNewValue(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4){
-  return (3 / 8.0f) * p1 + (3 / 8.0f) * p2 + (1 / 8.0f) * p3 + (1 / 8.0f) * p4;
-}
-
-glm::vec2 calculateNewValue(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, glm::vec2 p4){
-  return (3 / 8.0f) * p1 + (3 / 8.0f) * p2 + (1 / 8.0f) * p3 + (1 / 8.0f) * p4;
-}
-
+//update the new point with information from neighbor
 void loopValueForNew(Point * p){
   ((Point*)p->parents[0])->loc;
   Point p1(((Point*)p->parents[0]));
@@ -193,6 +206,9 @@ void loopValueForNew(Point * p){
   // return p;
 }
 
+
+
+//check whether the two point occupy the same space
 bool isSamePoint(Point* p1, Point* p2){
   if (p1 == p2)
     return false;
@@ -201,6 +217,7 @@ bool isSamePoint(Point* p1, Point* p2){
   return false;
 }
 
+//check whether the point is already in the list
 bool searchList(std::vector<void*> addrList, void* ptr){
   for (int i = 0; i < addrList.size(); i++){
     if (addrList[i] == ptr)
@@ -209,6 +226,7 @@ bool searchList(std::vector<void*> addrList, void* ptr){
   return false;
 }
 
+//combined two points, by averaging both points.
 Point* getAveragePoint(Point* p1, Point* p2){
   glm::vec3 newLoc = (p1->loc + p2->loc) / 2.0f;
   Point* p = new Point(newLoc);
@@ -218,6 +236,7 @@ Point* getAveragePoint(Point* p1, Point* p2){
   return p;
 }
 
+//do the calculation of loop algorithm for times.
 void calculate(std::vector<triangle> &triangles, int times){
 
   for (int i = 0; i < times; i++){
@@ -402,6 +421,7 @@ void calculate(std::vector<triangle> &triangles, int times){
   }
 }
 
+//do the calcluation for loop algorithm once
 void calculate(std::vector<triangle> &triangles){
 
   std::vector<triangle> newList;
@@ -592,8 +612,7 @@ void calculate(std::vector<triangle> &triangles){
 
 }
 
-
-
+//convert the list of vertex,normal and uv into the data structure of loop from glm::vec3
 void construct(std::vector<triangle>& list, std::vector<glm::vec3>& vertexList, std::vector<glm::vec3>& normallist, std::vector<glm::vec2>& uvlist){
   int uvIndex = 0;
   for (int i = 0; i < vertexList.size() - 2; i += 3){
@@ -628,6 +647,7 @@ void construct(std::vector<triangle>& list, std::vector<glm::vec3>& vertexList, 
     list.push_back(triangle(p1, p2, p3));
   }
 }
+//convert back the list of vertex,normal and uv from the data structure
 void deconstruct(std::vector<triangle>& triangleList, std::vector<glm::vec3>& vertexList, std::vector<glm::vec3>& normalList, std::vector<glm::vec2>& uvList){
   std::vector<float> list;
   for (int i = 0; i < triangleList.size(); i++){
@@ -640,7 +660,7 @@ void deconstruct(std::vector<triangle>& triangleList, std::vector<glm::vec3>& ve
     }
   }
 }
-
+//convert the list of vertex,normal and uv into the data structure of loop from float list
 std::vector<triangle> construct(std::vector<float>& vertexList, std::vector<float>& normallist, std::vector<float>& uvlist){
   std::vector<triangle> list;
   int uvIndex = 0;
@@ -679,6 +699,7 @@ std::vector<triangle> construct(std::vector<float>& vertexList, std::vector<floa
   }
   return list;
 }
+//convert back the list of vertex,normal and uv from the data structure
 std::vector<float> deconstruct(std::vector<triangle> triangleList, std::vector<float>& vertexList, std::vector<float>& normalList, std::vector<float>& uvList){
   std::vector<float> list;
   for (int i = 0; i < triangleList.size(); i++){
@@ -700,6 +721,7 @@ std::vector<float> deconstruct(std::vector<triangle> triangleList, std::vector<f
   return list;
 }
 
+//external interface for the loop algorthims
 void loopSubDivision(std::vector<float>& vertexlist, std::vector<float>& normallist, std::vector<float>& uvlist){
   //construct
   std::vector<triangle> triangleList = construct(vertexlist, normallist, uvlist);
@@ -712,7 +734,6 @@ void loopSubDivision(std::vector<float>& vertexlist, std::vector<float>& normall
 
   deconstruct(triangleList, vertexlist, normallist, uvlist);
 }
-
 void loopSubDivision(int times, std::vector<glm::vec3>& vertexlist, std::vector<glm::vec3>& normallist, std::vector<glm::vec2>& uvlist){
   //construct
   std::vector<triangle> triangleList;
@@ -723,197 +744,4 @@ void loopSubDivision(int times, std::vector<glm::vec3>& vertexlist, std::vector<
   normallist.clear();
   uvlist.clear();
   deconstruct(triangleList, vertexlist, normallist, uvlist);
-}
-
-
-Loop::Loop()
-{
-}
-
-
-Loop::~Loop()
-{
-}
-#include "Utilities\Texture.H"
-#include "DrawingTools.h"
-#include "gtc\matrix_transform.hpp"
-
-void loopTest(int numTimes, glm::mat4 proj, glm::mat4 view, glm::mat4 model, glm::vec3 sun){
-
-  static vector<float> vlist;
-  static vector<float> nvlist;
-
-  static GLuint  vertexBuffer;
-  static GLuint textureBuffer;
-  static GLuint normalBuffer;
-  static GLuint shaderID;
-  static int size;
-  static Texture* t;
-
-  model = model * glm::scale(glm::mat4(1.0f), glm::vec3(15, 10, 30))
-    * glm::translate(glm::mat4(1.0f), glm::vec3(10, 10, 0));
-  glm::mat4 MVP = proj * view * model;
-
-  static bool first = true;
-
-  if (first){
-    first = false;
-
-    float vertexPoints[] = {
-
-      0, 0, 1,
-      1, 0, 0,
-      -1, 0, 0,
-
-      0, 0, 1,
-      1, 0, 0,
-      0, 1, 0,
-
-      0, 0, 1,
-      -1, 0, 0,
-      0, 1, 0,
-
-      1, 0, 0,
-      -1, 0, 0,
-      0, 1, 0
-
-      /*
-      0,1,0,
-      0,0,1,
-      0,0,-1,
-      0,0,1,
-      1,0,0,
-      0,0,-1,
-      */
-    };
-
-    float normalPoints[] = {
-      0, -1, 0,
-      0, -1, 0,
-      0, -1, 0,
-
-      0.5, 0.5, 0,
-      0.5, 0.5, 0,
-      0.5, 0.5, 0,
-
-      -0.5, 0.5, 0,
-      -0.5, 0.5, 0,
-      -0.5, 0.5, 0,
-
-      0, 0, -1,
-      0, 0, -1,
-      0, 0, -1,
-    };
-
-    float uvPoints[] = {
-      0, 0,
-      0, 1,
-      1, 1,
-      //
-      0, 0,
-      0, 1,
-      1, 1,
-      //
-      0, 0,
-      0, 1,
-      1, 1,
-      //
-      0, 0,
-      0, 1,
-      1, 1,
-    };
-
-    vector<float>vertexList;
-    vector<float>normalList;
-    vector<float>textureList;
-    //put the vertex and normal point into the list
-    for (int i = 0; i < (sizeof(vertexPoints) / sizeof(float)); i++){
-      vertexList.push_back(vertexPoints[i]);
-      normalList.push_back(normalPoints[i]);
-    }
-    //put the uv coordinate into the list
-    for (int i = 0; i < (sizeof(uvPoints) / sizeof(float)); i++){
-      textureList.push_back(uvPoints[i]);
-    }
-
-    //do the loop subdivision calculations
-    for (int j = 0; j < numTimes; j++){
-      loopSubDivision(vertexList,normalList,textureList);
-    }
-    //bind to the VBO
-    bindToArrayBuffer(vertexBuffer, vertexList.size() * sizeof(float), &vertexList[0]);
-    bindToArrayBuffer(normalBuffer, normalList.size() * sizeof(float), &normalList[0]);
-    bindToArrayBuffer(textureBuffer, textureList.size() * sizeof(float), &textureList[0]);
-    char* err;
-    shaderID = loadShader("DinoVertex.glsl", "DinoFragment.glsl", err);
-    
-    size = vertexList.size();
-    t = fetchTexture("dinoTexture.jpg", true, true);
-  }
-  t->bind();
-  //glm::vec3 sun(0, 1, 0);
-
-  glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(2);
-  glEnableVertexAttribArray(3);
-  //get the location of the values outside, since we reusing shader
-  GLuint sunID = glGetUniformLocation(shaderID, "sunDirection");
-  GLuint sampleLoc = glGetUniformLocation(shaderID, "textureInput");
-  GLuint MatrixID = glGetUniformLocation(shaderID, "MVP");
-  //draw the four sides;
-
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glVertexAttribPointer(
-      0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-      3,                  // size
-      GL_FLOAT,           // type
-      GL_FALSE,           // normalized?
-      0,                  // stride
-      (void*)0            // array buffer offset
-      );
-    
-    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-    glVertexAttribPointer(
-      3,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-      3,                  // size
-      GL_FLOAT,           // type
-      GL_FALSE,           // normalized?
-      0,                  // stride
-      (void*)0            // array buffer offset
-      );
-
-    glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
-    glVertexAttribPointer(
-      2,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-      2,                  // size
-      GL_FLOAT,           // type
-      GL_FALSE,           // normalized?
-      0,                  // stride
-      (void*)0            // array buffer offset
-      );
-
-
-      
-    //get location of sun
-    glUniform1i(sampleLoc, t->texName);
-    glUseProgram(shaderID);
-
-    //glUniform3fv(sunID,3 * sizeof(float), (float*)glm::vec3(0, 1, 0));
-    glUniform3f(sunID, sun.x, sun.y, sun.z);
-
-    //Send Uniform Values to shader
-
-    //MVP = MVP * glm::translate(glm::mat4(1.0f),glm::vec3(10, 10, 0));
-
-    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    //draw the box
-    glDrawArrays(GL_TRIANGLES, 0, size/ 3);
-    //unbind texture
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glUseProgram(0);
-
-  glDisableVertexAttribArray(0);
-  glDisableVertexAttribArray(2);
-  glDisableVertexAttribArray(3);
-
 }

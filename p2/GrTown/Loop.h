@@ -1,3 +1,7 @@
+//CS 559 - Project 2 - Xiang Zhi Tan
+//Loop.h
+//Do the loop algorithm for the object
+
 #pragma once
 
 #include <windows.h>
@@ -7,14 +11,7 @@
 #include <glm.hpp>
 #include <vector>
 
-class Loop
-{
-public:
-  Loop();
-  ~Loop();
-};
-
-void calculate();
+//do the subdivision for the object with the vertex,normal and uv for one time
 void loopSubDivision(std::vector<float>& vertexlist, std::vector<float>& normallist, std::vector<float>& uvlist);
+//do the subdivision for the object with the vertex,normal and uv for number of times given
 void loopSubDivision(int times, std::vector<glm::vec3>& vertexlist, std::vector<glm::vec3>& normallist, std::vector<glm::vec2>& uvlist);
-void loopTest(int numTimes, glm::mat4 proj, glm::mat4 view, glm::mat4 model, glm::vec3 sun);

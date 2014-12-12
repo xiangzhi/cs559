@@ -1,3 +1,8 @@
+//CS559 - Project 2 - Xiang Zhi Tan
+//City.h
+//A class that generates the lego blocks and put them into place
+
+
 #pragma once
 #include "GrObjectVBO.h"
 class City :

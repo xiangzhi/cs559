@@ -1,3 +1,8 @@
+//CS559 - Project 2 - Xiang Zhi Tan
+//LegoBrick.h
+//A class that creates an individual lego brick
+
+
 #pragma once
 #include "GrObjectVBO.h"
 #include "SurfaceOfRevolution.h"
@@ -14,9 +19,12 @@ public:
   LegoBrick* clone();
   float height = 1;
   void simulateUntil(unsigned long time);
+
+  //information about subdivision
   void doSubdivision();
   int divideTimes = 2;
 
+  //simulation attributes
   bool destroyed = false;
   bool doneDestroyed = false;
   long lastSimulated = 0;

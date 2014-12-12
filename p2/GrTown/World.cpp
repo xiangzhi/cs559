@@ -1,23 +1,18 @@
 #include "World.h"
-#include "Utilities\Texture.H"
-#include "Utilities\ShaderTools.H"
-#include <vector>
-
-#include "SurfaceOfRevolution.h"
-
-#include "SurfaceOfRevolution.h"
-
-#include "GrTown_PCH.H"
-#include "DrawingState.H"
-#include "DrawUtils.H"
-#include "Utilities\ShaderTools.H"
-#include "Utilities\Texture.H"
-#include "GrObjectVBO.h"
 
 using std::vector;
 
 // stuff in the world
 vector<GrObjectVBO*> theVBOobjects;
+//static variables that exist between calls;
+static GLuint landVertexBuffer;
+static GLuint landNormalBuffer;
+static GLuint landUVBuffer;
+static GLuint landTangentBuffer;
+static GLuint landBiTangentBuffer;
+static GLuint landShaderID;
+static Texture * landT;
+static Texture * landNormalT;
 
 
 // remember, these function have some responsibilities defined in the
@@ -27,146 +22,19 @@ vector<GrObjectVBO*> theVBOobjects;
 void drawSky(DrawingState* st)
 {
 	// figure out the sky color...
-	if (st->timeOfDay < 5) st->sky(0, 0, .2f);
-	else if (st->timeOfDay < 8) st->sky(.2f, .2f, .8f);
-	else if (st->timeOfDay < 16) st->sky(.7f, .7f, 1);
-	else if (st->timeOfDay < 19) st->sky(.2f, .2f, .8f);
-	else st->sky(0, 0, .2f);
+  glm::vec3 skyColor;
+	if (st->timeOfDay < 5) skyColor = glm::vec3(0, 0, .2f);
+  else if (st->timeOfDay < 8) skyColor = glm::vec3(.2f, .2f, .8f);
+  else if (st->timeOfDay < 16) skyColor = glm::vec3(.7f, .7f, 1);
+  else if (st->timeOfDay < 19) skyColor = glm::vec3(.2f, .2f, .8f);
+  else skyColor = glm::vec3(0, 0, .2f);
 
-	glClearColor(st->sky.r, st->sky.g, st->sky.b, st->sky.a);
+	glClearColor(skyColor.x,skyColor.y,skyColor.z,1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT /*| GL_STENCIL_BUFFER_BIT*/);
 }
 
 
-
-
-//store the buffers for everything
-static std::vector<GLuint> bufferList;
-static Texture* t[5];
-static GLuint shaderID;
-void initializeSkyBox(){
-
-  //all the vertexs
-  //height
-  float h = 5000;
-  float w = 5000;
-  float l = 5000;
-  float points[] = {
-    -l, 0.0f, w, //front triangle 
-    l, 0.0f, w,
-    l, h, w,//end front traingle 1
-    -l, 0.0f, w, //front traingle 2 
-    -l, h, w,
-    l, h, w, //end front triangle
-    //right side
-    l, 0.0f, w, //right side triangle 1
-    l, 0.0f, -w,
-    l, h, -w, //end of right side triangle;
-    l, 0.0f, w, //right side triangle 2
-    l, h, w,
-    l, h, -w, //end of right side triangle;
-    //left side
-    -l, 0.0f, w, //left side triangle 1
-    -l, 0.0f, -w,
-    -l, h, -w, //end of left side triangle;
-    -l, 0.0f, w, //left side triangle 2
-    -l, h, w,
-    -l, h, -w, //left of right side triangle;
-    //back
-    -l, 0.0f, -w, //back triangle 
-    l, 0.0f, -w,
-    l, h, -w,//end back traingle 1
-    -l, 0.0f, -w, //back traingle 2 
-    -l, h, -w,
-    l, h, -w, //end back triangle
-    //top
-    -l, h, w,
-    l, h, w,
-    l, h, -w,
-    -l, h, w,
-    -l, h, -w,
-    l, h, -w
-  };
-
-  float normalPoints[] = {
-    //front
-    0, 0, 1,
-    0, 0, 1,
-    0, 0, 1,
-    0, 0, 1,
-    0, 0, 1,
-    0, 0, 1,
-    //right
-    1, 0, 0,
-    1, 0, 0,
-    1, 0, 0,
-    1, 0, 0,
-    1, 0, 0,
-    1, 0, 0,
-    //left
-    -1, 0, 0,
-    -1, 0, 0,
-    -1, 0, 0,
-    -1, 0, 0,
-    -1, 0, 0,
-    -1, 0, 0,
-    //back
-    0, 0, -1,
-    0, 0, -1,
-    0, 0, -1,
-    0, 0, -1,
-    0, 0, -1,
-    0, 0, -1,
-    //top
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-  };
-
-  float texturePoints[] = {
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    0.0f, 0.0f,
-    0.0f, 1.0f,
-    1.0f, 1.0f,
-  };
-
-
-  for (int i = 0; i < 6; i++){
-
-    int pointIndex = i * 18;
-
-    GLuint vertexBuffer;
-    GLuint normalBuffer;
-    GLuint textureBuffer;
-    //add the points
-    bindToArrayBuffer(vertexBuffer, 3 * 6 * sizeof(float), &points[pointIndex]);
-    bindToArrayBuffer(normalBuffer, 3 * 6 * sizeof(float), &normalPoints[pointIndex]);
-    bindToArrayBuffer(textureBuffer, sizeof(texturePoints), texturePoints);
-    //add buffer address to list
-    bufferList.push_back(vertexBuffer);
-    bufferList.push_back(normalBuffer);
-    bufferList.push_back(textureBuffer);
-  }
-
-
-  t[0] = fetchTexture("sky_box_side_1.jpg", false, false);
-  t[1] = fetchTexture("sky_box_side_2.jpg", true, true);
-  t[2] = fetchTexture("sky_box_side_3.jpg", true, true);
-  t[3] = fetchTexture("sky_box_side_4.jpg", true, true);
-  t[4] = fetchTexture("sky_box_top.png", true, true);
-
-  char* err;
-  shaderID = loadShader("sameVertex.glsl", "skyBoxFragment.glsl", err);
-}
-
-
-
-void drawSkyBoxDome(glm::vec3 sun, float light, glm::mat4 MVP){
+void drawSkyBoxDome(glm::vec3 sun, float light, glm::mat4 PV, glm::vec3 camPos){
   static int vertexNum;
   static GLuint skyVertexBuffer;
   static GLuint skyNormalBuffer;
@@ -175,19 +43,21 @@ void drawSkyBoxDome(glm::vec3 sun, float light, glm::mat4 MVP){
   static Texture * skyTexture;
   static int skyVertexNum;
   static bool first = true;
+  //create a MVP where the object always move to camera's position
+  glm::mat4 MVP = PV * glm::translate(glm::mat4(1.0f), glm::vec3(camPos.x, 0, camPos.z));
 
   if (first){
     std::vector<glm::vec3> vertexList;
     std::vector<glm::vec3> normalList;
     std::vector<glm::vec2> uvList;
 
-    vertexList.push_back(glm::vec3(5000, 0, 0));
-    //vertexList.push_back(glm::vec3(4000, 250, 0));
-    //vertexList.push_back(glm::vec3(3000, 500, 0));
-    //vertexList.push_back(glm::vec3(2000, 1500, 0));
-    //vertexList.push_back(glm::vec3(1000, 3500, 0));
-    //vertexList.push_back(glm::vec3(500, 4500, 0));
-    vertexList.push_back(glm::vec3(0, 5000, 0));
+    vertexList.push_back(glm::vec3(7000, 0, 0));
+    vertexList.push_back(glm::vec3(6000, 500, 0));
+    vertexList.push_back(glm::vec3(5000, 1000, 0));
+    vertexList.push_back(glm::vec3(2000, 2500, 0));
+    vertexList.push_back(glm::vec3(1000, 4500, 0));
+    vertexList.push_back(glm::vec3(500, 6500, 0));
+    vertexList.push_back(glm::vec3(0, 7000, 0));
 
     surfaceOfRevolution(glm::vec3(0, 1, 0), 0.5, vertexList, normalList, uvList);
 
@@ -201,9 +71,9 @@ void drawSkyBoxDome(glm::vec3 sun, float light, glm::mat4 MVP){
     first = false;
 
   }
-  glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(2);
-  glEnableVertexAttribArray(3);
+  
+  
+  
   skyTexture->bind();
   GLuint sunID = glGetUniformLocation(skyShaderID, "sunDirection");
   GLuint sampleLoc = glGetUniformLocation(skyShaderID, "textureInput");
@@ -261,109 +131,7 @@ void drawSkyBoxDome(glm::vec3 sun, float light, glm::mat4 MVP){
   glBindTexture(GL_TEXTURE_2D, 0);
   glUseProgram(0);
 
-  glDisableVertexAttribArray(0);
-  glDisableVertexAttribArray(2);
-  glDisableVertexAttribArray(3);
 }
-
-
-void drawSkyBox(glm::vec3 sun, float light, glm::mat4 MVP){
-  static bool first = true;
-  if (first){
-    initializeSkyBox();
-    first = false;
-  }
-
-  glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(2);
-  glEnableVertexAttribArray(3);
-  //get the location of the values outside, since we reusing shader
-  GLuint sunID = glGetUniformLocation(shaderID, "sunDirection");
-  GLuint sampleLoc = glGetUniformLocation(shaderID, "textureInput");
-  GLuint MatrixID = glGetUniformLocation(shaderID, "MVP");
-  GLuint lightID = glGetUniformLocation(shaderID, "light");
-  //draw the four sides;
-  for (int i = 0; i < 5; i++){
-    GLuint vertexBuffer = bufferList[(i * 3)];
-    GLuint normalBuffer = bufferList[(i * 3) + 1];
-    GLuint textureBuffer = bufferList[(i * 3) + 2];
-    GLuint textureId = t[i]->texName;
-    t[i]->bind();
-    
-
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glVertexAttribPointer(
-      0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-      3,                  // size
-      GL_FLOAT,           // type
-      GL_FALSE,           // normalized?
-      0,                  // stride
-      (void*)0            // array buffer offset
-      );
-
-    glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
-    glVertexAttribPointer(
-      2,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-      2,                                // size
-      GL_FLOAT,                         // type
-      GL_FALSE,                         // normalized?
-      0,                                // stride
-      (void*)0                          // array buffer offset
-      );
-
-    glUniform1i(sampleLoc, textureId);
-
-    //bind normal
-    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-    glVertexAttribPointer(
-      3,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-      3,                                // size
-      GL_FLOAT,                         // type
-      GL_FALSE,                         // normalized?
-      0,                                // stride
-      (void*)0                          // array buffer offset
-      );
-    //get
-
-    //get location of sun
-   // glUniform1i(sampleLoc, textureId);
-    glUseProgram(shaderID);
-
-    //glUniform3fv(sunID,3 * sizeof(float), (float*)glm::vec3(0, 1, 0));
-    glUniform3f(sunID, sun.x, sun.y, sun.z);
-    glUniform1f(lightID, light);
-    //Send Uniform Values to shader
-    
-
-    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    //draw the box
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    //unbind texture
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glUseProgram(0);
-  }
-  glDisableVertexAttribArray(0);
-  glDisableVertexAttribArray(2);
-  glDisableVertexAttribArray(3);
-
-
-}
-
-static GLuint headVertexBuffer;
-static GLuint headNormalBuffer;
-static GLuint headUVBuffer;
-
-static GLuint landVertexBuffer;
-static GLuint landNormalBuffer;
-static GLuint landUVBuffer;
-static GLuint landTangentBuffer;
-static GLuint landBiTangentBuffer;
-
-static GLuint landShaderID;
-static GLuint headShaderID;
-static Texture * landT;
-static Texture * landNormalT;
-static int headSize;
 
 void doubleHead(std::vector<float> & list, std::vector<float> & normallist, std::vector<float> & UVlist, int x, int z){
   int size = list.size();
@@ -392,61 +160,51 @@ void doubleHead(std::vector<float> & list, std::vector<float> & normallist, std:
 }
 bool head = false;
 
-#include "normalMapping.h"
+
 
 void initializeEarth(){
-  
-  //all the vertexs
-  float points[] = {
-    -25000.0f, -1.0f, -25000.0f,
-    25000.0f, -1.0f, -25000.0f,
-    25000.0f, -1.0f, 25000.0f,
-    -25000.0f, -1.0f, -25000.0f,
-    -25000.0f, -1.0f, 25000.0f,
-    25000.0f, -1.0f, 25000.0f
-  };
-
-  float normalPoints[] = {
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0
-  };
-
-  float UVpoints[] = {
-    0.0f, 0.0f,
-    50.0f, 0.0f,
-    50.0f, 50.0f,
-    0.0f, 0.0f,
-    0.0f, 50.0f,
-    50.0f, 50.0f
-  };
-
+  //Earth vertices
   std::vector<glm::vec3> vertexList;
+  vertexList.push_back(glm::vec3(-20000, -1,  20000));
+  vertexList.push_back(glm::vec3( 20000, -1,  20000));
+  vertexList.push_back(glm::vec3( 20000, -1, -20000));
+  vertexList.push_back(glm::vec3(-20000, -1,  20000));
+  vertexList.push_back(glm::vec3(-20000, -1, -20000));
+  vertexList.push_back(glm::vec3( 20000, -1, -20000));
+  //Earth normal
   std::vector<glm::vec3> normalList;
+  normalList.push_back(glm::vec3(0, 1, 0));
+  normalList.push_back(glm::vec3(0, 1, 0));
+  normalList.push_back(glm::vec3(0, 1, 0));
+  normalList.push_back(glm::vec3(0, 1, 0));
+  normalList.push_back(glm::vec3(0, 1, 0));
+  normalList.push_back(glm::vec3(0, 1, 0));
+  //Earth UV list
   std::vector<glm::vec2> uvList;
+  uvList.push_back(glm::vec2(0, 0));
+  uvList.push_back(glm::vec2(50, 0));
+  uvList.push_back(glm::vec2(50, 50));
+  uvList.push_back(glm::vec2(0, 0));
+  uvList.push_back(glm::vec2(0, 50));
+  uvList.push_back(glm::vec2(50, 50));
+
+  //store the tangent and bi-tangent list
   std::vector<glm::vec3> tangentList;
   std::vector<glm::vec3> biTangentList;
 
-  //copy values to list
-  listToVector(points, sizeof(points) / sizeof(float), vertexList);
-  listToVector(UVpoints, sizeof(UVpoints) / sizeof(float), uvList);
-  listToVector(normalPoints, sizeof(points) / sizeof(float), normalList);
-
+  //create the tangent and biTangent list for the normal mapping
+  //for the Earth texture
   createNormalMapping(vertexList, normalList, uvList, tangentList, biTangentList);
 
-  bindToArrayBuffer(landVertexBuffer, sizeof(points), points);
+  //bind all the list to their respective buffer
+  bindToArrayBuffer(landVertexBuffer, vertexList);
   bindToArrayBuffer(landNormalBuffer, normalList);
   bindToArrayBuffer(landUVBuffer, uvList);
   bindToArrayBuffer(landTangentBuffer, tangentList);
   bindToArrayBuffer(landBiTangentBuffer, biTangentList);
-  bindToArrayBuffer(landUVBuffer, sizeof(UVpoints), UVpoints);
-  bindToArrayBuffer(landUVBuffer, sizeof(UVpoints), UVpoints);
-  bindToArrayBuffer(landUVBuffer, sizeof(UVpoints), UVpoints);
-
+  //load shader
   landShaderID = loadShader("EarthVertex.glsl", "EarthFragment.glsl");
+  //fetch both the lego and normal 
   landT = fetchTexture("lego.jpg", true, true);
   glActiveTexture(GL_TEXTURE1);
   landNormalT = fetchTexture("normalLego.jpg", true, true, GL_TEXTURE1);
@@ -456,12 +214,7 @@ void initializeEarth(){
 void drawLand(glm::mat4 proj, glm::mat4 view, glm::mat4 model, glm::vec3 sun, float light){
 
   //draw the land
-  glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(1);
-  glEnableVertexAttribArray(2);
-  glEnableVertexAttribArray(3);
-  glEnableVertexAttribArray(4);
-
+  //bind each buffer
   glBindBuffer(GL_ARRAY_BUFFER, landVertexBuffer);
   glVertexAttribPointer(
     0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
@@ -484,10 +237,10 @@ void drawLand(glm::mat4 proj, glm::mat4 view, glm::mat4 model, glm::vec3 sun, fl
 
   glBindBuffer(GL_ARRAY_BUFFER, landNormalBuffer);
   glVertexAttribPointer(
-    2,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+    2,                                // attribute. No particular reason for 2, but must match the layout in the shader.
     3,                                // size
     GL_FLOAT,                         // type
-    GL_FALSE,                         // normalized?
+    GL_TRUE,                          // normalized?
     0,                                // stride
     (void*)0                          // array buffer offset
     );
@@ -515,19 +268,21 @@ void drawLand(glm::mat4 proj, glm::mat4 view, glm::mat4 model, glm::vec3 sun, fl
 
   glUseProgram(landShaderID);
 
+  //TEXTURES
+  //bind the normal texture
   glActiveTexture(GL_TEXTURE0);
   landT->bind();
   GLuint sampleLoc = glGetUniformLocation(landShaderID, "textureInput");
   glUniform1i(sampleLoc, 0);
-
+  //bind the normal mapping
   glActiveTexture(GL_TEXTURE1);
   landNormalT->bind();
   sampleLoc = glGetUniformLocation(landShaderID, "normalInput");
   glUniform1i(sampleLoc, 1);
   //glUniform1i(sampleLoc, landNormalT->texName);
 
+  //load all the uniform values
   glm::mat3 m3(model);
-
   GLuint model3ID = glGetUniformLocation(landShaderID, "M3");
   glUniformMatrix4fv(model3ID, 1, GL_FALSE, &m3[0][0]);
   GLuint modelID = glGetUniformLocation(landShaderID, "M");
@@ -538,16 +293,12 @@ void drawLand(glm::mat4 proj, glm::mat4 view, glm::mat4 model, glm::vec3 sun, fl
   glUniformMatrix4fv(projID, 1, GL_FALSE, &proj[0][0]);
   GLuint sunID = glGetUniformLocation(landShaderID, "sunDirection");
   glUniform3f(sunID, sun.x, sun.y, sun.z);
- 
+  
+  //draw the array
   glDrawArrays(GL_TRIANGLES, 0, 6);
 
+  //disable shader
   glUseProgram(0);
-  glDisableVertexAttribArray(0);
-  glDisableVertexAttribArray(1);
-  glDisableVertexAttribArray(2);
-  glDisableVertexAttribArray(3);
-  glDisableVertexAttribArray(4);
-
   //unbind texture
   //unbind texture1
   glBindTexture(GL_TEXTURE_2D, 0);

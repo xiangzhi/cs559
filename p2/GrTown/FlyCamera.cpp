@@ -5,7 +5,6 @@
 #include "GrTown_PCH.H"
 
 #include "FlyCamera.H"
-#include "DrawUtils.H"
 #include <time.h>
 #include <iostream>
 
@@ -35,37 +34,8 @@ void FlyCamera::draw(DrawingState*)
 {
 }
 
-// build the transformation
-// C = T Ry Rx
-/*
-void FlyCamera::getCamera(Matrix camera)
-{
-	Matrix tmp1,  tmp2,  tmp3;
-
-	transMatrix(tmp1, -posX, -posY, -posZ);
-	rotMatrix(tmp2,'Y',-direction);
-	multMatrix(tmp1, tmp2, tmp3);
-	rotMatrix(tmp1,'X',-pitch);
-	multMatrix(tmp3,tmp1,camera);
-}
-*/
-
-
-
-
+//a direct clone from the old getCamera by changing it to glm
 glm::mat4 FlyCamera::getCamera(){
-  //TODO:spend time thinking how to make it lookat
-	Matrix tmp1, tmp2, tmp3,finals;
-
-	transMatrix(tmp1, -posX, -posY, -posZ);
-	rotMatrix(tmp2, 'Y', -direction);
-	glm::mat4 c1 = toGLMMat4(tmp2);
-	multMatrix(tmp1, tmp2, tmp3);
-	rotMatrix(tmp1, 'X',-pitch);
-	glm::mat4 c2 = toGLMMat4(tmp2);
-	multMatrix(tmp3, tmp1, finals);
-	glm::mat4 test = toGLMMat4(finals);
-	return test;
 
   glm::mat4 m(1.0f);
   glm::mat4 m2(1.0f);
@@ -75,30 +45,11 @@ glm::mat4 FlyCamera::getCamera(){
   m2 = glm::rotate(glm::mat4(1.0f),radiansToDegrees(-direction), glm::vec3(0, 1, 0));
   glm::mat4 c3 = m2;
   m3 = m2 * m;
-  m2 = glm::rotate(m, radiansToDegrees(pitch), glm::vec3(1, 0, 0));
+  c3 = m3;
+  m2 = glm::rotate(glm::mat4(1.0f), radiansToDegrees(pitch), glm::vec3(1, 0, 0));
   glm::mat4 c4 = m2;
   m = m2 * m3;
   return m;
-  
-  /*
-  glm::vec4 dVec(1,0,0,0);
-  
-  glm::mat4 dirX = glm::rotate(glm::mat4(1.0f), -direction, glm::vec3(0, 1, 0));
-  dVec = dVec * dirX;
-  glm::mat4 dirY = glm::rotate(glm::mat4(1.0f), -pitch, glm::vec3(1, 0, 0));
-  dVec = dVec * dirY;
-
-
-
-  glm::mat4 m = glm::lookAt(
-    glm::vec3(posX, posY, posZ),
-    glm::vec3(dVec),
-    glm::vec3(0, 1, 0)
-  );
-
-
-  return m;
-  */
 }
 
 
@@ -343,10 +294,6 @@ glm::mat4 FollowCam::getCamera(){
     glm::vec3(atX, atY, atZ),
     glm::vec3(0, 1, 0)
   );
-
-
-
-
 }
 
 

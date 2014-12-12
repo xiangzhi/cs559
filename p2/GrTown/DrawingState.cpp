@@ -10,8 +10,6 @@ DrawingState::DrawingState()
 {
   // reasonable defaults for everything
   timeOfDay = 9;				// morning
-  sky(.7f,.7f,1);					// blue sky
-  ground(0,84,24);				// green grass
   camera = 0;
   fieldOfView = 45;
   backCull = 0;

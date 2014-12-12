@@ -1,3 +1,9 @@
+//CS 559 - Project 2 - Xiang Zhi Tan
+//GrObjectVBO.h
+//A direct clone of the original GrObject.h
+//it still have old members due to possible legacy code that might break
+
+
 #ifndef GrObjectVBO_H
 #define GrObjectVBO_H
 
@@ -16,14 +22,9 @@
 #include "DrawingTools.h"
 #include "DrawingState.H"
 
-//GrOBjectVBO
-//the aim of the class is to run VBO code with a similar structure as as the old GrObject
-//currently its just a direct clone
-
 
 // other classes referred to:
 class DrawingState;
-class Behavior;
 
 extern int notTheSame;
 class GrObjectVBO {
@@ -36,23 +37,55 @@ public:
 	//use to change stuff before drawing
    virtual void preDraw(DrawingState* drst);
 
-  glm::vec3 translation;
 
-	// things to know about the object
+
+	// original data members
 	bool ridable;					/* can we "ride" this thing */
 	std::string name;
 	float rideAbove;				// in case we don't want to be stuck on the ground
+
+  //additional data members
+  GLuint shaderID;
+  GLuint vertexBuffer;
+  GLuint textureBuffer;
+  GLuint normalBuffer;
+  GLuint colorBuffer;
+  GLuint indexBuffer;
+  int indexNum;
+  GLuint type = GL_TRIANGLES;
+  Texture * t = NULL;
+  int vertexNum;
+  bool redraw = true;
+  bool redrawAfter = true;
+  bool useTexture = false;
+  bool useIndex = false;
+  bool onlyBack = false;
+  //transformation information for the model
+  glm::vec3 pos;  //the position of the model
+  glm::vec3 scale; // the scale of the model
+  float ry = 0; //rotation around Y-axis
+
+  //lookAt information
+  glm::vec3 from; //where the eye is looking from at interest cam
+  glm::vec3 to;
+
+  //information if there is also a after writer
+  GLuint shaderIDAfter;
+  GLuint vertexBufferAfter;
+  GLuint textureBufferAfter;
+  GLuint normalBufferAfter;
+  GLuint colorBufferAfter;
+  int vertexNumAfter;
+
+  // A method that clones the class and return it
+  //if no pointer is given, a new class is made
+  GrObjectVBO* clone(GrObjectVBO* ptr = nullptr);
 
 	// simulation: every object is required to "update itself" to the
 	// current time. no guaruntees that this clock is updated
 	// uniformly (since it depends on drawing rate). The units are
 	// number of milliseconds since the beginning of the simulation
 	virtual void simulateUntil(unsigned long time);
-
-	// what makes the object go - by default, this is all that
-	// SimulateUntil does.
-	// note - this is a linked list! All behaviors get their chance
-	std::vector<Behavior*> behaviors;
 
 	// the main thing an object does is draw itself
 	// this happens in 2 phases, one where normal drawing happens, and
@@ -63,45 +96,17 @@ public:
 	virtual void draw(DrawingState*, glm::mat4 proj, glm::mat4 view, glm::mat4 model);
 	virtual void drawAfter(DrawingState*, glm::mat4 proj, glm::mat4 view, glm::mat4 model);
 	
-	//this is initializing the stuff
+
+	//initializing it for VBO
+  //rewrite it for each class as this is loaded
+  //the first time during each draw
 	virtual void initialize();
-	//really drawing it..
-	virtual void realDraw(DrawingState*, glm::mat4 proj, glm::mat4 view, glm::mat4 model);
-
-	//VBO informations
-	GLuint shaderID;
-	GLuint vertexBuffer;
-	GLuint textureBuffer;
-	GLuint normalBuffer;
-	GLuint colorBuffer;
-  GLuint indexBuffer;
-  int indexNum;
-  GLuint type = GL_TRIANGLES;
-	Texture * t = NULL;
-	int vertexNum;
-  bool redraw = true;
-  bool redrawAfter = true;
-  bool useTexture = false;
-  bool useIndex = false;
-  bool onlyBack = false;
-  glm::vec3 pos;
-  glm::vec3 from;
-  glm::vec3 scale;
-  glm::vec3 to;
-  float ry = 0;
-
-  GLuint shaderIDAfter;
-  GLuint vertexBufferAfter;
-  GLuint textureBufferAfter;
-  GLuint normalBufferAfter;
-  GLuint colorBufferAfter;
-  int vertexNumAfter;
-  GrObjectVBO* clone(GrObjectVBO* ptr = nullptr);
-  virtual void additionalCloning(GrObjectVBO*);
-
   virtual void initializeAfter();
 
 
+
+  //Add more attribute to the drawing method if are not the defaults
+  //one for first draw, one for the second draw
   virtual void runAttribute(glm::mat4 proj, glm::mat4 view, glm::mat4 model);
   virtual void runAttributeAfter();
 
@@ -111,7 +116,6 @@ public:
 	// in general, most objects will have their centers at their
 	// local original and use this matrix to move them around
 	glm::mat4 transform;
-
   //transform that won't effect the children;
   glm::mat4 localTransform;
 
@@ -137,8 +141,6 @@ public:
 	// store the lookat and lookfrom points for these objects - in local
 	// coordinates
 	bool interesting;
-	float laX, laY, laZ;
-	float lfX, lfY, lfZ;
 };
 
 // add a new object onto the objects list

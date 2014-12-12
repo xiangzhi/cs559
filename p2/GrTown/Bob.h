@@ -1,3 +1,7 @@
+//CS559 - Project 2 - Xiang Zhi Tan
+//Bob.h
+//A monster that jumps aronund
+
 
 #include "GrObjectVBO.h"
 #include "Loop.h"
@@ -15,6 +19,8 @@ public:
   void preDraw(DrawingState* drst);
   void redoSubDivision();
   glm::mat4 getCamera();
+
+  //behavior attributes
   bool fall = false;;
   glm::vec3 acc;
   glm::vec3 scale;

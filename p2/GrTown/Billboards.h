@@ -1,3 +1,8 @@
+//CS559 - Project 2 - Xiang Zhi Tan
+//Billboards.h
+//A billboard that remains still when looked at.
+
+
 #pragma once
 #include "GrObjectVBO.h"
 

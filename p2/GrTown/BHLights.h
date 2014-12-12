@@ -1,3 +1,9 @@
+//CS559 - Project 2 - Xiang Zhi Tan
+//BHLight.h
+//A class that creates a cone of light using surface of revolution
+
+
+
 #pragma once
 #include "GrObjectVBO.h"
 class BHLights :
@@ -5,6 +11,7 @@ class BHLights :
 {
 public:
   BHLights();
+  //it takes in the object it is tracking
   BHLights(GrObjectVBO* BH, GrObjectVBO* track);
   ~BHLights();
 

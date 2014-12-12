@@ -7,21 +7,16 @@
 #include "GrTown_PCH.H"
 #include "GraphicsTownUI.H"
 #include "FlyCamera.H"
-#include "DrawUtils.H"
 
 // for setting up shader paths ands textures
 #include "Utilities/ShaderTools.H"
 #include "Utilities/Texture.H"
 
-
-#include "Building.h"
 #include "Heli.h"
 #include "Billboards.h"
-#include "Dino.h"
 #include "Bob.h"
 #include "BHLights.h"
 #include "City.h"
-#include "Examples\Suburbs.H"
 #include "LegoBrick.h"
 // define this to get 2 cars that always turn
 // #define TESTCARS
@@ -54,17 +49,6 @@ int main(int /*argc*/, char** /*argv*/)
   // we need to raise the cube since we're giving the position of the
   // center 
   // add some more stuff
-
-  GrObjectVBO* b = new Building();
-  //add(b);
-  b->laX = 0;
-  b->laY = 0;
-  b->laZ = 0;
-  b->lfX = 100;
-  b->lfY = 50;
-  b->lfZ = 100;
-  b->interesting = true;
-
   /*
   for (int i = 0; i < 100; i++){
     GrObjectVBO* billboard = new Billboards();

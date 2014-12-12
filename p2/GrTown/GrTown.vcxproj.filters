@@ -32,13 +32,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Behavior.H">
-      <Filter>Engine Core\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DrawingState.H">
-      <Filter>Engine Core\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawUtils.H">
       <Filter>Engine Core\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FlyCamera.H">
@@ -80,9 +74,6 @@
     <ClInclude Include="Loop.h">
       <Filter>Engine Core\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Particles.h">
-      <Filter>Engine Core\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SurfaceOfRevolution.h">
       <Filter>Engine Core\Header Files</Filter>
     </ClInclude>
@@ -98,36 +89,21 @@
     <ClInclude Include="Bob.h">
       <Filter>Models\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Building.h">
+    <ClInclude Include="lodePNG.h">
+      <Filter>Utilities\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Heli.h">
       <Filter>Models\Headers</Filter>
     </ClInclude>
     <ClInclude Include="City.h">
       <Filter>Models\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Dino.h">
-      <Filter>Models\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="House.h">
-      <Filter>Models\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="lodePNG.h">
-      <Filter>Utilities\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="LegoBrick.h">
-      <Filter>Engine Core\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Heli.h">
       <Filter>Models\Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Behavior.cpp">
-      <Filter>Engine Core\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DrawingState.cpp">
-      <Filter>Engine Core\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DrawUtils.cpp">
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FlyCamera.cpp">
@@ -166,9 +142,6 @@
     <ClCompile Include="Loop.cpp">
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Particles.cpp">
-      <Filter>Engine Core\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SurfaceOfRevolution.cpp">
       <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
@@ -184,16 +157,7 @@
     <ClCompile Include="Bob.cpp">
       <Filter>Models\Source FIles</Filter>
     </ClCompile>
-    <ClCompile Include="Building.cpp">
-      <Filter>Models\Source FIles</Filter>
-    </ClCompile>
     <ClCompile Include="City.cpp">
-      <Filter>Models\Source FIles</Filter>
-    </ClCompile>
-    <ClCompile Include="Dino.cpp">
-      <Filter>Models\Source FIles</Filter>
-    </ClCompile>
-    <ClCompile Include="House.cpp">
       <Filter>Models\Source FIles</Filter>
     </ClCompile>
     <ClCompile Include="ObjectLoader.cpp">
@@ -202,10 +166,10 @@
     <ClCompile Include="lodePNG.cpp">
       <Filter>Utilities\Source</Filter>
     </ClCompile>
-    <ClCompile Include="LegoBrick.cpp">
-      <Filter>Engine Core\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Heli.cpp">
+      <Filter>Models\Source FIles</Filter>
+    </ClCompile>
+    <ClCompile Include="LegoBrick.cpp">
       <Filter>Models\Source FIles</Filter>
     </ClCompile>
   </ItemGroup>

@@ -10,31 +10,6 @@ City::~City()
 {
 }
 
-#include "House.h"
-
-void randomTexture(House* house){
-  int swap = rand() % 5;
-
-  switch (swap){
-    case 0:
-      house->t = fetchTexture("blueLegoBrick.png", true, true);
-      break;
-    case 1:
-      house->t = fetchTexture("yellowLegoBrick.png", true, true);
-      break;
-    case 2:
-      house->t = fetchTexture("whiteLegoBrick.png", true, true);
-      break;
-    case 3:
-      house->t = fetchTexture("greenLegoBrick.png", true, true);
-      break;
-    case 4:
-      house->t = fetchTexture("redLegoBrick.png", true, true);
-      break;
-  }
-  //house->t = fetchTexture("blueLegoBrick.png", true, true);
-  house->color = swap;
-}
 
 #include "ObjectLoader.h"
 #include "SurfaceOfRevolution.h"
@@ -57,29 +32,32 @@ bool sameSpace(glm::vec3 pos, glm::vec3 tmp){
 }
 
 void City::initialize(){
-  //create the base template for the houses and pass them to the children properties
-
-  //TODO::change to an arraylist of precompute if sharing did become a problem
+  //create a base brick that all bricks are cloned from
   LegoBrick* brick = new LegoBrick(1);
+  //intialize that brick first
   brick->initialize();
   brick->redraw = false;
-  //distribution of lego pieces;
+  //distribution of lego pieces is a normal at 0
   std::default_random_engine generator;
   std::normal_distribution<double> distribution(0, 800);
 
   //set different shaders
+  //and load them into a array to be randomly selected
   GLuint shaders[3];
   shaders[0] = loadShader("legoVertex.glsl", "legoRedFragment.glsl");
   shaders[1] = loadShader("legoVertex.glsl", "legoBlueFragment.glsl");
   shaders[2] = loadShader("legoVertex.glsl", "legoGreenFragment.glsl");
 
-
+  //total number of bircks
   int numBrick = 75;
   for (int i = 0; i < numBrick; i++){
+    //clone the brick
     LegoBrick* brick2 = brick->clone();
+    //find the x and z coordiante
     int x = floor(distribution(generator));
     int z = floor(distribution(generator));
     brick2->pos = (glm::vec3(x, 0, z));
+    //randomly pick a shader
     brick2->shaderID = shaders[rand() % 3];
     //50-50 chance of it facing another direction
     if (rand() % 2 == 0){
@@ -118,7 +96,7 @@ void City::initialize(){
       brick2->children[k]->shaderID = brick2->shaderID;
     }
 
-
+    //add birck
     children.push_back(brick2);
     brick2->parent = this;
   }
@@ -134,6 +112,7 @@ void City::realDraw(){
   //might do something later
 }
 
+//base the simulated to the child
 void City::simulateUntil(unsigned long time){
   for (int i = 0; i < children.size(); i++){
     children[i]->simulateUntil(time);

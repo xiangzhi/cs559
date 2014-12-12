@@ -1,5 +1,4 @@
 #include "Bob.h"
-#include <Thread>
 
 Bob::Bob() :GrObjectVBO("bOb the Monster")
 {
@@ -131,9 +130,6 @@ void Bob::initialize(){
   std::vector<glm::vec2> uvList(oriUvList);
 
 
-
-
-
   loopSubDivision(divideTime, vertexList, normalList, uvList);
 
 
@@ -208,7 +204,7 @@ void Bob::simulateUntil(unsigned long time){
       ax = rand() % 5;
       float xDirection = 1;
 
-      //calculate the direction;
+      //calculate the direction for x
       if (pos.x > limit || pos.x < -limit){
         xDirection = (pos.x / pos.x) * -1;
       }
@@ -221,7 +217,7 @@ void Bob::simulateUntil(unsigned long time){
       az = rand() % 5;
       float zDirection = 1;
 
-      //calculate the direction;
+      //calculate the direction for z
       if (pos.z > limit || pos.z < -limit){
         zDirection = (pos.z / pos.z) * -1;
       }
@@ -231,26 +227,6 @@ void Bob::simulateUntil(unsigned long time){
 
       az *= zDirection;
 
-  
-      /*
-      if (chance == 1)
-
-      if (pos.x < limit && pos.x > - limit){
-        ax = rand() % 11 - 5;
-      }
-      else{
-        ax = rand() % 11 - 5;
-        ax = ax * ((pos.x) / (pos.x));
-      }
-
-      if (pos.z < limit && pos.z > -limit){
-        az = rand() % 11 - 5;
-      }
-      else{
-        az = rand() % 11 - 5;
-        az = az * ((pos.z) / (pos.z));
-      }
-      */
       fall = false;
     }
   }
@@ -295,9 +271,10 @@ void Bob::simulateUntil(unsigned long time){
 
 }
 
+//write this so that the follow method would work
 glm::mat4 Bob::getCamera(){
 
-	glm::vec3 from(pos.x + 300, pos.y + 1000, pos.z + 300);
+	glm::vec3 from(pos.x + 700, 1400, pos.z + 400);
 
 	return glm::lookAt(
 		from,

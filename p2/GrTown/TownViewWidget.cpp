@@ -11,7 +11,6 @@
 
 #include "World.h"
 #include "Loop.h"
-#include "DrawUtils.H"
 #include "Utilities/Texture.H"
 #include "Utilities/ShaderTools.H"
 #include <time.h>
@@ -22,7 +21,6 @@
 #include <iostream>
 #include <vector>
 
-#include "Particles.h"
 #include "SurfaceOfRevolution.h"
 
 using std::vector;
@@ -123,8 +121,6 @@ void TownViewWidget::draw()
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-  Matrix camera;
   //drst.camera->getCamera(camera);
   glm::mat4 cam = drst.camera->getCamera();
   // compute the aspect ratio so we don't distort things
@@ -156,6 +152,12 @@ void TownViewWidget::draw()
 
   glClearStencil(0);
 
+  //enable Vertex Attrib Array
+  glEnableVertexAttribArray(0);
+  glEnableVertexAttribArray(1);
+  glEnableVertexAttribArray(2);
+  glEnableVertexAttribArray(3);
+  glEnableVertexAttribArray(4);
 
 
   // the actual clearing goes on in the sky routine since its the only
@@ -166,7 +168,7 @@ void TownViewWidget::draw()
   drawEarth(proj, view, camPos, sun, light);
   //draw the sky
   //drawSkyBox(sun, light, MVP);
-  drawSkyBoxDome(sun, light, MVP);
+  drawSkyBoxDome(sun, light, proj * view,camPos);
   //surfaceOfRevolutionTest(MVP, sun);
 
 
@@ -178,6 +180,12 @@ void TownViewWidget::draw()
   drawObList(theVBOobjects, &drst, proj, view, model);
   drawAfterObList(theVBOobjects, &drst, proj, view, model);
 
+  //disable all vertex attribute array
+  glDisableVertexAttribArray(0);
+  glDisableVertexAttribArray(1);
+  glDisableVertexAttribArray(2);
+  glDisableVertexAttribArray(3);
+  glDisableVertexAttribArray(4);
  
 
 

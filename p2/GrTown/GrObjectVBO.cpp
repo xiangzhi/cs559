@@ -3,9 +3,12 @@
 // updated Fall, 2005
 // updated Fall, 2006
 //
+// CS 559 - Project 2 - Xiang Zhi Tan
+//GrObjectVBO.cpp
+//A direct clone of the original GrObject.h
+//it still have old members due to possible legacy code that might break
 
 #include "GrObjectVBO.h"
-#include "Behavior.H"
 #include "DrawingState.H"
 #include "World.h"
 
@@ -48,8 +51,9 @@ GrObjectVBO::~GrObjectVBO()
 {
 }
 
-// null functions - not abstract since not all objects will override
-// them
+// the method to draw stuff
+// the user have the choice of not overwritting this and uses the
+// information given in the intialize to run the code
 void GrObjectVBO::draw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model)
 {
   //if for some reason, something change
@@ -62,12 +66,7 @@ void GrObjectVBO::draw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::
   glm::mat4 MVP = proj * view * model;
 
   //enable the vertexAttribArray
-  glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(1);
-  glEnableVertexAttribArray(2);
-  glEnableVertexAttribArray(3);
-  glEnableVertexAttribArray(4);
-
+  
   //bind vertex buffer
   glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
   glVertexAttribPointer(
@@ -172,14 +171,14 @@ void GrObjectVBO::draw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::
 
   //disable everything
   glUseProgram(0);
-  glDisableVertexAttribArray(0);
-  glDisableVertexAttribArray(1);
-  glDisableVertexAttribArray(2);
-  glDisableVertexAttribArray(3);
-  glDisableVertexAttribArray(4);
+
+
+
+
+
 }
 
-
+//similar as draw but for the second pass
 void GrObjectVBO::drawAfter(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model)
 {
   //if for some reason, something change
@@ -192,11 +191,11 @@ void GrObjectVBO::drawAfter(DrawingState* drst, glm::mat4 proj, glm::mat4 view, 
   glm::mat4 MVP = proj * view * model;
 
   //enable the vertexAttribArray
-  glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(1);
-  glEnableVertexAttribArray(2);
-  glEnableVertexAttribArray(3);
-  glEnableVertexAttribArray(4);
+  
+  
+  
+  
+  
 
   //bind vertex buffer
   glBindBuffer(GL_ARRAY_BUFFER, vertexBufferAfter);
@@ -294,13 +293,14 @@ void GrObjectVBO::drawAfter(DrawingState* drst, glm::mat4 proj, glm::mat4 view, 
 
   //disable everything
   glUseProgram(0);
-  glDisableVertexAttribArray(0);
-  glDisableVertexAttribArray(1);
-  glDisableVertexAttribArray(2);
-  glDisableVertexAttribArray(3);
-  glDisableVertexAttribArray(4);
+
+
+
+
+
 }
 
+//virtual method that let child to add variables to pass to shader
 void GrObjectVBO::runAttribute(glm::mat4 proj, glm::mat4 view, glm::mat4 model){
   //nothing
 }
@@ -330,22 +330,9 @@ int GrObjectVBO::handle(int)
 
 
 // note - we might not really get to the time in one shot
-// so let it take up to 10 tries
 void GrObjectVBO::simulateUntil(unsigned long t)
 {
-	for (vector<Behavior*>::iterator i = behaviors.begin(); i != behaviors.end(); ++i) {
-		Behavior *b = *i;
-		int ct = 0;
-		while ((b->lastV < t) && (ct<10)) {
-			b->simulateUntil(t);
-			ct++;
-		}
-		/* if (ct>1)
-		printf("needed %d simulation substeps\n",ct); */
-		// this is a common bug - you'll get caught here if you don't update lastV
-		if (ct>8)
-			printf("Warning! stuck behavior!\n");
-	}
+  //
 }
 
 GrObjectVBO* GrObjectVBO::add(GrObjectVBO* g, float x, float y, float z, float ry)
@@ -371,136 +358,21 @@ GrObjectVBO* add(GrObjectVBO* g, float x, float y, float z, float ry)
 	return g;
 }
 
-
+//initialize the buffers
 void GrObjectVBO::initialize(){
 	//nothing yet, programs need to initialize this
-}
-
-void GrObjectVBO::preDraw(DrawingState* drst){
-
-};
-
-#include "World.h"
-void GrObjectVBO::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::mat4 model){
-  /*
-	//if for some reason, something change
-	if (redraw){
-		//reinitialize the buffer and put stuff in.
-		initialize();
-		redraw = false;
-	}
-  */
-
-	//generate the PVM matrux
-	glm::mat4 MVP = proj * view * model;
-
-	//enable the vertexAttribArray
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-  glEnableVertexAttribArray(3);
-  glEnableVertexAttribArray(4);
-
-	//bind vertex buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glVertexAttribPointer(
-		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-		);
-	
-	//bind colorBuffer
-	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
-	glVertexAttribPointer(
-		1,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-		);
-
-
-	//make sure the texture exist
-	if (useTexture){
-		//bind before every draw
-		t->bind();
-		glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
-		glVertexAttribPointer(
-			2,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-			2,                                // size
-			GL_FLOAT,                         // type
-			GL_FALSE,                         // normalized?
-			0,                                // stride
-			(void*)0                          // array buffer offset
-			);
-
-		GLuint sampleLoc = glGetUniformLocation(shaderID, "textureInput");
-		glUniform1i(sampleLoc, t->texName);
-	}
-
-	//bind normalBuffer
-	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-	glVertexAttribPointer(
-		3,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-		);
-	glUseProgram(shaderID);
-  runAttribute(proj,view,model);
-	//get the location of MVP in shader
-	GLuint MatrixID = glGetUniformLocation(shaderID, "MVP");
-	//pass our MVP to shader
-	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-  GLuint ModelID = glGetUniformLocation(shaderID, "model");
-  glUniformMatrix4fv(ModelID, 1, GL_FALSE, &model[0][0]);
-
-  //lighting calculations
-  float light = calculateSunLight(drst);
-  glm::vec3 sun = calculateSunDirection(drst);
-
-	//get location of sun
-	GLuint sunID = glGetUniformLocation(shaderID, "sunDirection");
-	//glUniform3fv(sunID,3 * sizeof(float), (float*)glm::vec3(0, 1, 0));
-	glUniform3f(sunID, sun.x, sun.y, sun.z);
-
-  GLuint lightID = glGetUniformLocation(shaderID, "light");
-  glUniform1f(lightID, light);
-  
-
-  if (useIndex){
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-
-    glDrawElements(
-      type,
-      indexNum,
-      GL_UNSIGNED_INT,
-      (void*)0
-    );
-  }
-  else{
-    glDrawArrays(type, 0, vertexNum);
-  }
-
-	//disable everything
-	glUseProgram(0);
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
-  glDisableVertexAttribArray(3);
-  glDisableVertexAttribArray(4);
 }
 
 void GrObjectVBO::initializeAfter(){
   //nothing here
 }
+
+//a method that is called before running
+void GrObjectVBO::preDraw(DrawingState* drst){
+
+}
+
+
 
 GrObjectVBO* GrObjectVBO::clone(GrObjectVBO* temp){
   if (temp == nullptr){
@@ -530,13 +402,8 @@ GrObjectVBO* GrObjectVBO::clone(GrObjectVBO* temp){
   temp->transform = transform;
   temp->localTransform = localTransform;
 
-	//let the user decide whether they want to clone more stuff
-	additionalCloning(temp);
+
 	return temp;
-}
-
-void GrObjectVBO::additionalCloning(GrObjectVBO*){
-
 }
 
 
@@ -573,7 +440,3 @@ void drawAfterObList(vector<GrObjectVBO*>& objs, DrawingState* drst, glm::mat4 p
 	}
 }
 
-
-
-
-// $Header: /p/course/cs559-gleicher/private/CVS/GrTown/GrObjectVBO.cpp,v 1.4 2008/11/14 19:53:30 gleicher Exp $

@@ -1,3 +1,8 @@
+//CS559 - Project 2 - Xiang Zhi Tan
+//Heli.h
+//A class that loads a helicopter object and also the blades on top
+
+
 #pragma once
 #include "GrObjectVBO.h"
 #include "SurfaceOfRevolution.h"

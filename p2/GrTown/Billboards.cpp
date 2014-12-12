@@ -151,11 +151,11 @@ void Billboards::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, gl
   glm::mat4 MVP = proj * view * model;
 
   //enable the vertexAttribArray
-  glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(1);
-  glEnableVertexAttribArray(2);
-  glEnableVertexAttribArray(3);
-  glEnableVertexAttribArray(4);
+  
+  
+  
+  
+  
 
   //bind vertex buffer
   glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -246,11 +246,11 @@ void Billboards::realDraw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, gl
 
   //disable everything
   glUseProgram(0);
-  glDisableVertexAttribArray(0);
-  glDisableVertexAttribArray(1);
-  glDisableVertexAttribArray(2);
-  glDisableVertexAttribArray(3);
-  glDisableVertexAttribArray(4);
+
+
+
+
+
 }
 */
 void Billboards::runAttribute(glm::mat4 proj, glm::mat4 view, glm::mat4 model){

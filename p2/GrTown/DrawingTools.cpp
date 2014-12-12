@@ -250,7 +250,7 @@ void drawCube(std::vector<float> &vertexList, std::vector<float> &normalList, fl
 
 }
 
-#include "gtc\matrix_transform.hpp"
+
 
 void listToVector(float * list, int size, std::vector<float>& vList){
   for (int i = 0; i < size; i++){
