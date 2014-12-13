@@ -1,6 +1,6 @@
 #version 400
 
-out vec3 color;
+out vec4 color;
 in vec2 UV;
 in vec3 sun;
 in vec3 normal;
@@ -17,5 +17,5 @@ void main (void) {
   float theta = clamp(dot(normal,sun),0,1);
   float light = theta * 2 + ambient;
   //color = vec3(1,0,0);
-  color =  clamp(lightInput,0,1) * texture(textureInput, nUV).rgb;
+  color =  vec4(clamp(lightInput,0,1) * texture(textureInput, nUV).rgb,1);
 };

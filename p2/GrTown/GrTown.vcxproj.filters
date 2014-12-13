@@ -101,6 +101,12 @@
     <ClInclude Include="LegoBrick.h">
       <Filter>Models\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="APC.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SoRDemo.h">
+      <Filter>Engine Core\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DrawingState.cpp">
@@ -171,6 +177,12 @@
     </ClCompile>
     <ClCompile Include="LegoBrick.cpp">
       <Filter>Models\Source FIles</Filter>
+    </ClCompile>
+    <ClCompile Include="APC.cpp">
+      <Filter>Engine Core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoRDemo.cpp">
+      <Filter>Engine Core\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

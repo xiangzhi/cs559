@@ -3,7 +3,7 @@
 in vec3 sun;
 in vec3 normal;
 
-out vec3 color;
+out vec4 color;
 
 void main (void) {
   //frag_colour = fragmentColor;
@@ -12,5 +12,5 @@ void main (void) {
   float theta = clamp(dot(normal,sun),0,1);
   float light = theta + ambient;
 
-  color = light * vec3(1,0,0);
+  color = vec4(light * vec3(1,0,0),1);
 };

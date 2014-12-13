@@ -36,15 +36,13 @@ void GraphicsTownUI::cb_fov(Fl_Value_Slider* o, void* v) {
 
 void GraphicsTownUI::cb_pickInteresting_i(Fl_Browser*, void*) {
   pickCamera->deselect();
-follower->value(0);
 }
 void GraphicsTownUI::cb_pickInteresting(Fl_Browser* o, void* v) {
   ((GraphicsTownUI*)(o->parent()->parent()->user_data()))->cb_pickInteresting_i(o,v);
 }
 
 void GraphicsTownUI::cb_Fly_i(Fl_Button*, void*) {
-  follower->value(0);
-pickCamera->deselect();
+  pickCamera->deselect();
 pickInteresting->deselect();
 townView->damage(1);
 }
@@ -81,7 +79,7 @@ void GraphicsTownUI::cb_Physic(Fl_Button* o, void* v) {
 }
 
 Fl_Double_Window* GraphicsTownUI::make_window() {
-  { window = new Fl_Double_Window(1264, 704, "CS559 - Toy Town");
+  { window = new Fl_Double_Window(1248, 688, "CS559 - Toy Town");
     window->labelsize(12);
     window->user_data((void*)(this));
     { TownViewWidget* o = townView = new TownViewWidget(5, 5, 1024, 710);
@@ -97,60 +95,55 @@ Fl_Double_Window* GraphicsTownUI::make_window() {
       Fl_Group::current()->resizable(townView);
       o->ui = this;
     } // TownViewWidget* townView
-    { Fl_Group* o = new Fl_Group(1055, 5, 220, 700);
-      { Fl_Browser* o = pickCamera = new Fl_Browser(1115, 5, 155, 165, "view");
+    { Fl_Group* o = new Fl_Group(1020, 5, 220, 700);
+      { Fl_Browser* o = pickCamera = new Fl_Browser(1080, 5, 155, 165, "view");
         pickCamera->type(2);
         pickCamera->callback((Fl_Callback*)cb_pickCamera);
         for(vector<GrObjectVBO*>::iterator g=theVBOobjects.begin(); g != theVBOobjects.end(); ++g)
         if((*g)->ridable) o->add((*g)->name.c_str(),*g);
       } // Fl_Browser* pickCamera
-      { time = new Fl_Value_Slider(1125, 470, 115, 20, "Time of Day (24hr)");
+      { time = new Fl_Value_Slider(1090, 470, 115, 20, "Time of Day (24hr)");
         time->type(5);
         time->maximum(24);
         time->step(1);
         time->value(9);
         time->callback((Fl_Callback*)cb_time);
       } // Fl_Value_Slider* time
-      { fov = new Fl_Value_Slider(1250, 430, 15, 75, "FoV");
+      { fov = new Fl_Value_Slider(1215, 430, 15, 75, "FoV");
         fov->minimum(1);
         fov->maximum(180);
         fov->step(1);
         fov->value(45);
         fov->callback((Fl_Callback*)cb_fov);
       } // Fl_Value_Slider* fov
-      { follower = new Fl_Button(1115, 190, 70, 25, "Follow");
-        follower->type(1);
-        follower->color(FL_DARK1);
-        follower->selection_color((Fl_Color)11);
-      } // Fl_Button* follower
-      { rate = new Fl_Value_Output(1220, 520, 50, 25, "frame rate");
+      { rate = new Fl_Value_Output(1185, 520, 50, 25, "frame rate");
         rate->maximum(100);
         rate->step(0.1);
       } // Fl_Value_Output* rate
-      { speedup = new Fl_Value_Slider(1185, 550, 85, 25, "speedup");
+      { speedup = new Fl_Value_Slider(1150, 550, 85, 25, "speedup");
         speedup->type(1);
         speedup->maximum(3);
         speedup->step(0.2);
         speedup->value(1);
         speedup->align(Fl_Align(FL_ALIGN_LEFT));
       } // Fl_Value_Slider* speedup
-      { Fl_Browser* o = pickInteresting = new Fl_Browser(1115, 225, 155, 165, "sights");
+      { Fl_Browser* o = pickInteresting = new Fl_Browser(1080, 225, 155, 165, "sights");
         pickInteresting->type(2);
         pickInteresting->callback((Fl_Callback*)cb_pickInteresting);
         for(vector<GrObjectVBO*>::iterator g=theVBOobjects.begin(); g != theVBOobjects.end(); ++g)
         if((*g)->interesting) o->add((*g)->name.c_str(),*g);
       } // Fl_Browser* pickInteresting
-      { Fl_Button* o = new Fl_Button(1195, 190, 70, 25, "Fly");
+      { Fl_Button* o = new Fl_Button(1120, 190, 70, 25, "Fly");
         o->callback((Fl_Callback*)cb_Fly);
       } // Fl_Button* o
-      { loopDivision = new Fl_Value_Slider(1183, 580, 87, 26, "Loop Algorithm Division");
+      { loopDivision = new Fl_Value_Slider(1148, 580, 87, 26, "Loop Algorithm Division");
         loopDivision->type(1);
         loopDivision->maximum(4);
         loopDivision->step(1);
         loopDivision->callback((Fl_Callback*)cb_loopDivision);
         loopDivision->align(Fl_Align(132));
       } // Fl_Value_Slider* loopDivision
-      { sorRotation = new Fl_Value_Slider(1185, 610, 85, 25, "SoR Rotation");
+      { sorRotation = new Fl_Value_Slider(1150, 610, 85, 25, "SoR Rotation");
         sorRotation->type(1);
         sorRotation->minimum(1);
         sorRotation->maximum(180);
@@ -159,12 +152,12 @@ Fl_Double_Window* GraphicsTownUI::make_window() {
         sorRotation->callback((Fl_Callback*)cb_sorRotation);
         sorRotation->align(Fl_Align(FL_ALIGN_LEFT));
       } // Fl_Value_Slider* sorRotation
-      { Eatable = new Fl_Button(1200, 640, 75, 25, "Eatable");
+      { Eatable = new Fl_Button(1165, 640, 75, 25, "Eatable");
         Eatable->type(1);
         Eatable->callback((Fl_Callback*)cb_Eatable);
         Eatable->when(FL_WHEN_CHANGED);
       } // Fl_Button* Eatable
-      { Physic = new Fl_Button(1200, 670, 75, 25, "Physics");
+      { Physic = new Fl_Button(1085, 640, 75, 25, "Physics");
         Physic->type(1);
         Physic->value(1);
         Physic->callback((Fl_Callback*)cb_Physic);

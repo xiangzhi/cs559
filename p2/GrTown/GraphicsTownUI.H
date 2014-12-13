@@ -13,8 +13,8 @@
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Browser.H>
 #include <FL/Fl_Value_Slider.H>
-#include <FL/Fl_Button.H>
 #include <FL/Fl_Value_Output.H>
+#include <FL/Fl_Button.H>
 
 class GraphicsTownUI {
 public:
@@ -36,7 +36,6 @@ private:
   inline void cb_fov_i(Fl_Value_Slider*, void*);
   static void cb_fov(Fl_Value_Slider*, void*);
 public:
-  Fl_Button *follower;
   Fl_Value_Output *rate;
   Fl_Value_Slider *speedup;
   Fl_Browser *pickInteresting;

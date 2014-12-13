@@ -214,10 +214,6 @@ GrObjectVBO* TownViewWidget::getCamera()
 {
   int p = ui->pickCamera->value();
   if (p) {
-	if (ui->follower->value()) {
-	  followCamera->following =  (GrObjectVBO*) ui->pickCamera->data(p);
-	  return followCamera;
-	}
 	return (GrObjectVBO*) ui->pickCamera->data(p);
   } else {
 	p = ui->pickInteresting->value();

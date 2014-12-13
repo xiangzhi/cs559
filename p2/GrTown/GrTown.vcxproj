@@ -122,6 +122,7 @@
     <ClInclude Include="..\Utilities\libtarga.h" />
     <ClInclude Include="..\Utilities\ShaderTools.H" />
     <ClInclude Include="..\Utilities\Texture.H" />
+    <ClInclude Include="APC.h" />
     <ClInclude Include="BHLights.h" />
     <ClInclude Include="Billboards.h" />
     <ClInclude Include="Bob.h" />
@@ -139,6 +140,7 @@
     <ClInclude Include="Heli.h" />
     <ClInclude Include="normalMapping.h" />
     <ClInclude Include="ObjectLoader.h" />
+    <ClInclude Include="SoRDemo.h" />
     <ClInclude Include="SurfaceOfRevolution.h" />
     <ClInclude Include="TownViewWidget.H" />
     <ClInclude Include="World.h" />
@@ -147,6 +149,7 @@
     <ClCompile Include="..\Utilities\libtarga.c" />
     <ClCompile Include="..\Utilities\ShaderTools.cpp" />
     <ClCompile Include="..\Utilities\Texture.cpp" />
+    <ClCompile Include="APC.cpp" />
     <ClCompile Include="BHLights.cpp" />
     <ClCompile Include="Billboards.cpp" />
     <ClCompile Include="Bob.cpp" />
@@ -164,6 +167,7 @@
     <ClCompile Include="Heli.cpp" />
     <ClCompile Include="normalMapping.cpp" />
     <ClCompile Include="ObjectLoader.cpp" />
+    <ClCompile Include="SoRDemo.cpp" />
     <ClCompile Include="SurfaceOfRevolution.cpp" />
     <ClCompile Include="TownViewWidget.cpp" />
     <ClCompile Include="World.cpp" />

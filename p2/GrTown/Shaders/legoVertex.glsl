@@ -16,10 +16,11 @@ uniform float light;
 uniform mat3 ry;
 uniform mat4 model;
 uniform mat4 view;
+uniform mat4 proj;
 
 void main (void) {
 	//the position of the vertex in world space
-	gl_Position = MVP * vec4(vp, 1.0);
+	gl_Position = (proj * view * model) * vec4(vp, 1.0);
 
 	mat4 viewModel = view * model;
 	vec3 viewDir = vec3(viewModel * vec4(vp, 1.0));
@@ -34,7 +35,9 @@ void main (void) {
 	mat3 normalMatrix = mat3(model);
 	normalMatrix = inverse(normalMatrix);
 	normalMatrix = transpose(normalMatrix);
-	normal = normalize(_normal * normalMatrix);
+	//normal = normalize(_normal * normalMatrix);
+	//normal = _normal;
+	normal = normalize(_normal * ry);
 
 	//normal = _normal;
 	lightIntensity = light;

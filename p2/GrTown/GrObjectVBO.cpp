@@ -114,7 +114,7 @@ void GrObjectVBO::draw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::
 	  3,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
 	  3,                  // size
 	  GL_FLOAT,           // type
-	  GL_FALSE,           // normalized?
+	  GL_TRUE,           // normalized?
 	  0,                  // stride
 	  (void*)0            // array buffer offset
 	  );
@@ -125,7 +125,7 @@ void GrObjectVBO::draw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::
   //pass our MVP to shader
   glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
-  glm::mat3 rotationMatrix = glm::mat3(glm::rotate(glm::mat4(1.0f), ry, glm::vec3(0, 1, 0)));
+  glm::mat3 rotationMatrix = glm::mat3(glm::rotate(glm::mat4(1.0f), -ry, glm::vec3(0, 1, 0)));
 
   MatrixID = glGetUniformLocation(shaderID, "ry");
   glUniformMatrix3fv(MatrixID, 1, GL_FALSE, &rotationMatrix[0][0]);
@@ -137,6 +137,8 @@ void GrObjectVBO::draw(DrawingState* drst, glm::mat4 proj, glm::mat4 view, glm::
   MatrixID = glGetUniformLocation(shaderID, "view");
   glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &view[0][0]);
 
+  MatrixID = glGetUniformLocation(shaderID, "proj");
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &proj[0][0]);
 
 
   //lighting calculations

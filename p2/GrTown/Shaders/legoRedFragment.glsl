@@ -22,7 +22,7 @@ void main (void) {
   vec3 specularColor = vec3(1,1,1);
 
   float speculatIntensity = 0;
-  float shininess = 10;
+  float shininess = 6;
 
   //calculate diffuse lighting
   float diffuseIntensity = clamp(dot(normal, sun),0,1);

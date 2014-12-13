@@ -39,8 +39,8 @@ class GraphicsTownUI {open
   Function {make_window()} {open
   } {
     Fl_Window window {
-      label {CS559 - Toy Town} open selected
-      xywh {108 108 1264 704} type Double labelsize 12 resizable visible
+      label {CS559 - Toy Town} open
+      xywh {116 116 1248 688} type Double labelsize 12 resizable visible
     } {
       Fl_Box townView {
         xywh {5 5 1024 710} align 2 resizable
@@ -48,72 +48,66 @@ class GraphicsTownUI {open
         class TownViewWidget
       }
       Fl_Group {} {open
-        xywh {1055 5 220 700}
+        xywh {1020 5 220 700}
       } {
         Fl_Browser pickCamera {
           label view
           callback {pickInteresting->deselect();}
-          xywh {1115 5 155 165} type Hold
+          xywh {1080 5 155 165} type Hold
           code0 {for(vector<GrObjectVBO*>::iterator g=theVBOobjects.begin(); g != theVBOobjects.end(); ++g)}
           code1 {if((*g)->ridable) o->add((*g)->name.c_str(),*g);}
         }
         Fl_Value_Slider time {
           label {Time of Day (24hr)}
           callback {townView->damage(1);}
-          xywh {1125 470 115 20} type {Horz Knob} maximum 24 step 1 value 9
+          xywh {1090 470 115 20} type {Horz Knob} maximum 24 step 1 value 9
         }
         Fl_Value_Slider fov {
           label FoV
           callback {townView->damage(1);}
-          xywh {1250 430 15 75} minimum 1 maximum 180 step 1 value 45
-        }
-        Fl_Button follower {
-          label Follow
-          xywh {1115 190 70 25} type Toggle color 47 selection_color 11
+          xywh {1215 430 15 75} minimum 1 maximum 180 step 1 value 45
         }
         Fl_Value_Output rate {
           label {frame rate}
-          xywh {1220 520 50 25} maximum 100 step 0.1
+          xywh {1185 520 50 25} maximum 100 step 0.1
         }
         Fl_Value_Slider speedup {
           label speedup
-          xywh {1185 550 85 25} type Horizontal align 4 maximum 3 step 0.2 value 1
+          xywh {1150 550 85 25} type Horizontal align 4 maximum 3 step 0.2 value 1
         }
         Fl_Browser pickInteresting {
           label sights
-          callback {pickCamera->deselect();
-follower->value(0);}
-          xywh {1115 225 155 165} type Hold
+          callback {pickCamera->deselect();}
+          xywh {1080 225 155 165} type Hold
           code0 {for(vector<GrObjectVBO*>::iterator g=theVBOobjects.begin(); g != theVBOobjects.end(); ++g)}
           code1 {if((*g)->interesting) o->add((*g)->name.c_str(),*g);}
         }
         Fl_Button {} {
           label Fly
-          callback {follower->value(0);
-pickCamera->deselect();
+          callback {pickCamera->deselect();
 pickInteresting->deselect();
-townView->damage(1);}
-          xywh {1195 190 70 25}
+townView->damage(1);} selected
+          xywh {1120 190 70 25}
         }
         Fl_Value_Slider loopDivision {
           label {Loop Algorithm Division}
           callback {townView->damage(1);}
-          xywh {1183 580 87 26} type Horizontal align 132 maximum 4 step 1
+          xywh {1148 580 87 26} type Horizontal align 132 maximum 4 step 1
         }
         Fl_Value_Slider sorRotation {
           label {SoR Rotation}
           callback {townView->damage(1);}
-          xywh {1185 610 85 25} type Horizontal align 4 minimum 1 maximum 180 step 1 value 20
+          xywh {1150 610 85 25} type Horizontal align 4 minimum 1 maximum 180 step 1 value 20
         }
         Fl_Button Eatable {
           label Eatable
           callback {townView->damage(1);}
-          xywh {1200 640 75 25} type Toggle when 1
+          xywh {1165 640 75 25} type Toggle when 1
         }
         Fl_Button Physic {
           label Physics
           callback {townView->damage(1);}
-          xywh {1200 670 75 25} type Toggle value 1 when 1
+          xywh {1085 640 75 25} type Toggle value 1 when 1
         }
       }
     }
