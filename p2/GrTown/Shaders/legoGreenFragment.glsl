@@ -15,11 +15,11 @@ out vec4 color;
 //a simple Blinn-Phong lighting
 void main (void) {
  
-  vec3 ambientColor = vec3(0,0.3,0);
+  vec3 ambientColor = vec3(0,0.5,0);
   //color of material
   vec3 diffuseColor = vec3(0,1,0);
   //lower than 1,1,1 due to long distance from sun
-  vec3 specularColor = vec3(0,0,0);
+  vec3 specularColor = vec3(1,1,1);
 
   float speculatIntensity = 0;
   float shininess = 6;

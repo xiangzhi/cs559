@@ -15,7 +15,7 @@ out vec4 color;
 //a simple Blinn-Phong lighting
 void main (void) {
  
-  vec3 ambientColor = vec3(0.019,0,0.3058);
+  vec3 ambientColor = vec3(0.0,0,0.5);
   //color of material
   vec3 diffuseColor = vec3(0,0,1);
   //lower than 1,1,1 due to long distance from sun

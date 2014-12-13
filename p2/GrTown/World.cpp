@@ -133,35 +133,6 @@ void drawSkyBoxDome(glm::vec3 sun, float light, glm::mat4 PV, glm::vec3 camPos){
 
 }
 
-void doubleHead(std::vector<float> & list, std::vector<float> & normallist, std::vector<float> & UVlist, int x, int z){
-  int size = list.size();
-  for (int i = 0; i < size; i += 3){
-    list.push_back(list[i] + x);
-    list.push_back(list[i + 1]);
-    list.push_back(list[i + 2] + z);
-
-    normallist.push_back(normallist[i]);
-    normallist.push_back(normallist[i + 1]);
-    normallist.push_back(normallist[i + 2]);
-  }
-
-  size = UVlist.size();
-
-  for (int j = 0; j < size; j += 2){
-    UVlist.push_back(UVlist[j]);
-    UVlist.push_back(UVlist[j+1]);
-
-    UVlist.push_back(UVlist[j]);
-    UVlist.push_back(UVlist[j + 1]);
-
-    UVlist.push_back(UVlist[j]);
-    UVlist.push_back(UVlist[j + 1]);
-  }
-}
-bool head = false;
-
-
-
 void initializeEarth(){
   //Earth vertices
   std::vector<glm::vec3> vertexList;

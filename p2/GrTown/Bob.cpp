@@ -140,8 +140,10 @@ void Bob::initialize(){
   shaderID = loadShader("sameVertex.glsl", "BobFragment.glsl");
 }
 
+static int currTime;
+
 void Bob::preDraw(DrawingState* drst){
-	
+  currTime = drst->timeOfDay;
 	static int last = 0;
   //check if we change the divide times
 	if (last != drst->loopDivisionTimes){
@@ -195,38 +197,47 @@ void Bob::simulateUntil(unsigned long time){
     else{
       acc.y = -10;
     }
+
     if (pos.y < 0){
       pos.y = 0;
       touchPos = pos;
-      acc.y = initAcceleration;
-      int static limit = 500;
+      if (currTime > 6 && currTime < 18){
+        acc.y = initAcceleration;
+        int static limit = 600;
 
-      ax = rand() % 5;
-      float xDirection = 1;
+        ax = rand() % 10 + 3;
+        float xDirection = 1;
 
-      //calculate the direction for x
-      if (pos.x > limit || pos.x < -limit){
-        xDirection = (pos.x / pos.x) * -1;
+        //calculate the direction for x
+        if (pos.x > limit || pos.x < -limit){
+          xDirection = (abs(pos.x) / pos.x) * -1;
+        }
+        else if (rand() % 2 == 0){
+          xDirection = -1;
+        }
+
+        ax *= xDirection;
+
+        az = rand() % 10 + 3;
+        float zDirection = 1;
+
+        //calculate the direction for z
+        if (pos.z > limit || pos.z < -limit){
+          zDirection = (abs(pos.z) / pos.z) * -1;
+        }
+        else if (rand() % 2 == 0){
+          zDirection = -1;
+        }
+
+        az *= zDirection;
+
+
       }
-      else if(rand() % 2 == 0){
-        xDirection = -1;
+      else{
+        acc.y = 0;
+        ax = 0;
+        az = 0;
       }
-      
-      ax *= xDirection;
-
-      az = rand() % 5;
-      float zDirection = 1;
-
-      //calculate the direction for z
-      if (pos.z > limit || pos.z < -limit){
-        zDirection = (pos.z / pos.z) * -1;
-      }
-      else if (rand() % 2 == 0){
-        zDirection = -1;
-      }
-
-      az *= zDirection;
-
       fall = false;
     }
   }

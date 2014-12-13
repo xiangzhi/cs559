@@ -208,11 +208,11 @@ void LegoBrick::simulateUntil(unsigned long time){
       if (temp == this){
         continue;
       }
-      /*
+      
       if (temp->color != color){
         continue;
       }
-      */
+      
 
       if (!temp->doneDestroyed){
         continue;

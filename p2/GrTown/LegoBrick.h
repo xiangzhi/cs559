@@ -23,7 +23,7 @@ public:
   //information about subdivision
   void doSubdivision();
   int divideTimes = 2;
-
+  int color;
   //simulation attributes
   bool destroyed = false;
   bool doneDestroyed = false;

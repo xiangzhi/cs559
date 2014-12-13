@@ -58,7 +58,8 @@ void City::initialize(){
     int z = floor(distribution(generator));
     brick2->pos = (glm::vec3(x, 0, z));
     //randomly pick a shader
-    brick2->shaderID = shaders[rand() % 3];
+    brick2->color = rand() % 3;
+    brick2->shaderID = shaders[brick2->color];
     //50-50 chance of it facing another direction
     if (rand() % 2 == 0){
       brick2->ry = 90;

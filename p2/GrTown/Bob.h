@@ -19,7 +19,7 @@ public:
   void preDraw(DrawingState* drst);
   void redoSubDivision();
   glm::mat4 getCamera();
-
+  DrawingState* drstInternal;
   //behavior attributes
   bool fall = false;;
   glm::vec3 acc;
