@@ -1,0 +1,99 @@
+
+
+ToyLand: A monster coming
+
+1. Theme:
+The theme of project is toyland and a monster. The world is created by a kid and he placed multiple blocks on the lego board. Then, he imagines a monster coming and melting all the blocks.
+
+2. Basic Requirements:
+	1. By default, the helicopter and the monster("bob") moves around. When eatable is enabled, the blocks will melt and they will all move together and fuse into one big blob.
+	2. the jumping of the monster and the merging of the blobs
+	3. Everything is new.
+	4. All are new textures. The texture that wraps on a not flat surface would be "SkyTest2.jpg" where it wraps around the skybox ontop(the skybox is not a box but it is a dome, therefore curved).
+	5. Attempted 6-7 challanges.
+	6. 6-9 pairs(there are a few shaders that I let them share the vertex shaders). Procedural texture shader is the "EarthFragment.glsl/EarthVertex.glsl" generates the normal map for the land. All shaders are effected by lighting and and time of day.
+	7. Average Framerate of 30
+	8. Bob the monster won't jump at night(18-6).
+	9. Implemented both skybox and normal mapping.
+	10. The main example will be bob the monster.
+	11. Everything uses NEW OPENGL lighting.
+
+3. Technical Challanges.
+
+1. Surface of Revolution
+HOW:
+- it started out as one of the easiest challange. The user passess in a list of vertex that have z = 0, how detail(number of degree for next point) and the rotation center. The program gets new points by rotating the original points from 0 to 360 degrees. The function also generates the UV coordinates. The toughest part was having a way to generate the normal coordinates especially when the curve goes inwards(towards x = 0).
+WHERE:
+Press "surface of revolution 10" to see a model where the points are seperated by 10 degrees
+Press "surface of revolution 30" to see a model where the points are seperated by 30 degrees
+Press "surface of revolution 90" to see a model where the points are seperated by 90 degrees
+Observe the light under the helicopter change when you move the slider on "SOR Rotation"(1 - 180 degrees).
+WHY I KNOW IT WORKS:
+The algorithm generates a circular objects and have corrects normal, observe the "surface of revolution 10" to see the effects
+
+2. Subdivision surfaces
+HOW:
+Achieve through loop algorithm, heavily based on the algorithm in the book "Real-Time Rendering" The user passess in the vertices,normal and UV coordinates. The algorithm first convert these values into a list of triangles with points holding the original information. Then it creates new points on each triangle and look through all the triangles for overlap points and merge them together. Then it does the require calculation from the neighbor to update its location. Afterwards it converts back to list of vertices, normals and UV coordinates.
+WHERE:
+Press "loop sample 1 - 0 div" to see object without subdivision
+Press "loop sample 1 - 1 div" to see object with one iteration of subdivision
+Press "loop sample 1 - 2 div" to see object with two iteration of subdivision
+Observe the shape of the monster change as the slider of "Loop Algorithm Division" is changed.
+The BLob formed from the lego bricks when eaten.
+WHY I KNOW IT WORKS:
+The algorithm can convert a none smooth object into a smooth object
+
+3. SkyBox
+HOW:
+A simple half dome that surrounds the user and follow it's x and z axis movement. The half dome is created using the surface of revolution. A texture is mapped onto that gives it illusion.
+WHERE:
+Look up
+HOW I KNOW IT WORKS
+You can try keep moving the camera and it will always stay there.
+
+4. Billboard
+HOW:
+The images rotates following the camera's rotation. The shader receives the rotation of the camera and apply those rotation to the Images that is drawn onto a flat surface.
+WHERE:
+Press "TeddyBear Billboard"
+HOW I KNOW IT WORKS:
+No matter where you look, the teddy bear always faces you.
+
+5.Bump Mapping
+HOW:
+Achieve uses normal mapping. I created an image of the normal of lego floor using a photoshop tool. The program reads the image and use the image's color to generate the normal at each point. These calculation are done in the shader("EarthVertex/EarthFragment").
+WHERE:
+Look at the floor
+HOW I KNOW IT WORKS:
+The normal mapping only works in the day, turn to nighttime and see the difference of the land. At day, it really looks pretty good.
+
+6. Fake Physics
+HOW:
+Coded behavior where as an object jumps the speed going upwards slowly decreases untill it stops and fall back(accelerates as it goes down). Simple math with geometry coded into the behavior.
+WHERE:
+Look at BOB
+HOW I KNOW IT WORKS:
+The speed decreases as it reaches the top and dropping down faster as it get closer to the ground. TO compare the difference, disable physics by pressing "physic"
+
+7. Very Complex Behaviors /Flocking - The destruction of Lego Blocks
+The behavior has two parts, first it needs to detect whether the head of BOB is ontop of it, if it is, it will dissolve slowly and goes to the ground. Once it dessolves to the ground, it will try and form the largest blob by actively seeking out for other blobs. The most interesting part is that it only goes to the nearest neighbot first and only conquer its own color. It was implemented with a bunch of vectors and getting information from all the blobs
+WHERE:
+Press "eatable" and look at the world curmble into blobs
+HOW I KNOW IT WORKS:
+Because it works as expected. Destroy -> Seek out -> Conquer
+
+8. Something extra:
+The lego blocks placement is randomly generated based on normal distribution. If two blocks occupy the same space they stack together. 
+
+
+Proud of:
+I really like the whole Bob and the lego theme, the Bob is made with loop algorithm and is hard to implement since I need to create one to store the needed infromation for the calculations. The lego looks good and is randomly placed everytime. The behavior was the best part. Destory, Seek, Conquer.
+
+General Acknoledgement:
+Object loader,normal mapping, billboard, general shader algorithm are based on this tutorial
+http://www.opengl-tutorial.org/
+Loop Algorthim was based on the one described in "Real Time Rendering" by Akenine-Moller et al.
+The Model of the blackhawk helicopter was from:
+http://tf3dm.com/3d-model/uh-60-blackhawk-helicopter-93546.html
+Surface of Revolution, and skybox are based on what we learn in class and notes.
+Some might snippets were from stackoverflow and are attributed in the code.
